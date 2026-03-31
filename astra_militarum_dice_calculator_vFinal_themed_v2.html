@@ -1,0 +1,3292 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#0f141a" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="WH40k Dice Calc" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <title>WH40k Dice Calculator</title>
+  <link rel="icon" href="./servo.png" />
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="./icons/icon-180.png" />
+  <link rel="apple-touch-icon" sizes="192x192" href="./icons/icon-192.png" />
+  <link rel="apple-touch-icon" sizes="512x512" href="./icons/icon-512.png" />
+  <style>
+    :root {
+      --bg: #0f141a;
+      --panel: #17212b;
+      --panel-2: #23303b;
+      --text: #eef3f8;
+      --muted: #afbcc8;
+      --accent: #b33a3a;
+      --accent-2: #c9a44b;
+      --good: #7fd38d;
+      --warn: #ffd479;
+      --border: #415160;
+      --brass-border: #5a4a2a;
+    }
+
+    @font-face {
+      font-family: "Conduit ITC Std";
+      src: local("Conduit ITC Std"), local("ConduitITCStd"), local("Conduit ITC"), local("ConduitITC");
+      font-display: swap;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: linear-gradient(180deg, #0b1015 0%, #121a22 100%);
+      color: var(--text);
+      position: relative;
+      overflow-x: hidden;
+      min-height: 100vh;
+      min-height: 100dvh;
+    }
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.05;
+      background-image:
+        radial-gradient(rgba(255,255,255,0.06) 0.5px, transparent 0.5px),
+        radial-gradient(rgba(0,0,0,0.14) 0.5px, transparent 0.5px);
+      background-size: 7px 7px, 11px 11px;
+      background-position: 0 0, 2px 3px;
+      mix-blend-mode: soft-light;
+    }
+    .wrap {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding:
+        calc(24px + env(safe-area-inset-top))
+        calc(24px + env(safe-area-inset-right))
+        calc(24px + env(safe-area-inset-bottom))
+        calc(24px + env(safe-area-inset-left));
+    }
+    h1 {
+      margin: 0 0 8px;
+      font-size: 2rem;
+      letter-spacing: 0.04em;
+      font-family: "Conduit ITC Std", "Arial Narrow", Arial, Helvetica, sans-serif;
+      text-transform: uppercase;
+      text-shadow: 0 1px 0 rgba(0,0,0,0.3);
+    }
+    .subtitle {
+      color: var(--muted);
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+    .banner {
+      background: linear-gradient(135deg, rgba(179,58,58,0.22), rgba(201,164,75,0.14));
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 18px;
+      margin-bottom: 18px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.03), 0 10px 24px rgba(0,0,0,0.22);
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 16px;
+    }
+    .card {
+      background: linear-gradient(180deg, #16202a 0%, #131b24 100%);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.025), 0 10px 24px rgba(0,0,0,0.22);
+    }
+    .span-4 { grid-column: span 4; }
+    .span-6 { grid-column: span 6; }
+    .span-8 { grid-column: span 8; }
+    .span-12 { grid-column: span 12; }
+    h2 {
+      margin: 0 0 12px;
+      font-size: 1.05rem;
+      color: var(--accent-2);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-family: "Conduit ITC Std", "Arial Narrow", Arial, Helvetica, sans-serif;
+      border-bottom: 1px solid rgba(201,164,75,0.28);
+      padding-bottom: 6px;
+    }
+    h2::before {
+      content: "▰ ";
+      color: var(--accent-2);
+    }
+    .field-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 12px;
+    }
+    label {
+      display: block;
+      font-size: 0.86rem;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+    input, select {
+      width: 100%;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: linear-gradient(180deg, #243241 0%, #202c38 100%);
+      color: var(--text);
+      padding: 10px 12px;
+      font-size: 0.97rem;
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.22);
+    }
+    input[type="checkbox"] {
+      width: auto;
+      transform: scale(1.15);
+      margin-right: 8px;
+    }
+    .checks {
+      display: grid;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .checkline {
+      display: flex;
+      align-items: center;
+      color: var(--text);
+      font-size: 0.95rem;
+    }
+    .result-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+    }
+    .result {
+      background: radial-gradient(circle at top, #15202a 0%, #0f161d 100%);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.02);
+    }
+    .kicker {
+      font-size: 0.82rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 6px;
+    }
+    .big {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+      font-family: "Conduit ITC Std", "Arial Narrow", Arial, Helvetica, sans-serif;
+      text-transform: uppercase;
+    }
+    .small {
+      color: var(--muted);
+      line-height: 1.5;
+      font-size: 0.92rem;
+    }
+    .pill {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(201,164,75,0.12);
+      border: 1px solid rgba(201,164,75,0.32);
+      color: #f3ddb0;
+      font-size: 0.85rem;
+      margin: 0 8px 8px 0;
+      font-family: "Conduit ITC Std", "Arial Narrow", Arial, Helvetica, sans-serif;
+      text-transform: uppercase;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.03);
+    }
+    .note {
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.55;
+    }
+    textarea {
+      width: 100%;
+      min-height: 170px;
+      background: var(--panel-2);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px;
+      font-family: Consolas, monospace;
+      font-size: 0.88rem;
+    }
+    button {
+      background: linear-gradient(180deg, #b33a3a 0%, #8f2f2f 100%);
+      color: white;
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 10px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 6px 14px rgba(0,0,0,0.18);
+    }
+    button.secondary,
+    .preset-btn {
+      background: linear-gradient(180deg, #3a4a5d 0%, #2f3d4d 100%);
+    }
+    .footer-note {
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: 0.85rem;
+      line-height: 1.5;
+    }
+
+    .tooltip-term {
+      position: relative;
+      display: inline-block;
+      cursor: help;
+      color: #f3ddb0;
+      border-bottom: 1px dotted rgba(201,164,75,0.7);
+      line-height: 1.35;
+    }
+    .tooltip-term:focus {
+      outline: 2px solid rgba(216,177,93,0.5);
+      outline-offset: 2px;
+      border-radius: 4px;
+    }
+    .tooltip-term::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      left: 50%;
+      bottom: calc(100% + 10px);
+      transform: translateX(-50%) translateY(6px);
+      width: min(280px, 80vw);
+      background: #0f141b;
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 0.85rem;
+      line-height: 1.4;
+      box-shadow: 0 10px 24px rgba(0,0,0,0.35);
+      opacity: 0;
+      pointer-events: none;
+      white-space: normal;
+      z-index: 1000;
+      transition: opacity 0.12s ease, transform 0.12s ease;
+    }
+    .tooltip-term::before {
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: calc(100% + 4px);
+      transform: translateX(-50%);
+      border-width: 6px;
+      border-style: solid;
+      border-color: #0f141b transparent transparent transparent;
+      opacity: 0;
+      transition: opacity 0.12s ease;
+      z-index: 1001;
+    }
+    .tooltip-term:hover::after,
+    .tooltip-term:hover::before,
+    .tooltip-term:focus::after,
+    .tooltip-term:focus::before {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+
+    .datasheet-block {
+      margin: 14px 0 10px;
+    }
+    .datasheet-label {
+      font-size: 0.8rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 6px;
+    }
+    .datasheet-bar {
+      border: 1px solid var(--brass-border);
+      border-radius: 12px;
+      overflow: hidden;
+      background: linear-gradient(180deg, #161d24, #0f141a);
+      margin-bottom: 10px;
+      box-shadow: inset 0 0 6px rgba(0,0,0,0.6);
+    }
+    .datasheet-name {
+      background: linear-gradient(90deg, rgba(179,58,58,0.22), rgba(201,164,75,0.14));
+      color: var(--text);
+      font-weight: 700;
+      padding: 8px 10px;
+      border-bottom: 1px solid var(--brass-border);
+      letter-spacing: 0.02em;
+      font-family: "Conduit ITC Std", "Arial Narrow", Arial, Helvetica, sans-serif;
+      text-transform: uppercase;
+    }
+    .datasheet-grid {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+    }
+    .datasheet-cell {
+      text-align: center;
+      border-right: 1px solid var(--border);
+    }
+    .datasheet-cell:last-child {
+      border-right: none;
+    }
+    .datasheet-head {
+      display: block;
+      font-size: 0.76rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 6px 4px 4px;
+      border-bottom: 1px solid rgba(56,71,86,0.7);
+      background: rgba(255,255,255,0.02);
+    }
+    .datasheet-val {
+      display: block;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text);
+      padding: 8px 4px 10px;
+    }
+
+
+    .preset-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .preset-btn {
+      margin-top: 0;
+      padding: 8px 12px;
+      font-size: 0.85rem;
+      background: #324150;
+    }
+    .modifier-panel {
+      margin-top: 10px;
+    }
+    .modifier-panel > summary {
+      cursor: pointer;
+      list-style: none;
+      color: var(--accent-2);
+      font-size: 1.05rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-weight: 700;
+      margin-bottom: 0;
+    }
+    .modifier-panel > summary::-webkit-details-marker {
+      display: none;
+    }
+    .modifier-panel[open] > summary {
+      margin-bottom: 12px;
+    }
+    .modified-result {
+      border-color: rgba(201,164,75,0.75) !important;
+      box-shadow: 0 0 0 1px rgba(201,164,75,0.28), 0 0 12px rgba(201,164,75,0.25);
+    }
+    .attack-check-note {
+      color: var(--muted);
+      font-size: 0.84rem;
+      line-height: 1.45;
+      margin-top: 8px;
+    }
+
+    @media (max-width: 900px) {
+      .span-4, .span-6, .span-8 { grid-column: span 12; }
+      .wrap { padding: 14px; }
+    }
+  
+    .imperial-tagline {
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: 0.82rem;
+      text-align: right;
+      font-family: "Conduit ITC Std", "Arial Narrow", Arial, Helvetica, sans-serif;
+      text-transform: uppercase;
+      opacity: 0.9;
+    }
+
+    select, option {
+      background: #202c38;
+      color: #eef3f8;
+    }
+    select:focus, option:checked {
+      background: #2a3947;
+      color: #ffffff;
+    }
+
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="banner">
+      <h1>WH40k Dice Calculator</h1>
+      <div class="subtitle">
+        In the grim darkness of the far future there is only war.
+      </div>
+      <div>
+        <span class="pill" id="factionPill">Faction: Astra Militarum</span>
+        <span class="pill" id="phasePill">Phase: -</span>
+        <span class="pill" id="weaponPill">Weapon: -</span>
+        <span class="pill" id="attackSummary">Attacks: -</span>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="card span-4">
+        <h2>Unit & Weapon</h2>
+        <div class="field-grid">
+          <div>
+            <label for="factionSelect">Faction</label>
+            <select id="factionSelect"></select>
+          </div>
+          <div>
+            <label for="unitSelect">Unit</label>
+            <select id="unitSelect"></select>
+          </div>
+          <div>
+            <label for="weaponSelect">Weapon</label>
+            <select id="weaponSelect"></select>
+          </div>
+        </div>
+        <div class="field-grid" style="margin-top:12px;">
+          <div>
+            <label for="modelsInput">Attacking models</label>
+            <input id="modelsInput" type="number" min="1" step="1" value="1" />
+          </div>
+          <div>
+            <label for="attacksOverride">Attack override (optional)</label>
+            <input id="attacksOverride" type="text" placeholder="Leave blank to use weapon A" />
+          </div>
+        </div>
+        <div id="statLineBox" class="datasheet-block"></div>
+        <div class="footer-note" id="unitNote"></div>
+        <div class="footer-note" id="dataSourceNote"></div>
+      </div>
+
+      <div class="card span-4">
+        <details class="modifier-panel">
+          <summary>Attacker Modifiers</summary>
+          <div class="field-grid">
+            <div>
+              <label for="hitMod">Hit modifier</label>
+              <input id="hitMod" type="number" value="0" step="1" />
+            </div>
+            <div>
+              <label for="woundMod">Wound modifier</label>
+              <input id="woundMod" type="number" value="0" step="1" />
+            </div>
+            <div>
+              <label for="apMod">AP modifier</label>
+              <input id="apMod" type="number" value="0" step="1" />
+            </div>
+            <div>
+              <label for="saveMod">Save roll modifier</label>
+              <input id="saveMod" type="number" value="0" step="1" />
+            </div>
+          </div>
+          <div class="checks">
+            <label class="checkline"><input id="heavyBox" type="checkbox" /> Heavy bonus applied (+1 to hit when relevant)</label>
+            <label class="checkline"><input id="rapidFireBox" type="checkbox" /> Rapid Fire active (half range)</label>
+            <label class="checkline"><input id="coverBox" type="checkbox" /> Target has Benefit of Cover</label>
+            <label class="checkline"><input id="armorContemptBox" type="checkbox" /> Target reduces AP by 1</label>
+          </div>
+          <div class="attack-check-note">Rapid Fire only changes the attack count for weapons that already have a Rapid Fire value in their abilities.</div>
+          <button type="button" class="secondary" id="resetModifiersBtn">Reset Modifiers</button>
+        </details>
+      </div>
+
+      <div class="card span-4">
+        <h2>Target</h2>
+        <div class="field-grid">
+          <div>
+            <label for="toughness">Target Toughness</label>
+            <input id="toughness" type="number" min="1" value="4" />
+          </div>
+          <div>
+            <label for="save">Target Save</label>
+            <input id="save" type="number" min="2" max="7" value="3" />
+          </div>
+          <div>
+            <label for="invuln">Invulnerable save</label>
+            <input id="invuln" type="number" min="2" max="7" placeholder="Optional" />
+          </div>
+          <div>
+            <label for="damageReduction">Damage reduction</label>
+            <input id="damageReduction" type="number" value="0" step="1" />
+          </div>
+          <div>
+            <label for="targetModels">Target models</label>
+            <input id="targetModels" type="number" min="1" value="1" />
+          </div>
+        </div>
+        <div class="preset-row">
+          <button type="button" class="preset-btn" id="presetInfantry">Infantry</button>
+          <button type="button" class="preset-btn" id="presetElite">Elite</button>
+          <button type="button" class="preset-btn" id="presetVehicle">Vehicle</button>
+        </div>
+      </div>
+
+      <div class="card span-8">
+        <h2>Engagement Analysis</h2>
+        <div class="result-grid">
+          <div class="result">
+            <div class="kicker">Attacks</div>
+            <div class="big" id="attacksBig">-</div>
+            <div class="small" id="attacksBigExplain"></div>
+          </div>
+          <div class="result">
+            <div class="kicker">Hit roll needed</div>
+            <div class="big" id="hitNeeded">-</div>
+            <div class="small" id="hitChance">Chance: -</div>
+            <div class="small" id="hitExplain"></div>
+          </div>
+          <div class="result">
+            <div class="kicker">Wound roll needed</div>
+            <div class="big" id="woundNeeded">-</div>
+            <div class="small" id="woundChance">Chance: -</div>
+            <div class="small" id="woundExplain"></div>
+          </div>
+          <div class="result">
+            <div class="kicker">Saving throw needed</div>
+            <div class="big" id="saveNeeded">-</div>
+            <div class="small" id="saveChance">Chance: -</div>
+            <div class="small" id="saveExplain"></div>
+          </div>
+          <div class="result">
+            <div class="kicker">Damage after reduction</div>
+            <div class="big" id="damageValue">-</div>
+            <div class="small" id="damageExplain"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card span-4">
+        <h2>Selected Weapon Profile</h2>
+        <div class="note" id="profileBox"></div>
+      </div>
+
+      <div class="card span-12">
+        <h2>Custom JSON Import</h2>
+        <div class="note">
+          The scanned codex is hard to extract perfectly in one pass, so this app includes a starter Astra Militarum data set and a JSON importer so you can expand it unit by unit. Paste a JSON object in the same structure and click import.
+        </div>
+        <textarea id="jsonBox"></textarea>
+        <div>
+          <button id="importBtn">Import / Replace Data</button>
+          <button class="secondary" id="loadExampleBtn">Load Example JSON</button>
+        </div>
+      </div>
+    </div>
+    <div class="imperial-tagline">Tactica Imperialis v1.0</div>
+  </div>
+
+  <script src="./data/abilities/unit-abilities.js"></script>
+  <script src="./data/abilities/weapon-abilities.js"></script>
+  <script src="./data/factions/index.js"></script>
+  <script>
+    const defaultData = {
+      "units": {
+            "Lord Marshal Dreir": {
+                  "note": "Leader, Feel No Pain 6+, Voice of Command, Tough to Kill, Leading the Charge",
+                  "stats": {
+                        "move": "10\"",
+                        "toughness": 4,
+                        "save": 4,
+                        "wounds": 6,
+                        "leadership": "7+",
+                        "oc": 2
+                  },
+                  "weapons": {
+                        "Laspistol": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "12\"",
+                              "attacks": "1",
+                              "skill": 3,
+                              "skillType": "BS",
+                              "strength": 3,
+                              "ap": 0,
+                              "damage": "1",
+                              "abilities": [
+                                    "Pistol"
+                              ]
+                        },
+                        "Sabre of Sacrifice": {
+                              "phase": "Fight",
+                              "type": "Melee",
+                              "range": "Melee",
+                              "attacks": "6",
+                              "skill": 2,
+                              "skillType": "WS",
+                              "strength": 6,
+                              "ap": -2,
+                              "damage": "1",
+                              "abilities": [
+                                    "Anti-Infantry 4+"
+                              ]
+                        },
+                        "Savage claws": {
+                              "phase": "Fight",
+                              "type": "Melee",
+                              "range": "Melee",
+                              "attacks": "2",
+                              "skill": 4,
+                              "skillType": "WS",
+                              "strength": 4,
+                              "ap": -1,
+                              "damage": "1",
+                              "abilities": [
+                                    "Extra Attacks"
+                              ]
+                        }
+                  }
+            },
+            "Krieg Command Squad": {
+                  "note": "Leader, Voice of Command, Grim Determination",
+                  "stats": {
+                        "move": "6\"",
+                        "toughness": 3,
+                        "save": 5,
+                        "wounds": 3,
+                        "leadership": "6+",
+                        "oc": 1
+                  },
+                  "weapons": {
+                        "Boltgun": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "24\"",
+                              "attacks": "1",
+                              "skill": 4,
+                              "skillType": "BS",
+                              "strength": 4,
+                              "ap": 0,
+                              "damage": "1",
+                              "abilities": [
+                                    "Rapid Fire 1"
+                              ]
+                        },
+                        "Bolt pistol": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "12\"",
+                              "attacks": "1",
+                              "skill": 4,
+                              "skillType": "BS",
+                              "strength": 4,
+                              "ap": 0,
+                              "damage": "1",
+                              "abilities": [
+                                    "Pistol"
+                              ]
+                        },
+                        "Flamer": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "12\"",
+                              "attacks": "D6",
+                              "skill": 0,
+                              "skillType": "N/A",
+                              "strength": 4,
+                              "ap": 0,
+                              "damage": "1",
+                              "abilities": [
+                                    "Ignores Cover",
+                                    "Torrent"
+                              ]
+                        },
+                        "Grenade launcher - frag": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "24\"",
+                              "attacks": "D3",
+                              "skill": 4,
+                              "skillType": "BS",
+                              "strength": 4,
+                              "ap": 0,
+                              "damage": "1",
+                              "abilities": [
+                                    "Blast"
+                              ]
+                        },
+                        "Grenade launcher - krak": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "24\"",
+                              "attacks": "1",
+                              "skill": 4,
+                              "skillType": "BS",
+                              "strength": 9,
+                              "ap": -2,
+                              "damage": "D3",
+                              "abilities": []
+                        },
+                        "Lasgun": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "24\"",
+                              "attacks": "1",
+                              "skill": 4,
+                              "skillType": "BS",
+                              "strength": 3,
+                              "ap": 0,
+                              "damage": "1",
+                              "abilities": [
+                                    "Rapid Fire 1"
+                              ]
+                        },
+                        "Laspistol": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "12\"",
+                              "attacks": "1",
+                              "skill": 4,
+                              "skillType": "BS",
+                              "strength": 3,
+                              "ap": 0,
+                              "damage": "1",
+                              "abilities": [
+                                    "Pistol"
+                              ]
+                        },
+                        "Meltagun": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "12\"",
+                              "attacks": "1",
+                              "skill": 4,
+                              "skillType": "BS",
+                              "strength": 9,
+                              "ap": -4,
+                              "damage": "D6",
+                              "abilities": [
+                                    "Melta 2"
+                              ]
+                        },
+                        "Plasma gun - standard": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "24\"",
+                              "attacks": "1",
+                              "skill": 4,
+                              "skillType": "BS",
+                              "strength": 7,
+                              "ap": -2,
+                              "damage": "1",
+                              "abilities": [
+                                    "Rapid Fire 1"
+                              ]
+                        },
+                        "Plasma gun - supercharge": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "24\"",
+                              "attacks": "1",
+                              "skill": 4,
+                              "skillType": "BS",
+                              "strength": 8,
+                              "ap": -3,
+                              "damage": "2",
+                              "abilities": [
+                                    "Hazardous",
+                                    "Rapid Fire 1"
+                              ]
+                        },
+                        "Plasma pistol - standard": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "12\"",
+                              "attacks": "1",
+                              "skill": 4,
+                              "skillType": "BS",
+                              "strength": 7,
+                              "ap": -2,
+                              "damage": "1",
+                              "abilities": [
+                                    "Pistol"
+                              ]
+                        },
+                        "Plasma pistol - supercharge": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "12\"",
+                              "attacks": "1",
+                              "skill": 4,
+                              "skillType": "BS",
+                              "strength": 8,
+                              "ap": -3,
+                              "damage": "2",
+                              "abilities": [
+                                    "Hazardous",
+                                    "Pistol"
+                              ]
+                        },
+                        "Chainsword": {
+                              "phase": "Fight",
+                              "type": "Melee",
+                              "range": "Melee",
+                              "attacks": "4",
+                              "skill": 4,
+                              "skillType": "WS",
+                              "strength": 3,
+                              "ap": 0,
+                              "damage": "1",
+                              "abilities": []
+                        },
+                        "Close combat weapon": {
+                              "phase": "Fight",
+                              "type": "Melee",
+                              "range": "Melee",
+                              "attacks": "2",
+                              "skill": 4,
+                              "skillType": "WS",
+                              "strength": 3,
+                              "ap": 0,
+                              "damage": "1",
+                              "abilities": []
+                        },
+                        "Power fist": {
+                              "phase": "Fight",
+                              "type": "Melee",
+                              "range": "Melee",
+                              "attacks": "3",
+                              "skill": 4,
+                              "skillType": "WS",
+                              "strength": 6,
+                              "ap": -2,
+                              "damage": "2",
+                              "abilities": []
+                        },
+                        "Power weapon": {
+                              "phase": "Fight",
+                              "type": "Melee",
+                              "range": "Melee",
+                              "attacks": "3",
+                              "skill": 4,
+                              "skillType": "WS",
+                              "strength": 4,
+                              "ap": -2,
+                              "damage": "1",
+                              "abilities": []
+                        },
+                        "Trench club": {
+                              "phase": "Fight",
+                              "type": "Melee",
+                              "range": "Melee",
+                              "attacks": "3",
+                              "skill": 4,
+                              "skillType": "WS",
+                              "strength": 4,
+                              "ap": 0,
+                              "damage": "1",
+                              "abilities": []
+                        }
+                  },
+                  "statlines": [
+                        {
+                              "label": "Lord Commissar",
+                              "stats": {
+                                    "move": "6\"",
+                                    "toughness": 3,
+                                    "save": "5+",
+                                    "wounds": 3,
+                                    "leadership": "6+",
+                                    "oc": 1
+                              }
+                        },
+                        {
+                              "label": "Veteran Guardsman",
+                              "stats": {
+                                    "move": "6\"",
+                                    "toughness": 3,
+                                    "save": "5+",
+                                    "wounds": 1,
+                                    "leadership": "7+",
+                                    "oc": 1
+                              }
+                        }
+                  ]
+            },
+            "Death Korps of Krieg": {
+                  "note": "Grim Demeanour",
+                  "stats": {
+                        "move": "6\"",
+                        "toughness": 3,
+                        "save": 5,
+                        "wounds": 1,
+                        "leadership": "7+",
+                        "oc": 2
+                  },
+                  "weapons": {
+                        "Bolt pistol": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "12\"",
+                              "attacks": "1",
+                              "skill": 4,
+                              "skillType": "BS",
+                              "strength": 4,
+                              "ap": 0,
+                              "damage": "1",
+                              "abilities": [
+                                    "Pistol"
+                              ]
+                        },
+                        "Boltgun": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "24\"",
+                              "attacks": "1",
+                              "skill": 4,
+                              "skillType": "BS",
+                              "strength": 4,
+                              "ap": 0,
+                              "damage": "1",
+                              "abilities": [
+                                    "Rapid Fire 1"
+                              ]
+                        },
+                        "Flamer": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "12\"",
+                              "attacks": "D6",
+                              "skill": 0,
+                              "skillType": "N/A",
+                              "strength": 4,
+                              "ap": 0,
+                              "damage": "1",
+                              "abilities": [
+                                    "Ignores Cover",
+                                    "Torrent"
+                              ]
+                        },
+                        "Grenade launcher - frag": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "24\"",
+                              "attacks": "D3",
+                              "skill": 4,
+                              "skillType": "BS",
+                              "strength": 4,
+                              "ap": 0,
+                              "damage": "1",
+                              "abilities": [
+                                    "Blast"
+                              ]
+                        },
+                        "Grenade launcher - krak": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "24\"",
+                              "attacks": "1",
+                              "skill": 4,
+                              "skillType": "BS",
+                              "strength": 9,
+                              "ap": -2,
+                              "damage": "D3",
+                              "abilities": []
+                        },
+                        "Lasgun": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "24\"",
+                              "attacks": "1",
+                              "skill": 4,
+                              "skillType": "BS",
+                              "strength": 3,
+                              "ap": 0,
+                              "damage": "1",
+                              "abilities": [
+                                    "Rapid Fire 1"
+                              ]
+                        },
+                        "Laspistol": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "12\"",
+                              "attacks": "1",
+                              "skill": 4,
+                              "skillType": "BS",
+                              "strength": 3,
+                              "ap": 0,
+                              "damage": "1",
+                              "abilities": [
+                                    "Pistol"
+                              ]
+                        },
+                        "Long-las": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "36\"",
+                              "attacks": "1",
+                              "skill": 4,
+                              "skillType": "BS",
+                              "strength": 4,
+                              "ap": -2,
+                              "damage": "2",
+                              "abilities": [
+                                    "Heavy",
+                                    "Precision"
+                              ]
+                        },
+                        "Meltagun": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "12\"",
+                              "attacks": "1",
+                              "skill": 4,
+                              "skillType": "BS",
+                              "strength": 9,
+                              "ap": -4,
+                              "damage": "D6",
+                              "abilities": [
+                                    "Melta 2"
+                              ]
+                        },
+                        "Plasma gun - standard": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "24\"",
+                              "attacks": "1",
+                              "skill": 4,
+                              "skillType": "BS",
+                              "strength": 7,
+                              "ap": -2,
+                              "damage": "1",
+                              "abilities": [
+                                    "Rapid Fire 1"
+                              ]
+                        },
+                        "Plasma gun - supercharge": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "24\"",
+                              "attacks": "1",
+                              "skill": 4,
+                              "skillType": "BS",
+                              "strength": 8,
+                              "ap": -3,
+                              "damage": "2",
+                              "abilities": [
+                                    "Hazardous",
+                                    "Rapid Fire 1"
+                              ]
+                        },
+                        "Plasma pistol - standard": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "12\"",
+                              "attacks": "1",
+                              "skill": 4,
+                              "skillType": "BS",
+                              "strength": 7,
+                              "ap": -2,
+                              "damage": "1",
+                              "abilities": [
+                                    "Pistol"
+                              ]
+                        },
+                        "Plasma pistol - supercharge": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "12\"",
+                              "attacks": "1",
+                              "skill": 4,
+                              "skillType": "BS",
+                              "strength": 8,
+                              "ap": -3,
+                              "damage": "2",
+                              "abilities": [
+                                    "Hazardous",
+                                    "Pistol"
+                              ]
+                        },
+                        "Chainsword": {
+                              "phase": "Fight",
+                              "type": "Melee",
+                              "range": "Melee",
+                              "attacks": "3",
+                              "skill": 4,
+                              "skillType": "WS",
+                              "strength": 3,
+                              "ap": 0,
+                              "damage": "1",
+                              "abilities": []
+                        },
+                        "Close combat weapon": {
+                              "phase": "Fight",
+                              "type": "Melee",
+                              "range": "Melee",
+                              "attacks": "1",
+                              "skill": 4,
+                              "skillType": "WS",
+                              "strength": 3,
+                              "ap": 0,
+                              "damage": "1",
+                              "abilities": []
+                        },
+                        "Power weapon": {
+                              "phase": "Fight",
+                              "type": "Melee",
+                              "range": "Melee",
+                              "attacks": "2",
+                              "skill": 4,
+                              "skillType": "WS",
+                              "strength": 4,
+                              "ap": -2,
+                              "damage": "1",
+                              "abilities": []
+                        }
+                  }
+            },
+            "Artillery Team": {
+                  "note": "Remorseless Barrage",
+                  "stats": {
+                        "move": "3\"",
+                        "toughness": 7,
+                        "save": 3,
+                        "wounds": 10,
+                        "leadership": "7+",
+                        "oc": 3
+                  },
+                  "weapons": {
+                        "Heavy mortar": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "48\"",
+                              "attacks": "D6+3",
+                              "skill": 5,
+                              "skillType": "BS",
+                              "strength": 8,
+                              "ap": -1,
+                              "damage": "2",
+                              "abilities": [
+                                    "Blast",
+                                    "Heavy",
+                                    "Indirect Fire"
+                              ]
+                        },
+                        "Heavy quad launcher": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "48\"",
+                              "attacks": "2D6",
+                              "skill": 5,
+                              "skillType": "BS",
+                              "strength": 5,
+                              "ap": 0,
+                              "damage": "1",
+                              "abilities": [
+                                    "Blast",
+                                    "Heavy",
+                                    "Indirect Fire",
+                                    "Twin-linked"
+                              ]
+                        },
+                        "Lasgun": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "24\"",
+                              "attacks": "1",
+                              "skill": 4,
+                              "skillType": "BS",
+                              "strength": 3,
+                              "ap": 0,
+                              "damage": "1",
+                              "abilities": [
+                                    "Rapid Fire 1"
+                              ]
+                        },
+                        "Multiple rocket launcher": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "48\"",
+                              "attacks": "D6+3",
+                              "skill": 5,
+                              "skillType": "BS",
+                              "strength": 2,
+                              "ap": -1,
+                              "damage": "1",
+                              "abilities": [
+                                    "Anti-Infantry 3+",
+                                    "Blast",
+                                    "Heavy",
+                                    "Indirect Fire"
+                              ]
+                        },
+                        "Siege cannon": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "48\"",
+                              "attacks": "D6",
+                              "skill": 5,
+                              "skillType": "BS",
+                              "strength": 12,
+                              "ap": -2,
+                              "damage": "3",
+                              "abilities": [
+                                    "Blast",
+                                    "Heavy",
+                                    "Indirect Fire"
+                              ]
+                        },
+                        "Crew close combat weapons": {
+                              "phase": "Fight",
+                              "type": "Melee",
+                              "range": "Melee",
+                              "attacks": "3",
+                              "skill": 4,
+                              "skillType": "WS",
+                              "strength": 3,
+                              "ap": 0,
+                              "damage": "1",
+                              "abilities": []
+                        }
+                  }
+            },
+            "Krieg Combat Engineers": {
+                  "note": "Scouts 6', Grenadiers",
+                  "stats": {
+                        "move": "6\"",
+                        "toughness": 3,
+                        "save": 4,
+                        "wounds": 1,
+                        "leadership": "7+",
+                        "oc": 1
+                  },
+                  "weapons": {
+                        "Autopistol": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "12\"",
+                              "attacks": "1",
+                              "skill": 4,
+                              "skillType": "BS",
+                              "strength": 3,
+                              "ap": 0,
+                              "damage": "1",
+                              "abilities": [
+                                    "Pistol"
+                              ]
+                        },
+                        "Bolt pistol": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "12\"",
+                              "attacks": "1",
+                              "skill": 4,
+                              "skillType": "BS",
+                              "strength": 4,
+                              "ap": 0,
+                              "damage": "1",
+                              "abilities": [
+                                    "Pistol"
+                              ]
+                        },
+                        "Combat shotgun": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "12\"",
+                              "attacks": "2",
+                              "skill": 4,
+                              "skillType": "BS",
+                              "strength": 4,
+                              "ap": 0,
+                              "damage": "1",
+                              "abilities": [
+                                    "Assault"
+                              ]
+                        },
+                        "Flamer": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "12\"",
+                              "attacks": "D6",
+                              "skill": 0,
+                              "skillType": "N/A",
+                              "strength": 4,
+                              "ap": 0,
+                              "damage": "1",
+                              "abilities": [
+                                    "Ignores Cover",
+                                    "Torrent"
+                              ]
+                        },
+                        "Hand flamer": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "12\"",
+                              "attacks": "D6",
+                              "skill": 0,
+                              "skillType": "N/A",
+                              "strength": 3,
+                              "ap": 0,
+                              "damage": "1",
+                              "abilities": [
+                                    "Ignores Cover",
+                                    "Pistol",
+                                    "Torrent"
+                              ]
+                        },
+                        "Plasma pistol - standard": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "12\"",
+                              "attacks": "1",
+                              "skill": 4,
+                              "skillType": "BS",
+                              "strength": 7,
+                              "ap": -2,
+                              "damage": "1",
+                              "abilities": [
+                                    "Pistol"
+                              ]
+                        },
+                        "Plasma pistol - supercharge": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "12\"",
+                              "attacks": "1",
+                              "skill": 4,
+                              "skillType": "BS",
+                              "strength": 8,
+                              "ap": -3,
+                              "damage": "2",
+                              "abilities": [
+                                    "Hazardous",
+                                    "Pistol"
+                              ]
+                        },
+                        "Chainsword": {
+                              "phase": "Fight",
+                              "type": "Melee",
+                              "range": "Melee",
+                              "attacks": "4",
+                              "skill": 4,
+                              "skillType": "WS",
+                              "strength": 3,
+                              "ap": 0,
+                              "damage": "1",
+                              "abilities": []
+                        },
+                        "Close combat weapon": {
+                              "phase": "Fight",
+                              "type": "Melee",
+                              "range": "Melee",
+                              "attacks": "2",
+                              "skill": 4,
+                              "skillType": "WS",
+                              "strength": 3,
+                              "ap": 0,
+                              "damage": "1",
+                              "abilities": []
+                        },
+                        "Power weapon": {
+                              "phase": "Fight",
+                              "type": "Melee",
+                              "range": "Melee",
+                              "attacks": "3",
+                              "skill": 4,
+                              "skillType": "WS",
+                              "strength": 4,
+                              "ap": -2,
+                              "damage": "1",
+                              "abilities": []
+                        },
+                        "Trench club": {
+                              "phase": "Fight",
+                              "type": "Melee",
+                              "range": "Melee",
+                              "attacks": "2",
+                              "skill": 4,
+                              "skillType": "WS",
+                              "strength": 4,
+                              "ap": 0,
+                              "damage": "1",
+                              "abilities": []
+                        }
+                  }
+            },
+            "Krieg Heavy Weapons Squad": {
+                  "note": "Final Duty",
+                  "stats": {
+                        "move": "4\"",
+                        "toughness": 3,
+                        "save": 4,
+                        "wounds": 2,
+                        "leadership": "7+",
+                        "oc": 1
+                  },
+                  "weapons": {
+                        "Lascannon": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "48\"",
+                              "attacks": "1",
+                              "skill": 5,
+                              "skillType": "BS",
+                              "strength": 12,
+                              "ap": -3,
+                              "damage": "D6+1",
+                              "abilities": [
+                                    "Heavy"
+                              ]
+                        },
+                        "Krieg heavy flamer": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "18\"",
+                              "attacks": "D6",
+                              "skill": 0,
+                              "skillType": "N/A",
+                              "strength": 5,
+                              "ap": -1,
+                              "damage": "2",
+                              "abilities": [
+                                    "Ignores Cover",
+                                    "Torrent"
+                              ]
+                        },
+                        "Twin Krieg heavy stubber": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "48\"",
+                              "attacks": "3",
+                              "skill": 5,
+                              "skillType": "BS",
+                              "strength": 6,
+                              "ap": -1,
+                              "damage": "1",
+                              "abilities": [
+                                    "Heavy",
+                                    "Rapid Fire 3",
+                                    "Twin-linked"
+                              ]
+                        },
+                        "Laspistol": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "12\"",
+                              "attacks": "1",
+                              "skill": 4,
+                              "skillType": "BS",
+                              "strength": 3,
+                              "ap": 0,
+                              "damage": "1",
+                              "abilities": [
+                                    "Pistol"
+                              ]
+                        },
+                        "Close combat weapon": {
+                              "phase": "Fight",
+                              "type": "Melee",
+                              "range": "Melee",
+                              "attacks": "1",
+                              "skill": 4,
+                              "skillType": "WS",
+                              "strength": 3,
+                              "ap": 0,
+                              "damage": "1",
+                              "abilities": []
+                        }
+                  },
+                  "statlines": [
+                        {
+                              "label": "Heavy Weapons Gunner",
+                              "stats": {
+                                    "move": "4\"",
+                                    "toughness": 3,
+                                    "save": "4+",
+                                    "wounds": 2,
+                                    "leadership": "7+",
+                                    "oc": 1
+                              }
+                        },
+                        {
+                              "label": "Fire Coordinator",
+                              "stats": {
+                                    "move": "6\"",
+                                    "toughness": 3,
+                                    "save": "5+",
+                                    "wounds": 1,
+                                    "leadership": "7+",
+                                    "oc": 1
+                              }
+                        }
+                  ]
+            },
+            "Death Riders": {
+                  "note": "Screening Line",
+                  "stats": {
+                        "move": "10\"",
+                        "toughness": 4,
+                        "save": 4,
+                        "wounds": 2,
+                        "leadership": "7+",
+                        "oc": 1
+                  },
+                  "weapons": {
+                        "Death Rider lascarbine": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "18\"",
+                              "attacks": "2",
+                              "skill": 4,
+                              "skillType": "BS",
+                              "strength": 3,
+                              "ap": 0,
+                              "damage": "1",
+                              "abilities": [
+                                    "Assault"
+                              ]
+                        },
+                        "Frag lance": {
+                              "phase": "Fight",
+                              "type": "Melee",
+                              "range": "Melee",
+                              "attacks": "D6",
+                              "skill": 3,
+                              "skillType": "WS",
+                              "strength": 4,
+                              "ap": 0,
+                              "damage": "1",
+                              "abilities": [
+                                    "Lance"
+                              ]
+                        },
+                        "Power sabre": {
+                              "phase": "Fight",
+                              "type": "Melee",
+                              "range": "Melee",
+                              "attacks": "3",
+                              "skill": 3,
+                              "skillType": "WS",
+                              "strength": 4,
+                              "ap": -2,
+                              "damage": "1",
+                              "abilities": []
+                        },
+                        "Steed's savage claws": {
+                              "phase": "Fight",
+                              "type": "Melee",
+                              "range": "Melee",
+                              "attacks": "2",
+                              "skill": 4,
+                              "skillType": "WS",
+                              "strength": 4,
+                              "ap": -1,
+                              "damage": "1",
+                              "abilities": [
+                                    "Extra Attacks"
+                              ]
+                        }
+                  }
+            },
+            "Leman Russ Battle Tank": {
+                  "note": "Deadly Demise D3, Armoured Spearhead",
+                  "stats": {
+                        "move": "10\"",
+                        "toughness": 11,
+                        "save": 2,
+                        "wounds": 13,
+                        "leadership": "7+",
+                        "oc": 3
+                  },
+                  "weapons": {
+                        "Leman Russ battle cannon": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "48\"",
+                              "attacks": "D6+3",
+                              "skill": 4,
+                              "skillType": "BS",
+                              "strength": 10,
+                              "ap": -1,
+                              "damage": "3",
+                              "abilities": [
+                                    "Blast"
+                              ]
+                        },
+                        "Lascannon": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "48\"",
+                              "attacks": "1",
+                              "skill": 4,
+                              "skillType": "BS",
+                              "strength": 12,
+                              "ap": -3,
+                              "damage": "D6+1",
+                              "abilities": []
+                        },
+                        "Heavy bolter": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "36\"",
+                              "attacks": "3",
+                              "skill": 4,
+                              "skillType": "BS",
+                              "strength": 5,
+                              "ap": -1,
+                              "damage": "2",
+                              "abilities": [
+                                    "Sustained Hits 1"
+                              ]
+                        },
+                        "Heavy flamer": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "12\"",
+                              "attacks": "D6",
+                              "skill": 0,
+                              "skillType": "N/A",
+                              "strength": 5,
+                              "ap": -1,
+                              "damage": "1",
+                              "abilities": [
+                                    "Ignores Cover",
+                                    "Torrent"
+                              ]
+                        },
+                        "Multi-melta": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "18\"",
+                              "attacks": "2",
+                              "skill": 4,
+                              "skillType": "BS",
+                              "strength": 9,
+                              "ap": -4,
+                              "damage": "D6",
+                              "abilities": [
+                                    "Melta 2"
+                              ]
+                        },
+                        "Plasma cannon - standard": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "36\"",
+                              "attacks": "D3",
+                              "skill": 4,
+                              "skillType": "BS",
+                              "strength": 7,
+                              "ap": -2,
+                              "damage": "1",
+                              "abilities": [
+                                    "Blast"
+                              ]
+                        },
+                        "Plasma cannon - supercharge": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "36\"",
+                              "attacks": "D3",
+                              "skill": 4,
+                              "skillType": "BS",
+                              "strength": 8,
+                              "ap": -3,
+                              "damage": "2",
+                              "abilities": [
+                                    "Blast",
+                                    "Hazardous"
+                              ]
+                        },
+                        "Heavy stubber": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "36\"",
+                              "attacks": "3",
+                              "skill": 4,
+                              "skillType": "BS",
+                              "strength": 4,
+                              "ap": 0,
+                              "damage": "1",
+                              "abilities": [
+                                    "Rapid Fire 3"
+                              ]
+                        },
+                        "Storm bolter": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "24\"",
+                              "attacks": "2",
+                              "skill": 4,
+                              "skillType": "BS",
+                              "strength": 4,
+                              "ap": 0,
+                              "damage": "1",
+                              "abilities": [
+                                    "Rapid Fire 2"
+                              ]
+                        },
+                        "Hunter-killer missile": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "48\"",
+                              "attacks": "1",
+                              "skill": 4,
+                              "skillType": "BS",
+                              "strength": 14,
+                              "ap": -3,
+                              "damage": "D6",
+                              "abilities": [
+                                    "One Shot"
+                              ]
+                        },
+                        "Armoured tracks": {
+                              "phase": "Fight",
+                              "type": "Melee",
+                              "range": "Melee",
+                              "attacks": "6",
+                              "skill": 4,
+                              "skillType": "WS",
+                              "strength": 7,
+                              "ap": 0,
+                              "damage": "1",
+                              "abilities": []
+                        }
+                  }
+            },
+            "Hellhound": {
+                  "note": "Deadly Demise D6, Flush Them Out",
+                  "stats": {
+                        "move": "10\"",
+                        "toughness": 10,
+                        "save": 2,
+                        "wounds": 11,
+                        "leadership": "7+",
+                        "oc": 3
+                  },
+                  "weapons": {
+                        "Inferno cannon": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "18\"",
+                              "attacks": "2D6",
+                              "skill": 0,
+                              "skillType": "N/A",
+                              "strength": 6,
+                              "ap": -2,
+                              "damage": "1",
+                              "abilities": [
+                                    "Ignores Cover",
+                                    "Torrent"
+                              ]
+                        },
+                        "Chem cannon": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "12\"",
+                              "attacks": "D6+1",
+                              "skill": 0,
+                              "skillType": "N/A",
+                              "strength": 2,
+                              "ap": -2,
+                              "damage": "2",
+                              "abilities": [
+                                    "Anti-Infantry 2+",
+                                    "Torrent"
+                              ]
+                        },
+                        "Melta cannon": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "18\"",
+                              "attacks": "D3",
+                              "skill": 4,
+                              "skillType": "BS",
+                              "strength": 9,
+                              "ap": -4,
+                              "damage": "D6",
+                              "abilities": [
+                                    "Blast",
+                                    "Melta 4"
+                              ]
+                        },
+                        "Heavy bolter": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "36\"",
+                              "attacks": "3",
+                              "skill": 4,
+                              "skillType": "BS",
+                              "strength": 5,
+                              "ap": -1,
+                              "damage": "2",
+                              "abilities": [
+                                    "Sustained Hits 1"
+                              ]
+                        },
+                        "Heavy flamer": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "12\"",
+                              "attacks": "D6",
+                              "skill": 0,
+                              "skillType": "N/A",
+                              "strength": 5,
+                              "ap": -1,
+                              "damage": "1",
+                              "abilities": [
+                                    "Ignores Cover",
+                                    "Torrent"
+                              ]
+                        },
+                        "Multi-melta": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "18\"",
+                              "attacks": "2",
+                              "skill": 4,
+                              "skillType": "BS",
+                              "strength": 9,
+                              "ap": -4,
+                              "damage": "D6",
+                              "abilities": [
+                                    "Melta 2"
+                              ]
+                        },
+                        "Heavy stubber": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "36\"",
+                              "attacks": "3",
+                              "skill": 4,
+                              "skillType": "BS",
+                              "strength": 4,
+                              "ap": 0,
+                              "damage": "1",
+                              "abilities": [
+                                    "Rapid Fire 3"
+                              ]
+                        },
+                        "Storm bolter": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "24\"",
+                              "attacks": "2",
+                              "skill": 4,
+                              "skillType": "BS",
+                              "strength": 4,
+                              "ap": 0,
+                              "damage": "1",
+                              "abilities": [
+                                    "Rapid Fire 2"
+                              ]
+                        },
+                        "Hunter-killer missile": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "48\"",
+                              "attacks": "1",
+                              "skill": 4,
+                              "skillType": "BS",
+                              "strength": 14,
+                              "ap": -3,
+                              "damage": "D6",
+                              "abilities": [
+                                    "One Shot"
+                              ]
+                        },
+                        "Armoured tracks": {
+                              "phase": "Fight",
+                              "type": "Melee",
+                              "range": "Melee",
+                              "attacks": "3",
+                              "skill": 4,
+                              "skillType": "WS",
+                              "strength": 6,
+                              "ap": 0,
+                              "damage": "1",
+                              "abilities": []
+                        }
+                  }
+            },
+            "Chimera": {
+                  "note": "Deadly Demise D3, Firing Deck 2, Mobile Command Vehicle",
+                  "stats": {
+                        "move": "10\"",
+                        "toughness": 9,
+                        "save": 3,
+                        "wounds": 11,
+                        "leadership": "7+",
+                        "oc": 2
+                  },
+                  "weapons": {
+                        "Multi-laser": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "36\"",
+                              "attacks": "4",
+                              "skill": 4,
+                              "skillType": "BS",
+                              "strength": 6,
+                              "ap": 0,
+                              "damage": "1",
+                              "abilities": []
+                        },
+                        "Heavy bolter": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "36\"",
+                              "attacks": "3",
+                              "skill": 4,
+                              "skillType": "BS",
+                              "strength": 5,
+                              "ap": -1,
+                              "damage": "2",
+                              "abilities": [
+                                    "Sustained Hits 1"
+                              ]
+                        },
+                        "Heavy flamer": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "12\"",
+                              "attacks": "D6",
+                              "skill": 0,
+                              "skillType": "N/A",
+                              "strength": 5,
+                              "ap": -1,
+                              "damage": "1",
+                              "abilities": [
+                                    "Ignores Cover",
+                                    "Torrent"
+                              ]
+                        },
+                        "Lasgun array": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "24\"",
+                              "attacks": "6",
+                              "skill": 4,
+                              "skillType": "BS",
+                              "strength": 3,
+                              "ap": 0,
+                              "damage": "1",
+                              "abilities": [
+                                    "Rapid Fire 6"
+                              ]
+                        },
+                        "Heavy stubber": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "36\"",
+                              "attacks": "3",
+                              "skill": 4,
+                              "skillType": "BS",
+                              "strength": 4,
+                              "ap": 0,
+                              "damage": "1",
+                              "abilities": [
+                                    "Rapid Fire 3"
+                              ]
+                        },
+                        "Storm bolter": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "24\"",
+                              "attacks": "2",
+                              "skill": 4,
+                              "skillType": "BS",
+                              "strength": 4,
+                              "ap": 0,
+                              "damage": "1",
+                              "abilities": [
+                                    "Rapid Fire 2"
+                              ]
+                        },
+                        "Hunter-killer missile": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "48\"",
+                              "attacks": "1",
+                              "skill": 4,
+                              "skillType": "BS",
+                              "strength": 14,
+                              "ap": -3,
+                              "damage": "D6",
+                              "abilities": [
+                                    "One Shot"
+                              ]
+                        },
+                        "Armoured tracks": {
+                              "phase": "Fight",
+                              "type": "Melee",
+                              "range": "Melee",
+                              "attacks": "3",
+                              "skill": 4,
+                              "skillType": "WS",
+                              "strength": 6,
+                              "ap": 0,
+                              "damage": "1",
+                              "abilities": []
+                        }
+                  }
+            },
+            "Kasrkin": {
+                  "note": "Scout 6', Warrior Elite",
+                  "stats": {
+                        "move": "6\"",
+                        "toughness": 3,
+                        "save": 4,
+                        "wounds": 1,
+                        "leadership": "7+",
+                        "oc": 1
+                  },
+                  "weapons": {
+                        "Bolt pistol": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "12\"",
+                              "attacks": "1",
+                              "skill": 3,
+                              "skillType": "BS",
+                              "strength": 4,
+                              "ap": 0,
+                              "damage": "1",
+                              "abilities": [
+                                    "Pistol"
+                              ]
+                        },
+                        "Flamer": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "12\"",
+                              "attacks": "D6",
+                              "skill": 0,
+                              "skillType": "N/A",
+                              "strength": 4,
+                              "ap": 0,
+                              "damage": "1",
+                              "abilities": [
+                                    "Ignores Cover",
+                                    "Torrent"
+                              ]
+                        },
+                        "Grenade launcher - frag": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "24\"",
+                              "attacks": "D3",
+                              "skill": 3,
+                              "skillType": "BS",
+                              "strength": 4,
+                              "ap": 0,
+                              "damage": "1",
+                              "abilities": [
+                                    "Blast"
+                              ]
+                        },
+                        "Grenade launcher - krak": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "24\"",
+                              "attacks": "1",
+                              "skill": 3,
+                              "skillType": "BS",
+                              "strength": 9,
+                              "ap": -2,
+                              "damage": "D3",
+                              "abilities": []
+                        },
+                        "Hot-shot lasgun": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "24\"",
+                              "attacks": "1",
+                              "skill": 3,
+                              "skillType": "BS",
+                              "strength": 3,
+                              "ap": -1,
+                              "damage": "1",
+                              "abilities": [
+                                    "Rapid Fire 1"
+                              ]
+                        },
+                        "Hot-shot laspistol": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "12\"",
+                              "attacks": "1",
+                              "skill": 3,
+                              "skillType": "BS",
+                              "strength": 3,
+                              "ap": -1,
+                              "damage": "1",
+                              "abilities": [
+                                    "Pistol"
+                              ]
+                        },
+                        "Hot-shot marksman rifle": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "36\"",
+                              "attacks": "1",
+                              "skill": 3,
+                              "skillType": "BS",
+                              "strength": 4,
+                              "ap": -2,
+                              "damage": "3",
+                              "abilities": [
+                                    "Heavy",
+                                    "Precision"
+                              ]
+                        },
+                        "Hot-shot volley gun": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "30\"",
+                              "attacks": "2",
+                              "skill": 3,
+                              "skillType": "BS",
+                              "strength": 4,
+                              "ap": -1,
+                              "damage": "1",
+                              "abilities": [
+                                    "Rapid Fire 2"
+                              ]
+                        },
+                        "Meltagun": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "12\"",
+                              "attacks": "1",
+                              "skill": 3,
+                              "skillType": "BS",
+                              "strength": 9,
+                              "ap": -4,
+                              "damage": "D6",
+                              "abilities": [
+                                    "Melta 2"
+                              ]
+                        },
+                        "Plasma gun - standard": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "24\"",
+                              "attacks": "1",
+                              "skill": 3,
+                              "skillType": "BS",
+                              "strength": 7,
+                              "ap": -2,
+                              "damage": "1",
+                              "abilities": [
+                                    "Rapid Fire 1"
+                              ]
+                        },
+                        "Plasma gun - supercharge": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "24\"",
+                              "attacks": "1",
+                              "skill": 3,
+                              "skillType": "BS",
+                              "strength": 8,
+                              "ap": -3,
+                              "damage": "2",
+                              "abilities": [
+                                    "Hazardous",
+                                    "Rapid Fire 1"
+                              ]
+                        },
+                        "Plasma pistol - standard": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "12\"",
+                              "attacks": "1",
+                              "skill": 3,
+                              "skillType": "BS",
+                              "strength": 7,
+                              "ap": -2,
+                              "damage": "1",
+                              "abilities": [
+                                    "Pistol"
+                              ]
+                        },
+                        "Plasma pistol - supercharge": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "12\"",
+                              "attacks": "1",
+                              "skill": 3,
+                              "skillType": "BS",
+                              "strength": 8,
+                              "ap": -3,
+                              "damage": "2",
+                              "abilities": [
+                                    "Hazardous",
+                                    "Pistol"
+                              ]
+                        },
+                        "Chainsword": {
+                              "phase": "Fight",
+                              "type": "Melee",
+                              "range": "Melee",
+                              "attacks": "4",
+                              "skill": 3,
+                              "skillType": "WS",
+                              "strength": 3,
+                              "ap": 0,
+                              "damage": "1",
+                              "abilities": []
+                        },
+                        "Close combat weapon": {
+                              "phase": "Fight",
+                              "type": "Melee",
+                              "range": "Melee",
+                              "attacks": "2",
+                              "skill": 3,
+                              "skillType": "WS",
+                              "strength": 3,
+                              "ap": 0,
+                              "damage": "1",
+                              "abilities": []
+                        },
+                        "Power weapon": {
+                              "phase": "Fight",
+                              "type": "Melee",
+                              "range": "Melee",
+                              "attacks": "3",
+                              "skill": 3,
+                              "skillType": "WS",
+                              "strength": 4,
+                              "ap": -2,
+                              "damage": "1",
+                              "abilities": []
+                        }
+                  }
+            },
+            "Ursula Creed": {
+                  "note": "Leader, Voice of Command, Lord Castellan, Tactical Genius",
+                  "stats": {
+                        "move": "6\"",
+                        "toughness": 3,
+                        "save": 4,
+                        "wounds": 4,
+                        "leadership": "7+",
+                        "oc": 1,
+                        "invulnerable": "5+"
+                  },
+                  "weapons": {
+                        "Duty and Vengeance pistol": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "12\"",
+                              "attacks": "4",
+                              "skill": 3,
+                              "skillType": "BS",
+                              "strength": 5,
+                              "ap": -2,
+                              "damage": "1",
+                              "abilities": []
+                        },
+                        "Power weapon": {
+                              "phase": "Fight",
+                              "type": "Melee",
+                              "range": "Melee",
+                              "attacks": "4",
+                              "skill": 3,
+                              "skillType": "WS",
+                              "strength": 4,
+                              "ap": -2,
+                              "damage": "1",
+                              "abilities": []
+                        }
+                  }
+            },
+            "Gaunt's Ghosts": {
+                  "note": "Fights First, Infiltrators, Lone Operative, Stealth, Voice of Command, Tanith Camo-cloaks, Covert Stealth Team",
+                  "stats": {
+                        "move": "6\"",
+                        "toughness": 3,
+                        "save": 4,
+                        "wounds": 3,
+                        "leadership": "6+",
+                        "oc": 1,
+                        "invulnerable": "5+"
+                  },
+                  "weapons": {
+                        "Bolt pistol": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "12\"",
+                              "attacks": "1",
+                              "skill": 2,
+                              "skillType": "BS",
+                              "strength": 4,
+                              "ap": 0,
+                              "damage": "1",
+                              "abilities": [
+                                    "Pistol"
+                              ]
+                        },
+                        "Bragg's autocannon": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "48\"",
+                              "attacks": "4",
+                              "skill": 5,
+                              "skillType": "BS",
+                              "strength": 9,
+                              "ap": -1,
+                              "damage": "3",
+                              "abilities": [
+                                    "Heavy"
+                              ]
+                        },
+                        "Corbec's hot-shot lascarbine": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "24\"",
+                              "attacks": "3",
+                              "skill": 3,
+                              "skillType": "BS",
+                              "strength": 3,
+                              "ap": -1,
+                              "damage": "1",
+                              "abilities": [
+                                    "Assault"
+                              ]
+                        },
+                        "Larkin's long-las": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "36\"",
+                              "attacks": "1",
+                              "skill": 2,
+                              "skillType": "BS",
+                              "strength": 5,
+                              "ap": -2,
+                              "damage": "4",
+                              "abilities": [
+                                    "Heavy",
+                                    "Precision"
+                              ]
+                        },
+                        "Lascarbine": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "24\"",
+                              "attacks": "3",
+                              "skill": 3,
+                              "skillType": "BS",
+                              "strength": 3,
+                              "ap": 0,
+                              "damage": "1",
+                              "abilities": [
+                                    "Assault"
+                              ]
+                        },
+                        "Rawne's lascarbine": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "24\"",
+                              "attacks": "3",
+                              "skill": 3,
+                              "skillType": "BS",
+                              "strength": 3,
+                              "ap": 0,
+                              "damage": "1",
+                              "abilities": [
+                                    "Assault",
+                                    "Sustained Hits 1"
+                              ]
+                        },
+                        "Gaunt's chainsword": {
+                              "phase": "Fight",
+                              "type": "Melee",
+                              "range": "Melee",
+                              "attacks": "5",
+                              "skill": 2,
+                              "skillType": "WS",
+                              "strength": 3,
+                              "ap": -1,
+                              "damage": "1",
+                              "abilities": []
+                        },
+                        "Straight silver knife": {
+                              "phase": "Fight",
+                              "type": "Melee",
+                              "range": "Melee",
+                              "attacks": "3",
+                              "skill": 3,
+                              "skillType": "WS",
+                              "strength": 3,
+                              "ap": 0,
+                              "damage": "1",
+                              "abilities": []
+                        },
+                        "Mkoll's straight silver knife": {
+                              "phase": "Fight",
+                              "type": "Melee",
+                              "range": "Melee",
+                              "attacks": "5",
+                              "skill": 2,
+                              "skillType": "WS",
+                              "strength": 3,
+                              "ap": -1,
+                              "damage": "1",
+                              "abilities": [
+                                    "Devastating Wounds",
+                                    "Precision"
+                              ]
+                        }
+                  },
+                  "statlines": [
+                        {
+                              "label": "Ibram Gaunt",
+                              "stats": {
+                                    "move": "6\"",
+                                    "toughness": 3,
+                                    "save": "4+",
+                                    "wounds": 3,
+                                    "leadership": "6+",
+                                    "oc": 1
+                              }
+                        },
+                        {
+                              "label": "Tanith Ghost",
+                              "stats": {
+                                    "move": "6\"",
+                                    "toughness": 3,
+                                    "save": "5+",
+                                    "wounds": 2,
+                                    "leadership": "7+",
+                                    "oc": 1
+                              }
+                        }
+                  ]
+            },
+            "Rogal Dorn Battle Tank": {
+                  "note": "Deadly Demise D6, Ablative Plating",
+                  "stats": {
+                        "move": "10\"",
+                        "toughness": 12,
+                        "save": 2,
+                        "wounds": 18,
+                        "leadership": "7+",
+                        "oc": 5
+                  },
+                  "weapons": {
+                        "Castigator gatling cannon": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "24\"",
+                              "attacks": "12",
+                              "skill": 4,
+                              "skillType": "BS",
+                              "strength": 5,
+                              "ap": 0,
+                              "damage": "1",
+                              "abilities": []
+                        },
+                        "Coaxial autocannon": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "48\"",
+                              "attacks": "2",
+                              "skill": 4,
+                              "skillType": "BS",
+                              "strength": 9,
+                              "ap": -1,
+                              "damage": "3",
+                              "abilities": []
+                        },
+                        "Heavy bolter": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "36\"",
+                              "attacks": "3",
+                              "skill": 4,
+                              "skillType": "BS",
+                              "strength": 5,
+                              "ap": -1,
+                              "damage": "2",
+                              "abilities": [
+                                    "Sustained Hits 1"
+                              ]
+                        },
+                        "Heavy stubber": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "36\"",
+                              "attacks": "3",
+                              "skill": 4,
+                              "skillType": "BS",
+                              "strength": 4,
+                              "ap": 0,
+                              "damage": "1",
+                              "abilities": [
+                                    "Rapid Fire 3"
+                              ]
+                        },
+                        "Meltagun": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "12\"",
+                              "attacks": "1",
+                              "skill": 4,
+                              "skillType": "BS",
+                              "strength": 9,
+                              "ap": -4,
+                              "damage": "D6",
+                              "abilities": [
+                                    "Melta 2"
+                              ]
+                        },
+                        "Multi-melta": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "18\"",
+                              "attacks": "2",
+                              "skill": 4,
+                              "skillType": "BS",
+                              "strength": 9,
+                              "ap": -4,
+                              "damage": "D6",
+                              "abilities": [
+                                    "Melta 2"
+                              ]
+                        },
+                        "Oppressor cannon": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "72\"",
+                              "attacks": "D6+3",
+                              "skill": 4,
+                              "skillType": "BS",
+                              "strength": 12,
+                              "ap": -2,
+                              "damage": "3",
+                              "abilities": [
+                                    "Blast"
+                              ]
+                        },
+                        "Pulveriser cannon": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "24\"",
+                              "attacks": "D6",
+                              "skill": 4,
+                              "skillType": "BS",
+                              "strength": 9,
+                              "ap": -3,
+                              "damage": "3",
+                              "abilities": [
+                                    "Blast"
+                              ]
+                        },
+                        "Twin battle cannon": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "48\"",
+                              "attacks": "D6+3",
+                              "skill": 4,
+                              "skillType": "BS",
+                              "strength": 10,
+                              "ap": -1,
+                              "damage": "3",
+                              "abilities": [
+                                    "Blast",
+                                    "Twin-linked"
+                              ]
+                        },
+                        "Armoured tracks": {
+                              "phase": "Fight",
+                              "type": "Melee",
+                              "range": "Melee",
+                              "attacks": "6",
+                              "skill": 4,
+                              "skillType": "WS",
+                              "strength": 7,
+                              "ap": 0,
+                              "damage": "1",
+                              "abilities": []
+                        }
+                  }
+            },
+            "Scout Sentinel": {
+                  "note": "Deadly Demise 1, Scouts 9', Daring Recon.",
+                  "stats": {
+                        "move": "10\"",
+                        "toughness": 7,
+                        "save": 3,
+                        "wounds": 7,
+                        "leadership": "7+",
+                        "oc": 2
+                  },
+                  "weapons": {
+                        "Multi-laser": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "36\"",
+                              "attacks": "4",
+                              "skill": 4,
+                              "skillType": "BS",
+                              "strength": 6,
+                              "ap": 0,
+                              "damage": "1",
+                              "abilities": []
+                        },
+                        "Autocannon": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "48\"",
+                              "attacks": "2",
+                              "skill": 4,
+                              "skillType": "BS",
+                              "strength": 9,
+                              "ap": -1,
+                              "damage": "3",
+                              "abilities": []
+                        },
+                        "Heavy flamer": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "12\"",
+                              "attacks": "D6",
+                              "skill": 0,
+                              "skillType": "N/A",
+                              "strength": 5,
+                              "ap": -1,
+                              "damage": "1",
+                              "abilities": [
+                                    "Ignores Cover",
+                                    "Torrent"
+                              ]
+                        },
+                        "Lascannon": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "48\"",
+                              "attacks": "1",
+                              "skill": 4,
+                              "skillType": "BS",
+                              "strength": 12,
+                              "ap": -3,
+                              "damage": "D6+1",
+                              "abilities": []
+                        },
+                        "Missile launcher - frag": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "48\"",
+                              "attacks": "D6",
+                              "skill": 4,
+                              "skillType": "BS",
+                              "strength": 4,
+                              "ap": 0,
+                              "damage": "1",
+                              "abilities": [
+                                    "Blast",
+                                    "Heavy"
+                              ]
+                        },
+                        "Missile launcher - krak": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "48\"",
+                              "attacks": "1",
+                              "skill": 4,
+                              "skillType": "BS",
+                              "strength": 9,
+                              "ap": -2,
+                              "damage": "D6",
+                              "abilities": [
+                                    "Heavy"
+                              ]
+                        },
+                        "Plasma cannon - standard": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "36\"",
+                              "attacks": "D3",
+                              "skill": 4,
+                              "skillType": "BS",
+                              "strength": 7,
+                              "ap": -2,
+                              "damage": "1",
+                              "abilities": [
+                                    "Blast"
+                              ]
+                        },
+                        "Plasma cannon - supercharge": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "36\"",
+                              "attacks": "D3",
+                              "skill": 4,
+                              "skillType": "BS",
+                              "strength": 8,
+                              "ap": -3,
+                              "damage": "2",
+                              "abilities": [
+                                    "Blast",
+                                    "Hazardous"
+                              ]
+                        },
+                        "Hunter-killer missile": {
+                              "phase": "Shooting",
+                              "type": "Ranged",
+                              "range": "48\"",
+                              "attacks": "1",
+                              "skill": 4,
+                              "skillType": "BS",
+                              "strength": 14,
+                              "ap": -3,
+                              "damage": "D6",
+                              "abilities": [
+                                    "One Shot"
+                              ]
+                        },
+                        "Close combat weapon": {
+                              "phase": "Fight",
+                              "type": "Melee",
+                              "range": "Melee",
+                              "attacks": "2",
+                              "skill": 4,
+                              "skillType": "WS",
+                              "strength": 6,
+                              "ap": 0,
+                              "damage": "1",
+                              "abilities": []
+                        },
+                        "Sentinel chainsaw": {
+                              "phase": "Fight",
+                              "type": "Melee",
+                              "range": "Melee",
+                              "attacks": "3",
+                              "skill": 4,
+                              "skillType": "WS",
+                              "strength": 6,
+                              "ap": -1,
+                              "damage": "1",
+                              "abilities": []
+                        }
+                  }
+            }
+      }
+};
+
+    let data = structuredClone(defaultData);
+    let currentFactionSlug = 'astra-militarum';
+
+    const factionSelect = document.getElementById('factionSelect');
+    const unitSelect = document.getElementById('unitSelect');
+    const weaponSelect = document.getElementById('weaponSelect');
+    const modelsInput = document.getElementById('modelsInput');
+    const attacksOverride = document.getElementById('attacksOverride');
+    const hitMod = document.getElementById('hitMod');
+    const woundMod = document.getElementById('woundMod');
+    const apMod = document.getElementById('apMod');
+    const saveMod = document.getElementById('saveMod');
+    const heavyBox = document.getElementById('heavyBox');
+    const coverBox = document.getElementById('coverBox');
+    const armorContemptBox = document.getElementById('armorContemptBox');
+    const rapidFireBox = document.getElementById('rapidFireBox');
+    const toughness = document.getElementById('toughness');
+    const save = document.getElementById('save');
+    const invuln = document.getElementById('invuln');
+    const damageReduction = document.getElementById('damageReduction');
+    const targetModels = document.getElementById('targetModels');
+    const jsonBox = document.getElementById('jsonBox');
+    const dataSourceNote = document.getElementById('dataSourceNote');
+
+    const factionManifest = Array.isArray(window.WH40K_FACTION_MANIFEST) && window.WH40K_FACTION_MANIFEST.length
+      ? window.WH40K_FACTION_MANIFEST
+      : [{ slug: 'astra-militarum', name: 'Astra Militarum', script: '' }];
+
+    function escapeHtml(value) {
+      return String(value ?? '')
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#39;');
+    }
+
+    function setDataSourceNote(unit) {
+      const parts = [];
+      if (data.faction?.name) parts.push(`<strong>Faction:</strong> ${escapeHtml(data.faction.name)}`);
+      if (unit?.role) parts.push(`<strong>Role:</strong> ${escapeHtml(unit.role)}`);
+      if (unit?.source?.name) parts.push(`<strong>Source:</strong> ${escapeHtml(unit.source.name)}`);
+      if (unit?.source?.datasheet) {
+        parts.push(`<a href="${unit.source.datasheet}" target="_blank" rel="noreferrer">Open Wahapedia datasheet</a>`);
+      }
+      dataSourceNote.innerHTML = parts.join(' · ');
+    }
+
+    function populateFactions() {
+      factionSelect.innerHTML = '';
+      factionManifest.forEach(faction => {
+        const opt = document.createElement('option');
+        opt.value = faction.slug;
+        opt.textContent = faction.name;
+        factionSelect.appendChild(opt);
+      });
+      factionSelect.value = currentFactionSlug;
+    }
+
+    function loadFactionScript(faction) {
+      if (!faction?.script || window.WH40K_FACTION_DATABASES?.[faction.slug]) {
+        return Promise.resolve(window.WH40K_FACTION_DATABASES?.[faction.slug] || null);
+      }
+
+      return new Promise((resolve, reject) => {
+        const existing = document.querySelector(`script[data-faction-script="${faction.slug}"]`);
+        if (existing) {
+          existing.addEventListener('load', () => resolve(window.WH40K_FACTION_DATABASES?.[faction.slug] || null), { once: true });
+          existing.addEventListener('error', () => reject(new Error(`Failed to load ${faction.name}`)), { once: true });
+          return;
+        }
+
+        const script = document.createElement('script');
+        script.src = faction.script;
+        script.dataset.factionScript = faction.slug;
+        script.addEventListener('load', () => resolve(window.WH40K_FACTION_DATABASES?.[faction.slug] || null), { once: true });
+        script.addEventListener('error', () => reject(new Error(`Failed to load ${faction.name}`)), { once: true });
+        document.head.appendChild(script);
+      });
+    }
+
+    async function setFaction(slug) {
+      const faction = factionManifest.find(entry => entry.slug === slug) || factionManifest[0];
+      if (!faction) return;
+
+      try {
+        const loaded = await loadFactionScript(faction);
+        currentFactionSlug = faction.slug;
+        data = loaded?.units ? loaded : structuredClone(defaultData);
+      } catch (err) {
+        console.error(err);
+        currentFactionSlug = 'astra-militarum';
+        data = structuredClone(defaultData);
+      }
+
+      factionSelect.value = currentFactionSlug;
+      document.getElementById('factionPill').textContent = `Faction: ${data.faction?.name || faction.name || 'Unknown'}`;
+      populateUnits();
+    }
+
+    function clamp(num, min, max) { return Math.max(min, Math.min(max, num)); }
+    function val(el) { return Number(el.value || 0); }
+    function cleanNeeded(n) {
+      if (n <= 1) return '2+*';
+      if (n >= 7) return 'Impossible';
+      return `${n}+`;
+    }
+    function probabilityText(needed) {
+      if (needed >= 7) return '0%';
+      if (needed <= 2) return '83.3%';
+      const success = (7 - needed) / 6;
+      return `${(success * 100).toFixed(1)}%`;
+    }
+    function woundBase(strength, tough) {
+      if (strength >= tough * 2) return 2;
+      if (strength > tough) return 3;
+      if (strength === tough) return 4;
+      if (strength * 2 <= tough) return 6;
+      return 5;
+    }
+    function parseDamage(dmg) {
+      if (/^\d+$/.test(String(dmg))) return Number(dmg);
+      return null;
+    }
+    function parseAttacks(atk) {
+      if (/^\d+$/.test(String(atk))) return Number(atk);
+      return String(atk);
+    }
+    function hasAbility(weapon, keyword) {
+      return (weapon.abilities || []).some(a => String(a).toLowerCase().includes(keyword.toLowerCase()));
+    }
+    function formatAttackExpression(base, bonus) {
+      const text = String(base).trim();
+      if (!bonus) return text;
+      if (/^\d+$/.test(text)) return String(Number(text) + bonus);
+      const m = text.match(/^(\d*)D(\d+)([+-]\d+)?$/i);
+      if (m) {
+        const prefix = m[1] ? m[1] : '';
+        const die = `D${m[2]}`;
+        const flat = Number(m[3] || 0) + bonus;
+        if (flat === 0) return `${prefix}${die}`;
+        return `${prefix}${die}${flat > 0 ? '+' : ''}${flat}`;
+      }
+      return `${text} + ${bonus}`;
+    }
+
+    const unitAbilityDatabase = window.WH40K_UNIT_ABILITY_DATABASE || { shared: {}, byDatasheet: {} };
+    const weaponAbilityDatabase = window.WH40K_WEAPON_ABILITY_DATABASE || { shared: {}, byDatasheet: {} };
+    const PARAMETERIZED_WEAPON_RULES = {
+      'rapid fire': 'Weapons with [RAPID FIRE X] in their profile are known as Rapid Fire weapons. Each time such a weapon targets a unit within half that weapon\'s range, the Attacks characteristic of that weapon is increased by the amount denoted by \'x\'. Example: A model targets a unit that is within half range of a weapon with an Attacks characteristic of 1 and the [RAPID FIRE X] ability. That weapon therefore makes two attacks at the target, and you make two Hit rolls. [RAPID FIRE X]: Increase the Attacks by \'x\' when targeting units within half range.',
+      'sustained hits': 'Weapons with [SUSTAINED HITS X] in their profile are known as Sustained Hits weapons. Each time an attack is made with such a weapon, if a Critical Hit is rolled, that attack scores a number of additional hits on the target as denoted by \'x\'. Example: A model makes an attack with a melee weapon with the [SUSTAINED HITS X] ability. If the Hit roll is an unmodified 6 (a Critical Hit), then that attack scores a total of 1+x hits on the target. [SUSTAINED HITS X]: Each Critical Hit scores \'x\' additional hits on the target.',
+      'melta': 'Weapons with [MELTA X] in their profile are known as Melta weapons. Each time an attack made with such a weapon targets a unit within half that weapon\'s range, that attack\'s Damage characteristic is increased by the amount denoted by \'x\'. Example: A model targets a unit that is within half range of a weapon with a Damage characteristic of D6 and the [MELTA X] ability. If that attack inflicts damage on the target, it inflicts D6+x damage. [MELTA X]: Increase the Damage by \'x\' when targeting units within half range.',
+      'anti': 'Weapons with [ANTI-KEYWORD X+] in their profile are known as Anti weapons. Each time an attack is made with such a weapon against a target with the keyword after the word \'Anti-\', an unmodified Wound roll of \'x+\' scores a Critical Wound. Example: An attack made with an [ANTI-VEHICLE 4+] weapon will score a Critical Wound against - and so successfully wound - a VEHICLE unit on an unmodified Wound roll of 4+, while an attack made with an [ANTI-PSYKER 2+] weapon will score a Critical Wound against - and so successfully wound - a PSYKER unit on an unmodified Wound roll of 2+. [ANTI-KEYWORD X+]: An unmodified Wound roll of \'x+\' against a target with the matching keyword scores a Critical Wound.'
+    };
+
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function normalizeAbilityKey(term) {
+      return String(term || '')
+        .trim()
+        .replace(/[’‘]/g, "'")
+        .replace(/[–—]/g, '-')
+        .replace(/\s+/g, ' ')
+        .toLowerCase();
+    }
+
+    function abilityLookup(db, datasheetLink, term) {
+      const key = normalizeAbilityKey(term);
+      if (!key) return '';
+      if (datasheetLink && db.byDatasheet && db.byDatasheet[datasheetLink] && db.byDatasheet[datasheetLink][key]) {
+        return db.byDatasheet[datasheetLink][key];
+      }
+      return (db.shared && db.shared[key]) || '';
+    }
+
+    function parameterizedWeaponRule(term) {
+      const clean = String(term || '').trim();
+      const normalized = normalizeAbilityKey(clean);
+      if (!normalized) return '';
+
+      const antiMatch = normalized.match(/^anti-[a-z-]+\s+([0-9]+\+)$/);
+      if (antiMatch) {
+        return PARAMETERIZED_WEAPON_RULES.anti.replaceAll('KEYWORD', clean.replace(/^anti-/i, '').replace(/\s+[0-9]+\+$/i, '').toUpperCase()).replaceAll('X', antiMatch[1]);
+      }
+
+      const match = normalized.match(/^(rapid fire|sustained hits|melta)\s+([a-z0-9+]+)$/i);
+      if (!match) return '';
+
+      const [, baseRule, value] = match;
+      const template = PARAMETERIZED_WEAPON_RULES[baseRule];
+      return template ? template.replaceAll('X', value.toUpperCase()) : '';
+    }
+
+    function formatWeaponAbilityLabel(term) {
+      return String(term || '')
+        .trim()
+        .toLowerCase()
+        .replace(/\b([a-z])/g, char => char.toUpperCase())
+        .replace(/-([a-z])/g, (_, char) => `-${char.toUpperCase()}`);
+    }
+
+    function getTooltipText(term, options = {}) {
+      const clean = String(term || '').trim();
+      if (!clean) return '';
+      const datasheetLink = options.datasheetLink || '';
+      if (options.kind === 'weapon') {
+        return abilityLookup(weaponAbilityDatabase, datasheetLink, clean)
+          || parameterizedWeaponRule(clean)
+          || abilityLookup(unitAbilityDatabase, datasheetLink, clean);
+      }
+      return abilityLookup(unitAbilityDatabase, datasheetLink, clean);
+    }
+
+    function tooltipWrap(term, options = {}) {
+      const clean = String(term || '').trim();
+      const tooltip = getTooltipText(clean, options);
+      const label = options.kind === 'weapon' ? formatWeaponAbilityLabel(clean) : clean;
+      if (!tooltip) return escapeHtml(label);
+      return `<span class="tooltip-term" tabindex="0" data-tooltip="${escapeHtml(tooltip)}">${escapeHtml(label)}</span>`;
+    }
+
+    function renderTooltipList(items, options = {}) {
+      if (!items || !items.length) return 'None';
+      return items.map(item => tooltipWrap(item, options)).join(', ');
+    }
+
+    function renderUnitNotes(unit) {
+      const datasheetLink = unit?.source?.datasheet || '';
+      const explicitAbilities = Array.isArray(unit?.abilities) ? unit.abilities.filter(Boolean) : [];
+      const sourceItems = explicitAbilities.length ? explicitAbilities : String(unit?.note || '').split(/\s*,\s*/).filter(Boolean);
+      const abilityItems = sourceItems.filter(item => getTooltipText(item, { kind: 'unit', datasheetLink }));
+      return abilityItems.length ? `Abilities: ${renderTooltipList(abilityItems, { kind: 'unit', datasheetLink })}` : 'None';
+    }
+
+    function statCell(label, value) {
+      return `<div class="datasheet-cell"><span class="datasheet-head">${label}</span><span class="datasheet-val">${value ?? '-'}</span></div>`;
+    }
+
+    function normalizeSave(value) {
+      if (value === undefined || value === null || value === '') return '-';
+      const text = String(value);
+      return text.includes('+') ? text : `${text}+`;
+    }
+
+    function renderStatLineBar(name, stats) {
+      return `
+        <div class="datasheet-bar">
+          ${name ? `<div class="datasheet-name">${name}</div>` : ''}
+          <div class="datasheet-grid">
+            ${statCell('M', stats.move ?? '-')}
+            ${statCell('T', stats.toughness ?? '-')}
+            ${statCell('SV', normalizeSave(stats.save))}
+            ${statCell('W', stats.wounds ?? '-')}
+            ${statCell('LD', stats.leadership ?? '-')}
+            ${statCell('OC', stats.oc ?? '-')}
+          </div>
+        </div>
+      `;
+    }
+
+    function renderUnitStatlines(unit) {
+      const box = document.getElementById('statLineBox');
+      if (!box) return;
+
+      const bars = [];
+      if (Array.isArray(unit.statlines) && unit.statlines.length) {
+        unit.statlines.forEach(entry => {
+          if (entry && entry.stats) {
+            bars.push(renderStatLineBar(entry.label || '', entry.stats));
+          }
+        });
+      } else if (unit.stats) {
+        bars.push(renderStatLineBar('', unit.stats));
+      }
+
+      if (!bars.length) {
+        box.innerHTML = '';
+        return;
+      }
+
+      box.innerHTML = `
+        <div class="datasheet-label">Stat Line</div>
+        ${bars.join('')}
+      `;
+    }
+
+    function getSelectedWeapon() {
+      const unit = data.units[unitSelect.value];
+      return unit.weapons[weaponSelect.value];
+    }
+
+    function populateUnits() {
+      unitSelect.innerHTML = '';
+      Object.keys(data.units).forEach(name => {
+        const opt = document.createElement('option');
+        opt.value = name;
+        opt.textContent = name;
+        unitSelect.appendChild(opt);
+      });
+      populateWeapons();
+    }
+
+    function populateWeapons() {
+      const unit = data.units[unitSelect.value];
+      weaponSelect.innerHTML = '';
+      Object.keys(unit.weapons).forEach(name => {
+        const opt = document.createElement('option');
+        opt.value = name;
+        opt.textContent = name;
+        weaponSelect.appendChild(opt);
+      });
+      render();
+    }
+
+    function render() {
+      const unit = data.units[unitSelect.value];
+      const weapon = getSelectedWeapon();
+      const torrent = hasAbility(weapon, 'Torrent');
+      const blast = hasAbility(weapon, 'Blast');
+      const targetModelCount = Math.max(1, val(targetModels) || 1);
+      const blastBonus = blast ? Math.floor(targetModelCount / 5) : 0;
+
+      renderUnitStatlines(unit);
+      document.getElementById('unitNote').innerHTML = renderUnitNotes(unit);
+      setDataSourceNote(unit);
+      document.getElementById('phasePill').textContent = `Phase: ${weapon.phase}`;
+      document.getElementById('weaponPill').textContent = `${weapon.skillType} ${weapon.skill}+ | S ${weapon.strength} | AP ${weapon.ap} | D ${weapon.damage}`;
+
+      const rawAttacksUsed = attacksOverride.value.trim() || weapon.attacks;
+      let attackBonus = blastBonus;
+      let rapidFireBonus = 0;
+      if (rapidFireBox.checked) {
+        const rapidFireAbility = (weapon.abilities || []).find(a => /^Rapid Fire\s*\d+/i.test(String(a)));
+        if (rapidFireAbility) {
+          const rapidFireMatch = String(rapidFireAbility).match(/^Rapid Fire\s*(\d+)/i);
+          if (rapidFireMatch) rapidFireBonus = Number(rapidFireMatch[1]);
+        }
+      }
+      attackBonus += rapidFireBonus;
+
+      const attacksUsed = formatAttackExpression(rawAttacksUsed, attackBonus);
+      document.getElementById('attackSummary').textContent = `Attacks: ${attacksUsed} per model${blast ? ` (includes Blast bonus of +${blastBonus} vs ${targetModelCount} target model(s))` : ''}${rapidFireBonus ? `${blast ? ';' : ' ('} Rapid Fire bonus of +${rapidFireBonus}${blast ? '' : ')'}` : ''}`;
+
+      const totalAttackText = /^\d+$/.test(String(attacksUsed))
+        ? `${Number(attacksUsed) * Number(modelsInput.value || 1)}`
+        : `${attacksUsed} each`;
+      document.getElementById('attacksBig').textContent = totalAttackText;
+      document.getElementById('attacksBigExplain').textContent =
+        `Using ${modelsInput.value} model(s) with ${attacksUsed} attack(s) each${blast ? `; Blast bonus included against ${targetModelCount} target model(s)` : ''}${rapidFireBonus ? `${blast ? ';' : ''} Rapid Fire active` : ''}.`;
+
+      let hitNeeded = torrent ? 1 : weapon.skill - val(hitMod) - (heavyBox.checked ? 1 : 0);
+      hitNeeded = clamp(hitNeeded, 1, 7);
+
+      let woundNeeded = woundBase(Number(weapon.strength), val(toughness)) - val(woundMod);
+      woundNeeded = clamp(woundNeeded, 2, 7);
+
+      let effectiveAP = Number(weapon.ap) + val(apMod);
+      if (armorContemptBox.checked && effectiveAP < 0) effectiveAP += 1;
+
+      let armorSave = val(save) - effectiveAP;
+      if (coverBox.checked && effectiveAP <= 0) armorSave = armorSave - 1;
+      armorSave = armorSave - val(saveMod);
+      armorSave = clamp(armorSave, 2, 7);
+
+      let inv = invuln.value ? clamp(Number(invuln.value), 2, 7) : null;
+      let finalSave = inv ? Math.min(armorSave, inv) : armorSave;
+
+      const baseDamage = parseDamage(weapon.damage);
+      let finalDamage = baseDamage !== null ? Math.max(1, baseDamage - val(damageReduction)) : weapon.damage;
+
+      document.getElementById('hitNeeded').textContent = torrent ? 'Auto' : cleanNeeded(hitNeeded);
+      document.getElementById('hitChance').textContent = `Chance: ${torrent ? '100%' : probabilityText(hitNeeded)}`;
+      document.getElementById('hitExplain').textContent = torrent
+        ? `Torrent detected, so this weapon automatically hits.`
+        : `${weapon.skillType} ${weapon.skill}+ with net hit modifier ${val(hitMod) + (heavyBox.checked ? 1 : 0) >= 0 ? '+' : ''}${val(hitMod) + (heavyBox.checked ? 1 : 0)}.`;
+
+      const woundChart = Number(weapon.strength) >= val(toughness) * 2 ? 'Strength is at least double Toughness.'
+        : Number(weapon.strength) > val(toughness) ? 'Strength is greater than Toughness.'
+        : Number(weapon.strength) === val(toughness) ? 'Strength equals Toughness.'
+        : Number(weapon.strength) * 2 <= val(toughness) ? 'Strength is half Toughness or less.'
+        : 'Strength is lower than Toughness.';
+      document.getElementById('woundNeeded').textContent = cleanNeeded(woundNeeded);
+      document.getElementById('woundChance').textContent = `Chance: ${probabilityText(woundNeeded)}`;
+      document.getElementById('woundExplain').textContent = `${woundChart} Net wound modifier: ${val(woundMod) >= 0 ? '+' : ''}${val(woundMod)}.`;
+
+      document.getElementById('saveNeeded').textContent = cleanNeeded(finalSave);
+      document.getElementById('saveChance').textContent = `Chance: ${probabilityText(finalSave)}`;
+      document.getElementById('saveExplain').textContent = `Base save ${val(save)}+, effective AP ${effectiveAP}, cover ${coverBox.checked ? 'on' : 'off'}, invulnerable ${inv ? inv + '+' : 'none'}. Defender succeeds on ${cleanNeeded(finalSave)}.`;
+
+      document.getElementById('damageValue').textContent = `${finalDamage}`;
+      document.getElementById('damageExplain').textContent = baseDamage !== null
+        ? `Printed damage ${weapon.damage}; after damage reduction ${val(damageReduction)}, each failed save deals ${finalDamage}.`
+        : `Printed damage is variable (${weapon.damage}), so the app leaves it variable.`;
+
+      const resultCards = Array.from(document.querySelectorAll('.result'));
+      resultCards.forEach(card => card.classList.remove('modified-result'));
+      if (rapidFireBonus || blastBonus || attacksOverride.value.trim()) {
+        const attackCard = document.getElementById('attacksBig').closest('.result');
+        if (attackCard) attackCard.classList.add('modified-result');
+      }
+      if (val(hitMod) || heavyBox.checked) {
+        const hitCard = document.getElementById('hitNeeded').closest('.result');
+        if (hitCard) hitCard.classList.add('modified-result');
+      }
+      if (val(woundMod)) {
+        const woundCard = document.getElementById('woundNeeded').closest('.result');
+        if (woundCard) woundCard.classList.add('modified-result');
+      }
+      if (val(apMod) || val(saveMod) || coverBox.checked || armorContemptBox.checked || invuln.value) {
+        const saveCard = document.getElementById('saveNeeded').closest('.result');
+        if (saveCard) saveCard.classList.add('modified-result');
+      }
+      if (val(damageReduction)) {
+        const damageCard = document.getElementById('damageValue').closest('.result');
+        if (damageCard) damageCard.classList.add('modified-result');
+      }
+
+      document.getElementById('profileBox').innerHTML = `
+        <strong>${weaponSelect.value}</strong><br>
+        Phase: ${weapon.phase}<br>
+        Type: ${weapon.type}<br>
+        Range: ${weapon.range}<br>
+        Attacks: ${attacksUsed}<br>
+        ${weapon.skillType}: ${weapon.skill}+<br>
+        Strength: ${weapon.strength}<br>
+        AP: ${effectiveAP}<br>
+        Damage: ${weapon.damage}<br>
+        Abilities: ${renderTooltipList(weapon.abilities, { kind: 'weapon', datasheetLink: unit?.source?.datasheet || '' })}<br><br>
+        Estimated total attacks from ${modelsInput.value} model(s): ${/^\d+$/.test(String(attacksUsed)) ? Number(attacksUsed) * Number(modelsInput.value || 1) : attacksUsed + ' each'}${blast ? `<br>Blast bonus auto-applied from target unit size: +${blastBonus} attack(s).` : ''}${torrent ? `<br>Torrent detected: skip the Hit roll and go straight to Wound rolls.` : ''}.
+      `;
+    }
+
+    document.getElementById('importBtn').addEventListener('click', () => {
+      try {
+        const parsed = JSON.parse(jsonBox.value);
+        if (!parsed.units || typeof parsed.units !== 'object') throw new Error('JSON must have a top-level "units" object.');
+        data = parsed;
+        currentFactionSlug = 'custom-import';
+        document.getElementById('factionPill').textContent = `Faction: ${data.faction?.name || 'Custom Import'}`;
+        populateUnits();
+        alert('Data imported.');
+      } catch (err) {
+        alert('Import failed: ' + err.message);
+      }
+    });
+
+    document.getElementById('loadExampleBtn').addEventListener('click', () => {
+      jsonBox.value = JSON.stringify(defaultData, null, 2);
+    });
+
+    [unitSelect, weaponSelect, modelsInput, attacksOverride, hitMod, woundMod, apMod, saveMod, heavyBox, rapidFireBox, coverBox, armorContemptBox, toughness, save, invuln, damageReduction, targetModels].forEach(el => {
+      el.addEventListener('input', render);
+      el.addEventListener('change', render);
+    });
+
+    unitSelect.addEventListener('change', populateWeapons);
+    factionSelect.addEventListener('change', () => {
+      setFaction(factionSelect.value);
+    });
+
+    document.getElementById('resetModifiersBtn').addEventListener('click', () => {
+      hitMod.value = 0;
+      woundMod.value = 0;
+      apMod.value = 0;
+      saveMod.value = 0;
+      heavyBox.checked = false;
+      rapidFireBox.checked = false;
+      coverBox.checked = false;
+      armorContemptBox.checked = false;
+      render();
+    });
+
+    document.getElementById('presetInfantry').addEventListener('click', () => {
+      toughness.value = 3;
+      save.value = 5;
+      invuln.value = '';
+      render();
+    });
+
+    document.getElementById('presetElite').addEventListener('click', () => {
+      toughness.value = 4;
+      save.value = 3;
+      invuln.value = '';
+      render();
+    });
+
+    document.getElementById('presetVehicle').addEventListener('click', () => {
+      toughness.value = 10;
+      save.value = 2;
+      invuln.value = '';
+      render();
+    });
+
+    jsonBox.value = JSON.stringify(defaultData, null, 2);
+    populateFactions();
+    setFaction(currentFactionSlug);
+  </script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./service-worker.js').catch(error => {
+          console.warn('Service worker registration failed:', error);
+        });
+      });
+    }
+  </script>
+</body>
+</html>
+
+
