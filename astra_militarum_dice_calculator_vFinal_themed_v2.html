@@ -16,17 +16,19 @@
   <link rel="apple-touch-icon" sizes="512x512" href="./icons/icon-512.png" />
   <style>
     :root {
-      --bg: #0f141a;
-      --panel: #17212b;
-      --panel-2: #23303b;
-      --text: #eef3f8;
-      --muted: #afbcc8;
-      --accent: #b33a3a;
-      --accent-2: #c9a44b;
-      --good: #7fd38d;
-      --warn: #ffd479;
-      --border: #415160;
-      --brass-border: #5a4a2a;
+      --bg: #040807;
+      --panel: #07110d;
+      --panel-2: #0b1712;
+      --text: #7df8a5;
+      --muted: #3abf69;
+      --accent: #ff5e5e;
+      --accent-2: #69f29a;
+      --good: #9aff84;
+      --warn: #ff6262;
+      --border: #12402a;
+      --brass-border: #185336;
+      --iron-sheen: rgba(125,248,165,0.05);
+      --shadow-deep: rgba(0,0,0,0.58);
     }
 
     @font-face {
@@ -37,8 +39,10 @@
     * { box-sizing: border-box; }
     body {
       margin: 0;
-      font-family: Arial, Helvetica, sans-serif;
-      background: linear-gradient(180deg, #0b1015 0%, #121a22 100%);
+      font-family: "Conduit ITC Std", "Arial Narrow", "Courier New", monospace;
+      background:
+        radial-gradient(circle at top, rgba(105,242,154,0.06) 0%, transparent 28%),
+        linear-gradient(180deg, #020504 0%, #06100d 30%, #040807 100%);
       color: var(--text);
       position: relative;
       overflow-x: hidden;
@@ -50,17 +54,35 @@
       position: fixed;
       inset: 0;
       pointer-events: none;
-      opacity: 0.05;
+      opacity: 0.26;
       background-image:
-        radial-gradient(rgba(255,255,255,0.06) 0.5px, transparent 0.5px),
-        radial-gradient(rgba(0,0,0,0.14) 0.5px, transparent 0.5px);
-      background-size: 7px 7px, 11px 11px;
-      background-position: 0 0, 2px 3px;
-      mix-blend-mode: soft-light;
+        repeating-linear-gradient(
+          180deg,
+          rgba(105,242,154,0.06) 0,
+          rgba(105,242,154,0.06) 1px,
+          transparent 1px,
+          transparent 4px
+        ),
+        linear-gradient(90deg, rgba(0,0,0,0.18), transparent 20%, transparent 80%, rgba(0,0,0,0.18));
+      background-size: auto, auto;
+      mix-blend-mode: screen;
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 50% 50%, transparent 56%, rgba(0,0,0,0.38) 100%),
+        linear-gradient(180deg, rgba(0,0,0,0.18), transparent 12%, transparent 88%, rgba(0,0,0,0.3));
+      opacity: 1;
+      z-index: 0;
     }
     .wrap {
       max-width: 1200px;
       margin: 0 auto;
+      position: relative;
+      z-index: 1;
       padding:
         calc(24px + env(safe-area-inset-top))
         calc(24px + env(safe-area-inset-right))
@@ -70,10 +92,11 @@
     h1 {
       margin: 0 0 8px;
       font-size: 2rem;
-      letter-spacing: 0.04em;
-      font-family: "Conduit ITC Std", "Arial Narrow", Arial, Helvetica, sans-serif;
+      letter-spacing: 0.12em;
+      font-family: "Conduit ITC Std", "Arial Narrow", "Courier New", monospace;
       text-transform: uppercase;
-      text-shadow: 0 1px 0 rgba(0,0,0,0.3);
+      color: #97ffb9;
+      text-shadow: 0 0 10px rgba(105,242,154,0.28);
     }
     .subtitle {
       color: var(--muted);
@@ -81,12 +104,18 @@
       line-height: 1.5;
     }
     .banner {
-      background: linear-gradient(135deg, rgba(179,58,58,0.22), rgba(201,164,75,0.14));
-      border: 1px solid var(--border);
-      border-radius: 16px;
+      background:
+        linear-gradient(180deg, rgba(6,16,13,0.98) 0%, rgba(3,10,8,0.98) 100%);
+      border: 1px solid rgba(34,120,75,0.95);
+      border-radius: 2px;
       padding: 18px;
       margin-bottom: 18px;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.03), 0 10px 24px rgba(0,0,0,0.22);
+      box-shadow:
+        inset 0 0 0 1px rgba(0,0,0,0.5),
+        0 0 0 1px rgba(105,242,154,0.06),
+        0 16px 36px rgba(0,0,0,0.34);
+      position: relative;
+      overflow: hidden;
     }
     .grid {
       display: grid;
@@ -94,11 +123,33 @@
       gap: 16px;
     }
     .card {
-      background: linear-gradient(180deg, #16202a 0%, #131b24 100%);
+      background:
+        linear-gradient(180deg, rgba(6,16,13,0.98) 0%, rgba(3,9,7,0.98) 100%);
       border: 1px solid var(--border);
-      border-radius: 16px;
+      border-radius: 2px;
       padding: 16px;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.025), 0 10px 24px rgba(0,0,0,0.22);
+      box-shadow:
+        inset 0 1px 0 var(--iron-sheen),
+        inset 0 0 0 1px rgba(0,0,0,0.55),
+        0 14px 30px var(--shadow-deep);
+      position: relative;
+      overflow: hidden;
+    }
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(180deg, rgba(105,242,154,0.05), transparent 18%),
+        repeating-linear-gradient(
+          180deg,
+          rgba(105,242,154,0.028) 0,
+          rgba(105,242,154,0.028) 1px,
+          transparent 1px,
+          transparent 6px
+        );
+      opacity: 1;
     }
     .span-4 { grid-column: span 4; }
     .span-6 { grid-column: span 6; }
@@ -109,13 +160,14 @@
       font-size: 1.05rem;
       color: var(--accent-2);
       text-transform: uppercase;
-      letter-spacing: 0.06em;
-      font-family: "Conduit ITC Std", "Arial Narrow", Arial, Helvetica, sans-serif;
-      border-bottom: 1px solid rgba(201,164,75,0.28);
+      letter-spacing: 0.12em;
+      font-family: "Conduit ITC Std", "Arial Narrow", "Courier New", monospace;
+      border-bottom: 1px solid rgba(34,120,75,0.75);
       padding-bottom: 6px;
+      text-shadow: 0 0 8px rgba(105,242,154,0.16);
     }
     h2::before {
-      content: "▰ ";
+      content: "> ";
       color: var(--accent-2);
     }
     .field-grid {
@@ -131,13 +183,13 @@
     }
     input, select {
       width: 100%;
-      border-radius: 10px;
-      border: 1px solid var(--border);
-      background: linear-gradient(180deg, #243241 0%, #202c38 100%);
+      border-radius: 1px;
+      border: 1px solid #235c3c;
+      background: linear-gradient(180deg, #091510 0%, #050c09 100%);
       color: var(--text);
       padding: 10px 12px;
       font-size: 0.97rem;
-      box-shadow: inset 0 1px 2px rgba(0,0,0,0.22);
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,0.42);
     }
     input[type="checkbox"] {
       width: auto;
@@ -161,11 +213,12 @@
       gap: 14px;
     }
     .result {
-      background: radial-gradient(circle at top, #15202a 0%, #0f161d 100%);
+      background:
+        linear-gradient(180deg, #09130f 0%, #040907 100%);
       border: 1px solid var(--border);
-      border-radius: 14px;
+      border-radius: 1px;
       padding: 14px;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.02);
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,0.42);
     }
     .kicker {
       font-size: 0.82rem;
@@ -189,15 +242,15 @@
     .pill {
       display: inline-block;
       padding: 6px 10px;
-      border-radius: 999px;
-      background: rgba(201,164,75,0.12);
-      border: 1px solid rgba(201,164,75,0.32);
-      color: #f3ddb0;
+      border-radius: 1px;
+      background: linear-gradient(180deg, rgba(11,23,18,0.92) 0%, rgba(5,12,9,0.92) 100%);
+      border: 1px solid rgba(34,120,75,0.78);
+      color: #92ffb5;
       font-size: 0.85rem;
       margin: 0 8px 8px 0;
-      font-family: "Conduit ITC Std", "Arial Narrow", Arial, Helvetica, sans-serif;
+      font-family: "Conduit ITC Std", "Arial Narrow", "Courier New", monospace;
       text-transform: uppercase;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.03);
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,0.35);
     }
     .note {
       color: var(--muted);
@@ -207,28 +260,31 @@
     textarea {
       width: 100%;
       min-height: 170px;
-      background: var(--panel-2);
+      background: linear-gradient(180deg, #081510 0%, #040a08 100%);
       color: var(--text);
       border: 1px solid var(--border);
-      border-radius: 12px;
+      border-radius: 1px;
       padding: 12px;
       font-family: Consolas, monospace;
       font-size: 0.88rem;
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,0.3);
     }
     button {
-      background: linear-gradient(180deg, #b33a3a 0%, #8f2f2f 100%);
-      color: white;
-      border: 1px solid rgba(255,255,255,0.06);
-      border-radius: 10px;
+      background: linear-gradient(180deg, #d7d7d7 0%, #b6b6b6 100%);
+      color: #09100d;
+      border: 1px solid #f0f0f0;
+      border-radius: 1px;
       padding: 10px 14px;
       font-weight: 700;
       cursor: pointer;
       margin-top: 10px;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 6px 14px rgba(0,0,0,0.18);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.6), inset 0 -1px 0 rgba(0,0,0,0.18), 0 4px 10px rgba(0,0,0,0.24);
     }
     button.secondary,
     .preset-btn {
-      background: linear-gradient(180deg, #3a4a5d 0%, #2f3d4d 100%);
+      background: linear-gradient(180deg, #d7d7d7 0%, #b6b6b6 100%);
     }
     .footer-note {
       margin-top: 18px;
@@ -238,29 +294,31 @@
     }
 
     .tooltip-term {
-      position: relative;
       display: inline-block;
       cursor: help;
-      color: #f3ddb0;
-      border-bottom: 1px dotted rgba(201,164,75,0.7);
+      color: #a2ffbf;
+      border-bottom: 1px dotted rgba(105,242,154,0.6);
       line-height: 1.35;
     }
     .tooltip-term:focus {
-      outline: 2px solid rgba(216,177,93,0.5);
+      outline: 2px solid rgba(105,242,154,0.45);
       outline-offset: 2px;
       border-radius: 4px;
     }
-    .tooltip-term::after {
-      content: attr(data-tooltip);
-      position: absolute;
-      left: 50%;
-      bottom: calc(100% + 10px);
-      transform: translateX(-50%) translateY(6px);
-      width: min(280px, 80vw);
-      background: #0f141b;
+    .tooltip-term.active-tooltip {
+      border-bottom-color: rgba(162,255,191,0.95);
+      color: #d8ffe5;
+    }
+    .floating-tooltip {
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: min(320px, calc(100vw - 24px));
+      max-width: calc(100vw - 24px);
+      background: #07110d;
       color: var(--text);
       border: 1px solid var(--border);
-      border-radius: 10px;
+      border-radius: 1px;
       padding: 10px 12px;
       font-size: 0.85rem;
       line-height: 1.4;
@@ -268,28 +326,28 @@
       opacity: 0;
       pointer-events: none;
       white-space: normal;
-      z-index: 1000;
+      z-index: 3000;
+      transform: translateY(6px);
       transition: opacity 0.12s ease, transform 0.12s ease;
     }
-    .tooltip-term::before {
+    .floating-tooltip.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .floating-tooltip::after {
       content: "";
       position: absolute;
-      left: 50%;
-      bottom: calc(100% + 4px);
+      left: var(--tooltip-arrow-left, 50%);
+      bottom: -12px;
       transform: translateX(-50%);
       border-width: 6px;
       border-style: solid;
-      border-color: #0f141b transparent transparent transparent;
-      opacity: 0;
-      transition: opacity 0.12s ease;
-      z-index: 1001;
+      border-color: #07110d transparent transparent transparent;
     }
-    .tooltip-term:hover::after,
-    .tooltip-term:hover::before,
-    .tooltip-term:focus::after,
-    .tooltip-term:focus::before {
-      opacity: 1;
-      transform: translateX(-50%) translateY(0);
+    .floating-tooltip.below::after {
+      top: -12px;
+      bottom: auto;
+      border-color: transparent transparent #07110d transparent;
     }
 
 
@@ -305,20 +363,20 @@
     }
     .datasheet-bar {
       border: 1px solid var(--brass-border);
-      border-radius: 12px;
+      border-radius: 1px;
       overflow: hidden;
-      background: linear-gradient(180deg, #161d24, #0f141a);
+      background: linear-gradient(180deg, #08120f, #040907);
       margin-bottom: 10px;
-      box-shadow: inset 0 0 6px rgba(0,0,0,0.6);
+      box-shadow: inset 0 0 6px rgba(0,0,0,0.6), inset 0 0 0 1px rgba(0,0,0,0.3);
     }
     .datasheet-name {
-      background: linear-gradient(90deg, rgba(179,58,58,0.22), rgba(201,164,75,0.14));
-      color: var(--text);
+      background: linear-gradient(90deg, rgba(17,74,47,0.92), rgba(10,36,24,0.9));
+      color: #d3ffdf;
       font-weight: 700;
       padding: 8px 10px;
       border-bottom: 1px solid var(--brass-border);
-      letter-spacing: 0.02em;
-      font-family: "Conduit ITC Std", "Arial Narrow", Arial, Helvetica, sans-serif;
+      letter-spacing: 0.05em;
+      font-family: "Conduit ITC Std", "Arial Narrow", "Courier New", monospace;
       text-transform: uppercase;
     }
     .datasheet-grid {
@@ -339,8 +397,8 @@
       text-transform: uppercase;
       letter-spacing: 0.08em;
       padding: 6px 4px 4px;
-      border-bottom: 1px solid rgba(56,71,86,0.7);
-      background: rgba(255,255,255,0.02);
+      border-bottom: 1px solid rgba(24,83,54,0.7);
+      background: rgba(105,242,154,0.03);
     }
     .datasheet-val {
       display: block;
@@ -361,30 +419,11 @@
       margin-top: 0;
       padding: 8px 12px;
       font-size: 0.85rem;
-      background: #324150;
-    }
-    .modifier-panel {
-      margin-top: 10px;
-    }
-    .modifier-panel > summary {
-      cursor: pointer;
-      list-style: none;
-      color: var(--accent-2);
-      font-size: 1.05rem;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      font-weight: 700;
-      margin-bottom: 0;
-    }
-    .modifier-panel > summary::-webkit-details-marker {
-      display: none;
-    }
-    .modifier-panel[open] > summary {
-      margin-bottom: 12px;
+      background: linear-gradient(180deg, #d7d7d7 0%, #b6b6b6 100%);
     }
     .modified-result {
-      border-color: rgba(201,164,75,0.75) !important;
-      box-shadow: 0 0 0 1px rgba(201,164,75,0.28), 0 0 12px rgba(201,164,75,0.25);
+      border-color: rgba(105,242,154,0.95) !important;
+      box-shadow: 0 0 0 1px rgba(105,242,154,0.22), 0 0 12px rgba(105,242,154,0.2);
     }
     .attack-check-note {
       color: var(--muted);
@@ -467,40 +506,48 @@
       </div>
 
       <div class="card span-4">
-        <details class="modifier-panel">
-          <summary>Attacker Modifiers</summary>
-          <div class="field-grid">
-            <div>
-              <label for="hitMod">Hit modifier</label>
-              <input id="hitMod" type="number" value="0" step="1" />
-            </div>
-            <div>
-              <label for="woundMod">Wound modifier</label>
-              <input id="woundMod" type="number" value="0" step="1" />
-            </div>
-            <div>
-              <label for="apMod">AP modifier</label>
-              <input id="apMod" type="number" value="0" step="1" />
-            </div>
-            <div>
-              <label for="saveMod">Save roll modifier</label>
-              <input id="saveMod" type="number" value="0" step="1" />
-            </div>
+        <h2>Attacker Modifiers</h2>
+        <div class="field-grid">
+          <div>
+            <label for="hitMod">Hit modifier</label>
+            <input id="hitMod" type="number" value="0" step="1" />
           </div>
-          <div class="checks">
-            <label class="checkline"><input id="heavyBox" type="checkbox" /> Heavy bonus applied (+1 to hit when relevant)</label>
-            <label class="checkline"><input id="rapidFireBox" type="checkbox" /> Rapid Fire active (half range)</label>
-            <label class="checkline"><input id="coverBox" type="checkbox" /> Target has Benefit of Cover</label>
-            <label class="checkline"><input id="armorContemptBox" type="checkbox" /> Target reduces AP by 1</label>
+          <div>
+            <label for="woundMod">Wound modifier</label>
+            <input id="woundMod" type="number" value="0" step="1" />
           </div>
-          <div class="attack-check-note">Rapid Fire only changes the attack count for weapons that already have a Rapid Fire value in their abilities.</div>
-          <button type="button" class="secondary" id="resetModifiersBtn">Reset Modifiers</button>
-        </details>
+          <div>
+            <label for="apMod">AP modifier</label>
+            <input id="apMod" type="number" value="0" step="1" />
+          </div>
+          <div>
+            <label for="saveMod">Save roll modifier</label>
+            <input id="saveMod" type="number" value="0" step="1" />
+          </div>
+        </div>
+        <div class="checks">
+          <label class="checkline"><input id="heavyBox" type="checkbox" /> Heavy bonus applied (+1 to hit when relevant)</label>
+          <label class="checkline"><input id="rapidFireBox" type="checkbox" /> Rapid Fire active (half range)</label>
+          <label class="checkline"><input id="coverBox" type="checkbox" /> Target has Benefit of Cover</label>
+          <label class="checkline"><input id="armorContemptBox" type="checkbox" /> Target reduces AP by 1</label>
+        </div>
+        <div class="attack-check-note">Rapid Fire only changes the attack count for weapons that already have a Rapid Fire value in their abilities.</div>
+        <button type="button" class="secondary" id="resetModifiersBtn">Reset Modifiers</button>
       </div>
 
       <div class="card span-4">
         <h2>Target</h2>
         <div class="field-grid">
+          <div>
+            <label for="targetFactionSelect">Faction</label>
+            <select id="targetFactionSelect"></select>
+          </div>
+          <div>
+            <label for="targetUnitSelect">Unit</label>
+            <select id="targetUnitSelect"></select>
+          </div>
+        </div>
+        <div class="field-grid" style="margin-top:12px;">
           <div>
             <label for="toughness">Target Toughness</label>
             <input id="toughness" type="number" min="1" value="4" />
@@ -2775,10 +2822,14 @@
 
     let data = structuredClone(defaultData);
     let currentFactionSlug = 'astra-militarum';
+    let targetData = structuredClone(defaultData);
+    let currentTargetFactionSlug = 'astra-militarum';
 
     const factionSelect = document.getElementById('factionSelect');
     const unitSelect = document.getElementById('unitSelect');
     const weaponSelect = document.getElementById('weaponSelect');
+    const targetFactionSelect = document.getElementById('targetFactionSelect');
+    const targetUnitSelect = document.getElementById('targetUnitSelect');
     const modelsInput = document.getElementById('modelsInput');
     const attacksOverride = document.getElementById('attacksOverride');
     const hitMod = document.getElementById('hitMod');
@@ -2823,13 +2874,20 @@
 
     function populateFactions() {
       factionSelect.innerHTML = '';
+      targetFactionSelect.innerHTML = '';
       factionManifest.forEach(faction => {
         const opt = document.createElement('option');
         opt.value = faction.slug;
         opt.textContent = faction.name;
         factionSelect.appendChild(opt);
+
+        const targetOpt = document.createElement('option');
+        targetOpt.value = faction.slug;
+        targetOpt.textContent = faction.name;
+        targetFactionSelect.appendChild(targetOpt);
       });
       factionSelect.value = currentFactionSlug;
+      targetFactionSelect.value = currentTargetFactionSlug;
     }
 
     function loadFactionScript(faction) {
@@ -2871,6 +2929,53 @@
       factionSelect.value = currentFactionSlug;
       document.getElementById('factionPill').textContent = `Faction: ${data.faction?.name || faction.name || 'Unknown'}`;
       populateUnits();
+    }
+
+    function parseStatNumber(value) {
+      const match = String(value ?? '').match(/\d+/);
+      return match ? Number(match[0]) : null;
+    }
+
+    function applyTargetUnit(unit) {
+      if (!unit) return;
+      const stats = unit.stats || {};
+      const targetToughness = parseStatNumber(stats.toughness);
+      const targetSave = parseStatNumber(stats.save);
+      const targetInvuln = parseStatNumber(stats.invulnerable);
+
+      if (targetToughness) toughness.value = targetToughness;
+      if (targetSave) save.value = targetSave;
+      invuln.value = targetInvuln ? targetInvuln : '';
+      render();
+    }
+
+    function populateTargetUnits() {
+      targetUnitSelect.innerHTML = '';
+      Object.keys(targetData.units || {}).forEach(name => {
+        const opt = document.createElement('option');
+        opt.value = name;
+        opt.textContent = name;
+        targetUnitSelect.appendChild(opt);
+      });
+      if (targetUnitSelect.options.length) {
+        applyTargetUnit(targetData.units[targetUnitSelect.value]);
+      } else {
+        render();
+      }
+    }
+
+    async function setTargetFaction(slug) {
+      const faction = factionManifest.find(entry => entry.slug === slug) || factionManifest[0];
+      if (!faction) return;
+
+      currentTargetFactionSlug = faction.slug;
+      targetFactionSelect.value = currentTargetFactionSlug;
+
+      await loadFactionScript(faction);
+      const loaded = window.WH40K_FACTION_DATABASES?.[faction.slug];
+      targetData = loaded ? structuredClone(loaded) : structuredClone(defaultData);
+
+      populateTargetUnits();
     }
 
     function clamp(num, min, max) { return Math.max(min, Math.min(max, num)); }
@@ -3004,6 +3109,115 @@
     function renderTooltipList(items, options = {}) {
       if (!items || !items.length) return 'None';
       return items.map(item => tooltipWrap(item, options)).join(', ');
+    }
+
+    let activeTooltipTerm = null;
+    let floatingTooltip = null;
+
+    function ensureFloatingTooltip() {
+      if (floatingTooltip) return floatingTooltip;
+      floatingTooltip = document.createElement('div');
+      floatingTooltip.className = 'floating-tooltip';
+      floatingTooltip.hidden = true;
+      document.body.appendChild(floatingTooltip);
+      return floatingTooltip;
+    }
+
+    function hideFloatingTooltip() {
+      if (activeTooltipTerm) {
+        activeTooltipTerm.classList.remove('active-tooltip');
+        activeTooltipTerm = null;
+      }
+      if (floatingTooltip) {
+        floatingTooltip.hidden = true;
+        floatingTooltip.classList.remove('visible', 'below');
+        floatingTooltip.textContent = '';
+      }
+    }
+
+    function positionFloatingTooltip(term) {
+      const tooltip = ensureFloatingTooltip();
+      const margin = 12;
+      const rect = term.getBoundingClientRect();
+      const tooltipRect = tooltip.getBoundingClientRect();
+      const centeredLeft = rect.left + (rect.width / 2) - (tooltipRect.width / 2);
+      const left = Math.min(
+        window.innerWidth - tooltipRect.width - margin,
+        Math.max(margin, centeredLeft),
+      );
+
+      let top = rect.top - tooltipRect.height - 14;
+      let below = false;
+      if (top < margin) {
+        top = rect.bottom + 14;
+        below = true;
+      }
+
+      top = Math.min(
+        window.innerHeight - tooltipRect.height - margin,
+        Math.max(margin, top),
+      );
+
+      const arrowLeft = Math.min(
+        tooltipRect.width - 16,
+        Math.max(16, (rect.left + rect.width / 2) - left),
+      );
+
+      tooltip.style.left = `${left}px`;
+      tooltip.style.top = `${top}px`;
+      tooltip.style.setProperty('--tooltip-arrow-left', `${arrowLeft}px`);
+      tooltip.classList.toggle('below', below);
+    }
+
+    function showFloatingTooltip(term) {
+      const tooltipText = term?.dataset?.tooltip;
+      if (!tooltipText) return;
+
+      if (activeTooltipTerm === term && floatingTooltip && !floatingTooltip.hidden) {
+        hideFloatingTooltip();
+        return;
+      }
+
+      hideFloatingTooltip();
+      activeTooltipTerm = term;
+      activeTooltipTerm.classList.add('active-tooltip');
+
+      const tooltip = ensureFloatingTooltip();
+      tooltip.textContent = tooltipText;
+      tooltip.hidden = false;
+      tooltip.classList.remove('below');
+      positionFloatingTooltip(term);
+      requestAnimationFrame(() => {
+        tooltip.classList.add('visible');
+        positionFloatingTooltip(term);
+      });
+    }
+
+    function bindTooltipInteractions(scope = document) {
+      scope.querySelectorAll('.tooltip-term').forEach(term => {
+        if (term.dataset.tooltipBound === 'true') return;
+        term.dataset.tooltipBound = 'true';
+        term.addEventListener('click', event => {
+          event.preventDefault();
+          event.stopPropagation();
+          showFloatingTooltip(term);
+        });
+        term.addEventListener('keydown', event => {
+          if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            showFloatingTooltip(term);
+          }
+          if (event.key === 'Escape') {
+            hideFloatingTooltip();
+            term.blur();
+          }
+        });
+        term.addEventListener('mouseenter', () => {
+          if (window.matchMedia('(hover: hover)').matches) {
+            showFloatingTooltip(term);
+          }
+        });
+      });
     }
 
     function renderUnitNotes(unit) {
@@ -3210,6 +3424,7 @@
         Abilities: ${renderTooltipList(weapon.abilities, { kind: 'weapon', datasheetLink: unit?.source?.datasheet || '' })}<br><br>
         Estimated total attacks from ${modelsInput.value} model(s): ${/^\d+$/.test(String(attacksUsed)) ? Number(attacksUsed) * Number(modelsInput.value || 1) : attacksUsed + ' each'}${blast ? `<br>Blast bonus auto-applied from target unit size: +${blastBonus} attack(s).` : ''}${torrent ? `<br>Torrent detected: skip the Hit roll and go straight to Wound rolls.` : ''}.
       `;
+      bindTooltipInteractions();
     }
 
     document.getElementById('importBtn').addEventListener('click', () => {
@@ -3239,8 +3454,17 @@
     factionSelect.addEventListener('change', () => {
       setFaction(factionSelect.value);
     });
+    targetFactionSelect.addEventListener('change', () => {
+      hideFloatingTooltip();
+      setTargetFaction(targetFactionSelect.value);
+    });
+    targetUnitSelect.addEventListener('change', () => {
+      hideFloatingTooltip();
+      applyTargetUnit(targetData.units?.[targetUnitSelect.value]);
+    });
 
     document.getElementById('resetModifiersBtn').addEventListener('click', () => {
+      hideFloatingTooltip();
       hitMod.value = 0;
       woundMod.value = 0;
       apMod.value = 0;
@@ -3253,6 +3477,7 @@
     });
 
     document.getElementById('presetInfantry').addEventListener('click', () => {
+      hideFloatingTooltip();
       toughness.value = 3;
       save.value = 5;
       invuln.value = '';
@@ -3260,6 +3485,7 @@
     });
 
     document.getElementById('presetElite').addEventListener('click', () => {
+      hideFloatingTooltip();
       toughness.value = 4;
       save.value = 3;
       invuln.value = '';
@@ -3267,6 +3493,7 @@
     });
 
     document.getElementById('presetVehicle').addEventListener('click', () => {
+      hideFloatingTooltip();
       toughness.value = 10;
       save.value = 2;
       invuln.value = '';
@@ -3276,6 +3503,22 @@
     jsonBox.value = JSON.stringify(defaultData, null, 2);
     populateFactions();
     setFaction(currentFactionSlug);
+    setTargetFaction(currentTargetFactionSlug);
+    document.addEventListener('click', event => {
+      if (!event.target.closest('.tooltip-term') && !event.target.closest('.floating-tooltip')) {
+        hideFloatingTooltip();
+      }
+    });
+    document.addEventListener('focusin', event => {
+      if (!event.target.closest('.tooltip-term') && !event.target.closest('.floating-tooltip')) {
+        hideFloatingTooltip();
+      }
+    });
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape') hideFloatingTooltip();
+    });
+    window.addEventListener('resize', hideFloatingTooltip);
+    window.addEventListener('scroll', hideFloatingTooltip, true);
   </script>
   <script>
     if ('serviceWorker' in navigator) {
