@@ -119,6 +119,7 @@
       flex-wrap: wrap;
       align-items: center;
       gap: 8px;
+      min-width: 0;
     }
     .banner {
       background:
@@ -501,12 +502,27 @@
         padding: 12px 14px;
         margin-bottom: 12px;
       }
+      .banner-top {
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 0;
+      }
+      .banner-title {
+        flex: 0 0 auto;
+      }
       h1 {
         margin-bottom: 0;
-        font-size: 1.55rem;
+        font-size: 1.38rem;
       }
       .subtitle {
         display: none;
+      }
+      .summary-pills {
+        flex: 1 1 auto;
+        flex-wrap: nowrap;
+        justify-content: flex-end;
+        gap: 5px;
+        overflow: hidden;
       }
       .grid {
         gap: 12px;
@@ -558,8 +574,24 @@
         padding: 6px 3px 8px;
       }
       .pill {
-        padding: 4px 8px;
-        font-size: 0.73rem;
+        padding: 4px 6px;
+        font-size: 0.66rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        flex: 0 1 auto;
+      }
+      #factionPill {
+        max-width: 150px;
+      }
+      #phasePill {
+        max-width: 110px;
+      }
+      #weaponPill {
+        max-width: 210px;
+      }
+      #attackSummary {
+        max-width: 165px;
       }
       .attack-check-note,
       #dataSourceNote {
@@ -3666,5 +3698,4 @@
   </script>
 </body>
 </html>
-
 
