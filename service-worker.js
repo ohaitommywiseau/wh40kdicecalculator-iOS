@@ -1,4 +1,4 @@
-const CACHE_NAME = 'wh40k-dice-calculator-v5';
+const CACHE_NAME = 'wh40k-dice-calculator-v12';
 const APP_SHELL = [
   './',
   './astra_militarum_dice_calculator_vFinal_themed_v2.html',
@@ -14,6 +14,8 @@ const APP_SHELL = [
   './data/points/points-v4.js',
   './data/unit-composition/unit-composition.js',
   './data/wargear/astra-militarum-wargear.js',
+  './data/wargear-rules/astra-militarum-infantry-rules.js',
+  './data/wargear-rules/astra-militarum-vehicle-rules.js',
   './data/factions/adepta-sororitas.js',
   './data/factions/adeptus-custodes.js',
   './data/factions/adeptus-mechanicus.js',
