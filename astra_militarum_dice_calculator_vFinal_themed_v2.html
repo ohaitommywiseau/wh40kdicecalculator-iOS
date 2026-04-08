@@ -1040,7 +1040,7 @@
           </div>
         </div>
         <div id="statLineBox" class="datasheet-block"></div>
-        <div class="footer-note" id="unitNote"></div>
+        <div class="footer-note" id="unitAbilitiesNote"></div>
         <div class="footer-note" id="unitKeywordsNote"></div>
         <div class="footer-note" id="dataSourceNote"></div>
       </div>
@@ -1109,7 +1109,7 @@
             <input id="targetModels" type="number" min="1" value="1" />
           </div>
         </div>
-        <div class="footer-note" id="targetUnitNote"></div>
+        <div class="footer-note" id="targetAbilitiesNote"></div>
         <div class="footer-note" id="targetKeywordsNote"></div>
       </div>
 
@@ -3381,8 +3381,9 @@
     const damageReduction = document.getElementById('damageReduction');
     const targetModels = document.getElementById('targetModels');
     const dataSourceNote = document.getElementById('dataSourceNote');
+    const unitAbilitiesNote = document.getElementById('unitAbilitiesNote');
     const unitKeywordsNote = document.getElementById('unitKeywordsNote');
-    const targetUnitNote = document.getElementById('targetUnitNote');
+    const targetAbilitiesNote = document.getElementById('targetAbilitiesNote');
     const targetKeywordsNote = document.getElementById('targetKeywordsNote');
     const landingView = document.getElementById('landingView');
     const armyBuilderView = document.getElementById('armyBuilderView');
@@ -5390,10 +5391,10 @@
       const weapon = getSelectedWeapon();
       if (!unit || !weapon) {
         document.getElementById('statLineBox').innerHTML = '';
-        document.getElementById('unitNote').innerHTML = '';
+        unitAbilitiesNote.innerHTML = '';
         unitKeywordsNote.innerHTML = '';
         dataSourceNote.innerHTML = '';
-        targetUnitNote.innerHTML = '';
+        targetAbilitiesNote.innerHTML = '';
         targetKeywordsNote.innerHTML = '';
         setTextIfPresent('phasePill', 'Phase: -');
         setTextIfPresent('weaponPill', 'Weapon: -');
@@ -5410,9 +5411,9 @@
 
       const targetUnit = targetData.units?.[targetUnitSelect.value];
       renderUnitStatlines(unit);
-      document.getElementById('unitNote').innerHTML = renderUnitNotes(unit);
+      unitAbilitiesNote.innerHTML = renderUnitNotes(unit);
       unitKeywordsNote.innerHTML = renderUnitKeywords(unit);
-      targetUnitNote.innerHTML = targetUnit ? renderUnitNotes(targetUnit) : '';
+      targetAbilitiesNote.innerHTML = targetUnit ? renderUnitNotes(targetUnit) : '';
       targetKeywordsNote.innerHTML = targetUnit ? renderUnitKeywords(targetUnit) : '';
       setDataSourceNote(unit);
       setTextIfPresent('phasePill', `Phase: ${weapon.phase}`);
