@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -120,6 +120,23 @@
       align-items: center;
       gap: 8px;
       min-width: 0;
+    }
+    .header-controls {
+      display: flex;
+      flex: 1 1 auto;
+      align-items: end;
+      justify-content: flex-end;
+      gap: 8px;
+      min-width: 0;
+    }
+    .header-select {
+      flex: 1 1 280px;
+      max-width: 380px;
+      text-align: left;
+    }
+    .header-controls button {
+      margin-top: 0;
+      white-space: nowrap;
     }
     .banner {
       background:
@@ -257,6 +274,10 @@
       line-height: 1.5;
       font-size: 0.92rem;
     }
+    .muted {
+      color: var(--muted);
+      font-weight: 400;
+    }
     .pill {
       display: inline-block;
       padding: 6px 10px;
@@ -288,21 +309,43 @@
       box-shadow: inset 0 0 0 1px rgba(0,0,0,0.3);
     }
     button {
-      background: linear-gradient(180deg, #d7d7d7 0%, #b6b6b6 100%);
-      color: #09100d;
-      border: 1px solid #f0f0f0;
+      background: linear-gradient(180deg, #102219 0%, #08130e 100%);
+      color: #97ffb9;
+      border: 1px solid rgba(34,120,75,0.95);
       border-radius: 1px;
       padding: 10px 14px;
       font-weight: 700;
       cursor: pointer;
       margin-top: 10px;
-      letter-spacing: 0.04em;
+      letter-spacing: 0.06em;
       text-transform: uppercase;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.6), inset 0 -1px 0 rgba(0,0,0,0.18), 0 4px 10px rgba(0,0,0,0.24);
+      text-shadow: 0 0 8px rgba(105,242,154,0.18);
+      box-shadow: inset 0 1px 0 rgba(105,242,154,0.10), inset 0 0 0 1px rgba(0,0,0,0.38), 0 4px 10px rgba(0,0,0,0.24);
+      transition: background 0.12s ease, border-color 0.12s ease, transform 0.12s ease, box-shadow 0.12s ease;
+    }
+    button:hover,
+    button:focus-visible {
+      background: linear-gradient(180deg, #133020 0%, #0a1811 100%);
+      border-color: rgba(105,242,154,0.75);
+      box-shadow: inset 0 1px 0 rgba(105,242,154,0.16), inset 0 0 0 1px rgba(0,0,0,0.34), 0 0 0 1px rgba(105,242,154,0.08), 0 6px 14px rgba(0,0,0,0.28);
+    }
+    button:active {
+      transform: translateY(1px);
+      background: linear-gradient(180deg, #0c1a13 0%, #060d09 100%);
+    }
+    button:disabled {
+      color: rgba(125,248,165,0.42);
+      border-color: rgba(34,120,75,0.38);
+      background: linear-gradient(180deg, #0a120e 0%, #060a08 100%);
+      cursor: not-allowed;
+      text-shadow: none;
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,0.3);
     }
     button.secondary,
     .preset-btn {
-      background: linear-gradient(180deg, #d7d7d7 0%, #b6b6b6 100%);
+      background: linear-gradient(180deg, #102219 0%, #08130e 100%);
+      color: #97ffb9;
+      border-color: rgba(34,120,75,0.95);
     }
     .footer-note {
       margin-top: 18px;
@@ -343,7 +386,7 @@
       box-shadow: 0 10px 24px rgba(0,0,0,0.35);
       opacity: 0;
       pointer-events: none;
-      white-space: normal;
+      white-space: pre-line;
       z-index: 3000;
       transform: translateY(6px);
       transition: opacity 0.12s ease, transform 0.12s ease;
@@ -471,12 +514,202 @@
       line-height: 1.3;
       opacity: 0.88;
     }
+    .view[hidden] {
+      display: none !important;
+    }
+    .visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+      white-space: nowrap;
+      border: 0;
+    }
+    .landing-view {
+      min-height: calc(100dvh - 48px);
+      display: grid;
+      place-items: center;
+    }
+    .landing-panel {
+      width: min(620px, 100%);
+      text-align: center;
+      padding: 28px 24px;
+    }
+    .landing-footer {
+      width: min(760px, 100%);
+      margin-inline: auto;
+    }
+    .landing-title {
+      font-size: clamp(1.8rem, 4.4vw, 3.2rem);
+      margin-bottom: 8px;
+    }
+    .landing-actions {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 18px;
+      flex-wrap: wrap;
+    }
+    .landing-action {
+      min-width: 220px;
+      min-height: 0;
+      padding: 12px 16px;
+      text-align: center;
+      color: #97ffb9;
+      font-size: 1rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .landing-action strong {
+      display: inline;
+      font-size: 1rem;
+      margin-bottom: 0;
+    }
+    .list-builder-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(280px, 0.9fr);
+      gap: 16px;
+    }
+    .weapon-option-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .wargear-line {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 64px;
+      align-items: center;
+      gap: 8px;
+      color: var(--text);
+      font-size: 0.9rem;
+    }
+    .wargear-line input {
+      padding: 7px 8px;
+      text-align: center;
+    }
+    .wargear-source-note {
+      grid-column: 1 / -1;
+      border: 1px dashed rgba(105,242,154,0.35);
+      color: var(--muted);
+      padding: 10px;
+      font-size: 0.78rem;
+      line-height: 1.35;
+      max-height: 150px;
+      overflow: auto;
+      background: rgba(5,12,9,0.55);
+    }
+    .wargear-source-note strong {
+      color: var(--text);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .rules-wargear {
+      grid-column: 1 / -1;
+      display: grid;
+      gap: 10px;
+    }
+    .rules-group {
+      border: 1px solid rgba(105,242,154,0.28);
+      background: rgba(5,12,9,0.55);
+      padding: 10px;
+    }
+    .rules-group-title {
+      color: #d3ffdf;
+      font-weight: 700;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .rules-line {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 64px;
+      align-items: center;
+      gap: 8px;
+      margin-top: 6px;
+      color: var(--text);
+      font-size: 0.88rem;
+    }
+    .rules-line.has-select {
+      grid-template-columns: minmax(120px, 0.85fr) minmax(190px, 1.15fr);
+    }
+    .rules-line input {
+      padding: 7px 8px;
+      text-align: center;
+    }
+    .rules-line select {
+      min-width: 0;
+      width: 100%;
+      padding: 7px 8px;
+    }
+    .rules-derived {
+      color: var(--muted);
+      font-size: 0.82rem;
+      line-height: 1.35;
+      margin-top: 8px;
+    }
+    .rules-error {
+      display: none;
+      border: 1px solid rgba(255,98,98,0.6);
+      color: var(--warn);
+      background: rgba(80,16,16,0.35);
+      padding: 8px;
+      font-size: 0.82rem;
+      line-height: 1.35;
+    }
+    .rules-error:not(:empty) {
+      display: block;
+    }
+    .army-unit-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .army-unit-row {
+      border: 1px solid var(--border);
+      background: rgba(5,12,9,0.72);
+      padding: 10px;
+    }
+    .army-unit-row strong {
+      display: block;
+      color: #d3ffdf;
+      margin-bottom: 4px;
+      text-transform: uppercase;
+    }
+    .army-unit-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+    .army-empty {
+      border: 1px dashed rgba(105,242,154,0.35);
+      color: var(--muted);
+      padding: 12px;
+    }
+    .points-readout {
+      margin-top: 10px;
+      color: var(--good);
+      font-size: 0.9rem;
+      line-height: 1.4;
+      text-transform: uppercase;
+    }
+    .composition-note {
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 0.78rem;
+      line-height: 1.35;
+    }
 
     @media (max-width: 1100px) {
       .banner-top {
         display: block;
       }
-      .summary-pills {
+      .summary-pills,
+      .header-controls {
         margin-top: 10px;
       }
     }
@@ -484,6 +717,16 @@
     @media (max-width: 900px) {
       .span-4, .span-6, .span-8 { grid-column: span 12; }
       .wrap { padding: 14px; }
+      .list-builder-layout {
+        grid-template-columns: 1fr;
+      }
+      .landing-actions {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .landing-action {
+        min-width: 0;
+      }
       .footer-bar {
         display: block;
       }
@@ -503,6 +746,7 @@
         margin-bottom: 12px;
       }
       .banner-top {
+        display: flex;
         align-items: center;
         gap: 10px;
         margin-bottom: 0;
@@ -523,6 +767,14 @@
         justify-content: flex-end;
         gap: 5px;
         overflow: hidden;
+      }
+      .header-controls {
+        flex-wrap: nowrap;
+        gap: 6px;
+      }
+      .header-select {
+        flex-basis: 240px;
+        max-width: 320px;
       }
       .grid {
         gap: 12px;
@@ -581,18 +833,6 @@
         text-overflow: ellipsis;
         flex: 0 1 auto;
       }
-      #factionPill {
-        max-width: 150px;
-      }
-      #phasePill {
-        max-width: 110px;
-      }
-      #weaponPill {
-        max-width: 210px;
-      }
-      #attackSummary {
-        max-width: 165px;
-      }
       .attack-check-note,
       #dataSourceNote {
         display: none;
@@ -646,21 +886,125 @@
       background: #2a3947;
       color: #ffffff;
     }
+    select:disabled,
+    input:disabled {
+      border-color: rgba(105,242,154,0.22);
+      color: rgba(125,248,165,0.62);
+      opacity: 1;
+    }
 
 </style>
 </head>
 <body>
   <div class="wrap">
+    <section class="view landing-view" id="landingView">
+      <div class="card landing-panel">
+        <h1 class="landing-title">Codex Tactica</h1>
+        <div class="note">
+          Select a module.
+        </div>
+        <div class="landing-actions">
+          <button type="button" class="landing-action" id="openArmyBuilderBtn">
+            <strong>Army Builder</strong>
+          </button>
+          <button type="button" class="landing-action" id="openCalculatorBtn">
+            <strong>Combat Calculator</strong>
+          </button>
+        </div>
+      </div>
+      <div class="footer-bar landing-footer">
+        <div class="footer-quote">Hope is the first step on the road to disappointment.</div>
+        <div class="imperial-tagline">Tactica Imperialis v1.0</div>
+      </div>
+    </section>
+
+    <section class="view" id="armyBuilderView" hidden>
+      <div class="banner">
+        <div class="banner-top">
+          <div class="banner-title">
+            <h1>Force Disposition Registrar</h1>
+          </div>
+          <div class="header-controls">
+            <div class="summary-pills">
+              <span class="pill" id="builderFactionPill">Faction: Astra Militarum</span>
+              <span class="pill" id="builderUnitCountPill">Units: 0</span>
+              <span class="pill" id="builderPointsPill">Points: 0</span>
+              <span class="pill">Local Save</span>
+            </div>
+            <button type="button" class="secondary" id="builderCalculatorBtn">Combat Calculator</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="list-builder-layout">
+        <div class="card">
+          <h2>Configure List</h2>
+          <div class="field-grid">
+            <div>
+              <label for="builderListName">List name</label>
+              <input id="builderListName" type="text" value="New Strike Force" />
+            </div>
+            <div>
+              <label for="builderFactionSelect">Faction</label>
+              <select id="builderFactionSelect"></select>
+            </div>
+            <div>
+              <label for="builderUnitSelect">Unit</label>
+              <select id="builderUnitSelect"></select>
+            </div>
+            <div>
+              <label for="builderModelCount">Models in unit</label>
+              <select id="builderModelCount"></select>
+            </div>
+            <div>
+              <label for="builderSquadName">Squad name <span class="muted">(optional)</span></label>
+              <input id="builderSquadName" type="text" maxlength="48" placeholder="Fireteam Delta" />
+            </div>
+          </div>
+          <div class="datasheet-label" style="margin-top:14px;">Available weapon profiles</div>
+          <div class="weapon-option-grid" id="builderWeaponOptions"></div>
+          <div class="points-readout" id="builderSelectedPoints">Points: -</div>
+          <div class="composition-note" id="builderCompositionNote"></div>
+          <div class="attack-check-note">
+            Weapon quantities are seeded from unit composition and wargear rules where available.
+          </div>
+          <button type="button" id="builderAddUnitBtn">Add Unit to List</button>
+          <button type="button" class="secondary" id="builderNewListBtn">New List</button>
+        </div>
+
+        <div class="card">
+          <h2>Saved Rosters</h2>
+          <div class="field-grid">
+            <div>
+              <label for="savedArmyListSelect">Saved list</label>
+              <select id="savedArmyListSelect"></select>
+            </div>
+          </div>
+          <button type="button" class="secondary" id="builderLoadListBtn">Load List</button>
+          <button type="button" class="secondary" id="builderSaveListBtn">Save List</button>
+          <button type="button" class="secondary" id="builderDeleteListBtn">Delete List</button>
+          <div class="army-unit-list" id="builderUnitsList"></div>
+        </div>
+      </div>
+
+      <div class="footer-bar">
+        <div class="footer-quote">An open mind is like a fortress with its gate unbarred and unguarded.</div>
+        <div class="imperial-tagline">Tactica Imperialis v1.0</div>
+      </div>
+    </section>
+
+    <section class="view" id="calculatorView" hidden>
     <div class="banner">
       <div class="banner-top">
         <div class="banner-title">
           <h1>Munitorum Tactical Cogitator</h1>
         </div>
-        <div class="summary-pills">
-          <span class="pill" id="factionPill">Faction: Astra Militarum</span>
-          <span class="pill" id="phasePill">Phase: -</span>
-          <span class="pill" id="weaponPill">Weapon: -</span>
-          <span class="pill" id="attackSummary">Attacks: -</span>
+        <div class="header-controls">
+          <div class="header-select">
+            <label class="visually-hidden" for="combatArmyListSelect">Army list filter</label>
+            <select id="combatArmyListSelect"></select>
+          </div>
+          <button type="button" class="secondary" id="calculatorBuilderBtn">Army Builder</button>
         </div>
       </div>
       <div class="subtitle">
@@ -696,7 +1040,8 @@
           </div>
         </div>
         <div id="statLineBox" class="datasheet-block"></div>
-        <div class="footer-note" id="unitNote"></div>
+        <div class="footer-note" id="unitAbilitiesNote"></div>
+        <div class="footer-note" id="unitKeywordsNote"></div>
         <div class="footer-note" id="dataSourceNote"></div>
       </div>
 
@@ -764,11 +1109,8 @@
             <input id="targetModels" type="number" min="1" value="1" />
           </div>
         </div>
-        <div class="preset-row">
-          <button type="button" class="preset-btn" id="presetInfantry">Infantry</button>
-          <button type="button" class="preset-btn" id="presetElite">Elite</button>
-          <button type="button" class="preset-btn" id="presetVehicle">Vehicle</button>
-        </div>
+        <div class="footer-note" id="targetAbilitiesNote"></div>
+        <div class="footer-note" id="targetKeywordsNote"></div>
       </div>
 
       <div class="card span-8">
@@ -815,11 +1157,17 @@
         <div class="imperial-tagline">Tactica Imperialis v1.0</div>
       </div>
     </div>
+    </section>
   </div>
 
   <script src="./data/abilities/unit-abilities.js"></script>
   <script src="./data/abilities/weapon-abilities.js"></script>
   <script src="./data/factions/index.js"></script>
+  <script src="./data/points/points-v4.js"></script>
+  <script src="./data/unit-composition/unit-composition.js"></script>
+  <script src="./data/wargear/astra-militarum-wargear.js"></script>
+  <script src="./data/wargear-rules/astra-militarum-infantry-rules.js"></script>
+  <script src="./data/wargear-rules/astra-militarum-vehicle-rules.js"></script>
   <script>
     const defaultData = {
       "units": {
@@ -3033,10 +3381,1169 @@
     const damageReduction = document.getElementById('damageReduction');
     const targetModels = document.getElementById('targetModels');
     const dataSourceNote = document.getElementById('dataSourceNote');
+    const unitAbilitiesNote = document.getElementById('unitAbilitiesNote');
+    const unitKeywordsNote = document.getElementById('unitKeywordsNote');
+    const targetAbilitiesNote = document.getElementById('targetAbilitiesNote');
+    const targetKeywordsNote = document.getElementById('targetKeywordsNote');
+    const landingView = document.getElementById('landingView');
+    const armyBuilderView = document.getElementById('armyBuilderView');
+    const calculatorView = document.getElementById('calculatorView');
+    const builderListName = document.getElementById('builderListName');
+    const builderFactionSelect = document.getElementById('builderFactionSelect');
+    const builderUnitSelect = document.getElementById('builderUnitSelect');
+    const builderModelCount = document.getElementById('builderModelCount');
+    const builderSquadName = document.getElementById('builderSquadName');
+    const builderWeaponOptions = document.getElementById('builderWeaponOptions');
+    const builderUnitsList = document.getElementById('builderUnitsList');
+    const savedArmyListSelect = document.getElementById('savedArmyListSelect');
+    const combatArmyListSelect = document.getElementById('combatArmyListSelect');
+    const builderCompositionNote = document.getElementById('builderCompositionNote');
+
+    const ARMY_LIST_STORAGE_KEY = 'wh40kArmyLists.v1';
+    let armyLists = loadArmyLists();
+    let activeBuilderList = createEmptyArmyList();
+    let builderData = structuredClone(defaultData);
+    let currentBuilderFactionSlug = 'astra-militarum';
+    let editingBuilderUnitId = null;
+    let activeCombatList = null;
 
     const factionManifest = Array.isArray(window.WH40K_FACTION_MANIFEST) && window.WH40K_FACTION_MANIFEST.length
       ? window.WH40K_FACTION_MANIFEST
       : [{ slug: 'astra-militarum', name: 'Astra Militarum', script: '' }];
+    const pointsDatabase = window.WH40K_POINTS_DATABASE || { source: {}, byFaction: {} };
+    const unitCompositionDatabase = window.WH40K_UNIT_COMPOSITION_DATABASE || { source: {}, byFaction: {} };
+    const wargearDatabase = window.WH40K_WARGEAR_DATABASE || { source: {}, byFaction: {} };
+
+    function createId(prefix = 'id') {
+      return `${prefix}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
+    }
+
+    function createEmptyArmyList() {
+      return {
+        id: createId('list'),
+        name: 'New Strike Force',
+        factionSlug: 'astra-militarum',
+        factionName: 'Astra Militarum',
+        units: [],
+        updatedAt: new Date().toISOString()
+      };
+    }
+
+    function loadArmyLists() {
+      try {
+        const parsed = JSON.parse(localStorage.getItem(ARMY_LIST_STORAGE_KEY) || '[]');
+        return Array.isArray(parsed) ? parsed : [];
+      } catch (err) {
+        console.warn('Failed to load saved army lists:', err);
+        return [];
+      }
+    }
+
+    function persistArmyLists() {
+      localStorage.setItem(ARMY_LIST_STORAGE_KEY, JSON.stringify(armyLists));
+      populateArmyListSelectors();
+    }
+
+    function showView(viewName) {
+      hideFloatingTooltip();
+      landingView.hidden = viewName !== 'landing';
+      armyBuilderView.hidden = viewName !== 'builder';
+      calculatorView.hidden = viewName !== 'calculator';
+    }
+
+    function factionNameForSlug(slug) {
+      return factionManifest.find(entry => entry.slug === slug)?.name || slug || 'Unknown';
+    }
+
+    function armyListLabel(list) {
+      const count = list?.units?.length || 0;
+      const points = calculateArmyListPoints(list);
+      return `${list?.name || 'Untitled List'} (${list?.factionName || factionNameForSlug(list?.factionSlug)} - ${count} unit${count === 1 ? '' : 's'} - ${points.totalKnown}${points.hasUnknown ? '+' : ''} pts)`;
+    }
+
+    function getUnitPointsEntry(factionSlug, unitName) {
+      return pointsDatabase.byFaction?.[factionSlug]?.units?.[unitName] || null;
+    }
+
+    function getUnitCompositionEntry(factionSlug, unitName) {
+      return unitCompositionDatabase.byFaction?.[factionSlug]?.units?.[unitName] || null;
+    }
+
+    function getWargearEntry(factionSlug, unitName) {
+      return wargearDatabase.byFaction?.[factionSlug]?.units?.[unitName] || null;
+    }
+
+    function normalizeWeaponProfileKey(name) {
+      return String(name || '')
+        .replace(/[\u2018\u2019]/g, String.fromCharCode(39))
+        .replace(/[\u2013\u2014\u2212]/g, '-')
+        .replace(/\s+/g, ' ')
+        .replace(/\s+-\s+(standard|supercharge|frag|krak|strike|sweep)$/i, '')
+        .trim()
+        .toLowerCase();
+    }
+
+    function weaponBaseLabel(name) {
+      return String(name || '')
+        .replace(/[\u2013\u2014\u2212]/g, '-')
+        .replace(/\s+-\s+(standard|supercharge|frag|krak|strike|sweep)$/i, '')
+        .trim();
+    }
+
+    function weaponGroupsForUnit(unit) {
+      const groups = new Map();
+      Object.keys(unit?.weapons || {}).forEach(profileName => {
+        const key = normalizeWeaponProfileKey(profileName);
+        if (!groups.has(key)) groups.set(key, { key, label: weaponBaseLabel(profileName), profiles: [] });
+        groups.get(key).profiles.push(profileName);
+      });
+      return Array.from(groups.values());
+    }
+
+    function rosterWargearLabel(key, unit) {
+      const profileLabel = weaponGroupsForUnit(unit).find(group => group.key === key)?.label;
+      if (profileLabel) return profileLabel;
+      const supportLabels = {
+        'death korps medi-pack': 'Death Korps Medi-pack',
+        'vox-caster': 'Vox-caster',
+        'alchemyk counteragents': 'Alchemyk Counteragents',
+        'servo-scribes': 'Servo-scribes',
+        'master vox': 'Master Vox',
+        'regimental standard': 'Regimental Standard',
+      };
+      return supportLabels[key] || key;
+    }
+
+    function baseWargearQuantities(factionSlug, unitName, models) {
+      const entry = getWargearEntry(factionSlug, unitName);
+      return entry?.baseByModelCount?.[String(models)] || {};
+    }
+
+    function modelTypeCountForWargear(entry, models, pattern) {
+      const counts = entry?.modelTypeCounts?.[String(models)] || {};
+      return Object.entries(counts)
+        .filter(([type]) => new RegExp(pattern, 'i').test(type))
+        .reduce((sum, [, count]) => sum + Number(count || 0), 0);
+    }
+
+    function inferWargearMax(factionSlug, unitName, weaponKey, models) {
+      const entry = getWargearEntry(factionSlug, unitName);
+      const base = Number(baseWargearQuantities(factionSlug, unitName, models)[weaponKey] || 0);
+      const text = String(entry?.wargearOptionsText || '').toLowerCase();
+      if (!entry || !text.includes(weaponKey)) return base;
+
+      const directMatches = Array.from(text.matchAll(new RegExp('(\\d+)\\s+' + weaponKey.replace(/[.*+?^$()|[\]\\]/g, '\\$&'), 'g')));
+      const directMax = directMatches.length ? directMatches.reduce((sum, match) => sum + Number(match[1] || 0), 0) : 1;
+
+      if (/same (?:option|weapon) more than once.*20 models.*twice/i.test(text)) {
+        return Math.max(base, Math.floor(Number(models || 1) / 10));
+      }
+      if (/same weapon from this list more than twice/i.test(text)) return Math.max(base, 2);
+
+      const upTo = text.match(/up to\s+(\d+)[^:]+one of the following/i);
+      if (upTo) return Math.max(base, Number(upTo[1]));
+
+      const every = text.match(/for every\s+(\d+)\s+models[^:]+up to\s+(\d+)/i);
+      if (every) return Math.max(base, Math.floor(Number(models || 1) / Number(every[1])) * Number(every[2]));
+
+      if (/any number of .*sergeant|any number of .*watchmaster|any number of .*tempestor/i.test(text)) {
+        const leaders = modelTypeCountForWargear(entry, models, 'sergeant|watchmaster|tempestor|commander|ridemaster|bone');
+        if (leaders) return Math.max(base, leaders * directMax);
+      }
+
+      if (/this model can be equipped|this model.s .* can be replaced/i.test(text)) return Math.max(base, directMax);
+      return Math.max(base, Number(models || 1));
+    }
+
+    function parseSpecialWeaponGroups(factionSlug, unitName, models) {
+      const entry = getWargearEntry(factionSlug, unitName);
+      const text = String(entry?.wargearOptionsText || '');
+      const groups = [];
+      const regex = /For every\s+(\d+)\s+models[\s\S]*?up to\s+(\d+)[\s\S]*?one of the following\*?:\s*([\s\S]*?)(?=\nFor every|\nAny number|\n\d+\s|\nThe\s|$)/gi;
+      let match;
+      while ((match = regex.exec(text))) {
+        const per = Number(match[1]);
+        const maxPer = Number(match[2]);
+        const keys = match[3]
+          .split('\n')
+          .map(line => line.match(/^\s*\d+\s+(.+?)[.*]*$/)?.[1] || '')
+          .map(normalizeWeaponProfileKey)
+          .filter(Boolean);
+        if (keys.length) groups.push({ max: Math.floor(Number(models || 1) / per) * maxPer, keys });
+      }
+      return groups;
+    }
+
+    function enforceBuilderWargearGroupLimits(quantities) {
+      const groups = parseSpecialWeaponGroups(currentBuilderFactionSlug, builderUnitSelect.value, builderModelCount.value);
+      groups.forEach(group => {
+        let remaining = group.max;
+        group.keys.forEach(key => {
+          const input = Array.from(builderWeaponOptions.querySelectorAll('.builder-weapon-option')).find(option => option.dataset.weaponKey === key);
+          const current = Number(quantities[key] || 0);
+          const clamped = Math.max(0, Math.min(current, remaining));
+          if (input) input.value = String(clamped);
+          if (clamped > 0) quantities[key] = clamped;
+          else delete quantities[key];
+          remaining -= clamped;
+        });
+      });
+      return quantities;
+    }
+    function isRulesBuilderUnit(unitName = builderUnitSelect.value) {
+      return Boolean(getBuilderWargearRule(unitName));
+    }
+
+    function getBuilderWargearRule(unitName = builderUnitSelect.value) {
+      if (currentBuilderFactionSlug !== 'astra-militarum') return null;
+      return ASTRA_MILITARUM_WARGEAR_RULES[unitName] || null;
+    }
+
+    function clampRulesNumber(value, min, max) {
+      const number = Math.floor(Number(value || 0));
+      return Math.max(min, Math.min(max, Number.isFinite(number) ? number : min));
+    }
+
+    function ruleInputValue(key) {
+      const input = builderWeaponOptions.querySelector(`.dkok-option[data-key="${key}"]`);
+      if (!input) return 0;
+      const value = clampRulesNumber(input.value, Number(input.min || 0), Number(input.max || 0));
+      input.value = String(value);
+      return value;
+    }
+
+    function deathKorpsModelCounts(models) {
+      const scale = Math.max(1, Number(models || 10) / 10);
+      return {
+        scale,
+        watchmasters: scale,
+        troopers: scale * 9,
+        maxSpecials: scale * 2,
+        maxSameSpecial: scale,
+        maxSupport: scale,
+      };
+    }
+
+    function rulesNumberLine(key, label, value, max) {
+      return `
+        <label class="rules-line">
+          <span>${escapeHtml(label)}</span>
+          <input type="number" class="dkok-option" data-key="${escapeHtml(key)}" min="0" max="${max}" value="${value}" />
+        </label>
+      `;
+    }
+
+    function rulesSelectLine(key, label, value, options) {
+      return `
+        <label class="rules-line has-select">
+          <span>${escapeHtml(label)}</span>
+          <select class="rules-select-option" data-key="${escapeHtml(key)}">
+            ${options.map(option => `<option value="${escapeHtml(option.value)}"${option.value === value ? ' selected' : ''}>${escapeHtml(option.label)}</option>`).join('')}
+          </select>
+        </label>
+      `;
+    }
+
+    function ruleSelectValue(key) {
+      return builderWeaponOptions.querySelector(`.rules-select-option[data-key="${key}"]`)?.value || '';
+    }
+
+    function renderDeathKorpsWargearOptions(unitName, modelCount) {
+      const counts = deathKorpsModelCounts(modelCount);      builderWeaponOptions.innerHTML = `
+        <div class="rules-wargear" data-rules-unit="death-korps-of-krieg">
+          <div class="rules-error" id="deathKorpsRulesError"></div>
+          <div class="rules-group">
+            <div class="rules-group-title">Death Korps Watchmasters (${counts.watchmasters}/${counts.watchmasters})</div>
+            <div class="rules-derived">Any number of Death Korps Watchmasters can each replace their laspistol and chainsword with 1 boltgun and 1 close combat weapon. Any number of Death Korps Watchmasters can each replace their chainsword with 1 power weapon. Any number of Death Korps Watchmasters can each replace their laspistol with one of the following: 1 bolt pistol; 1 plasma pistol.</div>
+            ${rulesNumberLine('watch_boltgun_ccw', '1 boltgun and 1 close combat weapon', 0, counts.watchmasters)}
+            ${rulesNumberLine('watch_power_weapon', '1 power weapon', 0, counts.watchmasters)}
+            ${rulesNumberLine('watch_bolt_pistol', '1 bolt pistol', 0, counts.watchmasters)}
+            ${rulesNumberLine('watch_plasma_pistol', '1 plasma pistol', 0, counts.watchmasters)}
+            <div class="rules-derived" id="deathKorpsDerivedWatchmasters"></div>
+          </div>
+          <div class="rules-group">
+            <div class="rules-group-title">Death Korps Troopers (${counts.troopers}/${counts.troopers})</div>
+            <div class="rules-derived">For every 10 models in this unit, 1 Death Korps Trooper equipped with a lasgun can be equipped with 1 Death Korps medi-pack or 1 vox-caster; a model can only take one of these options, and that model's lasgun cannot be replaced.</div>
+            ${rulesNumberLine('medi_pack', '1 Death Korps medi-pack', 0, counts.maxSupport)}
+            ${rulesNumberLine('vox_caster', '1 vox-caster', 0, counts.maxSupport)}
+            <div class="rules-derived">For every 10 models in this unit, up to 2 Death Korps Troopers can each have their lasgun replaced with one of the following: 1 flamer; 1 grenade launcher; 1 long-las; 1 meltagun; 1 plasma gun. You cannot select the same option more than once per unit unless it contains 20 models, in which case you cannot select the same option more than twice per unit.</div>
+            ${rulesNumberLine('flamer', '1 flamer', 0, counts.maxSameSpecial)}
+            ${rulesNumberLine('grenade launcher', '1 grenade launcher', 0, counts.maxSameSpecial)}
+            ${rulesNumberLine('long-las', '1 long-las', 0, counts.maxSameSpecial)}
+            ${rulesNumberLine('meltagun', '1 meltagun', 0, counts.maxSameSpecial)}
+            ${rulesNumberLine('plasma gun', '1 plasma gun', 0, counts.maxSameSpecial)}
+            <div class="rules-derived" id="deathKorpsDerivedTroopers"></div>
+          </div>
+        </div>
+      `;
+      builderWeaponOptions.querySelectorAll('.dkok-option').forEach(input => {
+        input.addEventListener('input', () => selectedDeathKorpsWeaponQuantities());
+        input.addEventListener('change', () => selectedDeathKorpsWeaponQuantities());
+      });
+      selectedDeathKorpsWeaponQuantities();
+      updateBuilderSelectedPoints();
+    }
+
+    function selectedDeathKorpsWeaponQuantities() {
+      const modelCount = Number(builderModelCount.value || 10);
+      const counts = deathKorpsModelCounts(modelCount);
+      const values = {
+        watch_boltgun_ccw: ruleInputValue('watch_boltgun_ccw'),
+        watch_power_weapon: ruleInputValue('watch_power_weapon'),
+        watch_bolt_pistol: ruleInputValue('watch_bolt_pistol'),
+        watch_plasma_pistol: ruleInputValue('watch_plasma_pistol'),
+        medi_pack: ruleInputValue('medi_pack'),
+        vox_caster: ruleInputValue('vox_caster'),
+        flamer: ruleInputValue('flamer'),
+        grenade_launcher: ruleInputValue('grenade launcher'),
+        long_las: ruleInputValue('long-las'),
+        meltagun: ruleInputValue('meltagun'),
+        plasma_gun: ruleInputValue('plasma gun'),
+      };
+
+      const pistolMeleeWatchmasters = counts.watchmasters - values.watch_boltgun_ccw;
+      const watchmasterPistolUpgrades = values.watch_bolt_pistol + values.watch_plasma_pistol;
+      const specialTotal = values.flamer + values.grenade_launcher + values.long_las + values.meltagun + values.plasma_gun;
+      const assignedTroopers = values.medi_pack + values.vox_caster + specialTotal;
+      const basicTroopers = counts.troopers - assignedTroopers;
+      const errors = [];
+
+      if (values.watch_power_weapon > pistolMeleeWatchmasters) errors.push(`Power weapon upgrades must be ${pistolMeleeWatchmasters} or fewer; currently ${values.watch_power_weapon}.`);
+      if (watchmasterPistolUpgrades > pistolMeleeWatchmasters) errors.push(`Watchmaster pistol upgrades must be ${pistolMeleeWatchmasters} or fewer; currently ${watchmasterPistolUpgrades}.`);
+      if (specialTotal > counts.maxSpecials) errors.push(`Special weapon Troopers must total ${counts.maxSpecials} or fewer; currently ${specialTotal}.`);
+      if (assignedTroopers > counts.troopers) errors.push(`Trooper assignments exceed available Troopers by ${assignedTroopers - counts.troopers}.`);
+
+      const errorBox = document.getElementById('deathKorpsRulesError');
+      if (errorBox) errorBox.innerHTML = errors.map(escapeHtml).join('<br>');
+      const watchDerived = document.getElementById('deathKorpsDerivedWatchmasters');
+      if (watchDerived) watchDerived.textContent = `Pistol/melee Watchmasters: ${pistolMeleeWatchmasters}. Unupgraded pistols: ${Math.max(0, pistolMeleeWatchmasters - watchmasterPistolUpgrades)}. Unupgraded chainswords: ${Math.max(0, pistolMeleeWatchmasters - values.watch_power_weapon)}.`;
+      const derived = document.getElementById('deathKorpsDerivedTroopers');
+      if (derived) derived.textContent = `Basic lasgun Troopers: ${Math.max(0, basicTroopers)}. Assigned Troopers: ${assignedTroopers}/${counts.troopers}.`;
+
+      const quantities = {
+        laspistol: Math.max(0, pistolMeleeWatchmasters - watchmasterPistolUpgrades),
+        chainsword: Math.max(0, pistolMeleeWatchmasters - values.watch_power_weapon),
+        'power weapon': values.watch_power_weapon,
+        'bolt pistol': values.watch_bolt_pistol,
+        'plasma pistol': values.watch_plasma_pistol,
+        boltgun: values.watch_boltgun_ccw,
+        'close combat weapon': counts.troopers + values.watch_boltgun_ccw,
+        lasgun: Math.max(0, basicTroopers) + values.medi_pack + values.vox_caster,
+        'death korps medi-pack': values.medi_pack,
+        'vox-caster': values.vox_caster,
+        flamer: values.flamer,
+        'grenade launcher': values.grenade_launcher,
+        'long-las': values.long_las,
+        meltagun: values.meltagun,
+        'plasma gun': values.plasma_gun,
+      };
+
+      return Object.fromEntries(Object.entries(quantities).filter(([, value]) => Number(value) > 0));
+    }
+
+    function deathKorpsWargearErrors() {
+      const errorBox = document.getElementById('deathKorpsRulesError');
+      return errorBox?.textContent?.trim() || '';
+    }
+
+    function cadianShockTroopsModelCounts(models) {
+      const scale = Math.max(1, Number(models || 10) / 10);
+      return {
+        scale,
+        sergeants: scale,
+        troopers: scale * 9,
+        maxSpecials: scale * 2,
+        maxSameSpecial: scale,
+        maxVox: scale,
+      };
+    }
+
+    function renderCadianShockTroopsWargearOptions(unitName, modelCount) {
+      const counts = cadianShockTroopsModelCounts(modelCount);      builderWeaponOptions.innerHTML = `
+        <div class="rules-wargear" data-rules-unit="cadian-shock-troops">
+          <div class="rules-error" id="cadianShockRulesError"></div>
+          <div class="rules-group">
+            <div class="rules-group-title">Shock Trooper Sergeants (${counts.sergeants}/${counts.sergeants})</div>
+            <div class="rules-derived">Any number of Shock Trooper Sergeants can each have their laspistol replaced with 1 bolt pistol. Any number of Shock Trooper Sergeants can each have their laspistol and chainsword replaced with 1 Sergeant's autogun and 1 close combat weapon.</div>
+            ${rulesNumberLine('cadian_sergeant_autogun', "1 Sergeant's autogun and 1 close combat weapon", 0, counts.sergeants)}
+            ${rulesNumberLine('cadian_sergeant_bolt_pistol', '1 bolt pistol', 0, counts.sergeants)}
+            <div class="rules-derived" id="cadianShockDerivedSergeants"></div>
+          </div>
+          <div class="rules-group">
+            <div class="rules-group-title">Shock Troopers (${counts.troopers}/${counts.troopers})</div>
+            <div class="rules-derived">For every 10 models in this unit, 1 Shock Trooper equipped with a lasgun can be equipped with 1 vox-caster; that model's lasgun cannot be replaced.</div>
+            ${rulesNumberLine('cadian_vox_caster', '1 vox-caster', 0, counts.maxVox)}
+            <div class="rules-derived">For every 10 models in this unit, up to 2 Shock Troopers can each have their lasgun replaced with one of the following: 1 flamer; 1 grenade launcher; 1 meltagun; 1 plasma gun. You cannot select the same weapon more than once per unit unless it contains 20 models, in which case you cannot select the same weapon more than twice per unit.</div>
+            ${rulesNumberLine('cadian_flamer', '1 flamer', 0, counts.maxSameSpecial)}
+            ${rulesNumberLine('cadian_grenade_launcher', '1 grenade launcher', 0, counts.maxSameSpecial)}
+            ${rulesNumberLine('cadian_meltagun', '1 meltagun', 0, counts.maxSameSpecial)}
+            ${rulesNumberLine('cadian_plasma_gun', '1 plasma gun', 0, counts.maxSameSpecial)}
+            <div class="rules-derived" id="cadianShockDerivedTroopers"></div>
+          </div>
+        </div>
+      `;
+      builderWeaponOptions.querySelectorAll('.dkok-option').forEach(input => {
+        input.addEventListener('input', () => selectedCadianShockTroopsWeaponQuantities());
+        input.addEventListener('change', () => selectedCadianShockTroopsWeaponQuantities());
+      });
+      selectedCadianShockTroopsWeaponQuantities();
+      updateBuilderSelectedPoints();
+    }
+
+    function selectedCadianShockTroopsWeaponQuantities() {
+      const modelCount = Number(builderModelCount.value || 10);
+      const counts = cadianShockTroopsModelCounts(modelCount);
+      const values = {
+        sergeant_autogun: ruleInputValue('cadian_sergeant_autogun'),
+        sergeant_bolt_pistol: ruleInputValue('cadian_sergeant_bolt_pistol'),
+        vox_caster: ruleInputValue('cadian_vox_caster'),
+        flamer: ruleInputValue('cadian_flamer'),
+        grenade_launcher: ruleInputValue('cadian_grenade_launcher'),
+        meltagun: ruleInputValue('cadian_meltagun'),
+        plasma_gun: ruleInputValue('cadian_plasma_gun'),
+      };
+      const pistolMeleeSergeants = counts.sergeants - values.sergeant_autogun;
+      const specialTotal = values.flamer + values.grenade_launcher + values.meltagun + values.plasma_gun;
+      const assignedTroopers = values.vox_caster + specialTotal;
+      const basicTroopers = counts.troopers - assignedTroopers;
+      const errors = [];
+
+      if (values.sergeant_bolt_pistol > pistolMeleeSergeants) errors.push(`Sergeant bolt pistol upgrades must be ${pistolMeleeSergeants} or fewer; currently ${values.sergeant_bolt_pistol}.`);
+      if (specialTotal > counts.maxSpecials) errors.push(`Special weapon Troopers must total ${counts.maxSpecials} or fewer; currently ${specialTotal}.`);
+      if (assignedTroopers > counts.troopers) errors.push(`Trooper assignments exceed available Troopers by ${assignedTroopers - counts.troopers}.`);
+
+      const errorBox = document.getElementById('cadianShockRulesError');
+      if (errorBox) errorBox.innerHTML = errors.map(escapeHtml).join('<br>');
+      const sergeantDerived = document.getElementById('cadianShockDerivedSergeants');
+      if (sergeantDerived) sergeantDerived.textContent = `Pistol/melee Sergeants: ${pistolMeleeSergeants}. Unupgraded laspistols: ${Math.max(0, pistolMeleeSergeants - values.sergeant_bolt_pistol)}. Unupgraded chainswords: ${Math.max(0, pistolMeleeSergeants)}.`;
+      const trooperDerived = document.getElementById('cadianShockDerivedTroopers');
+      if (trooperDerived) trooperDerived.textContent = `Basic lasgun Troopers: ${Math.max(0, basicTroopers)}. Assigned Troopers: ${assignedTroopers}/${counts.troopers}.`;
+
+      const quantities = {
+        laspistol: Math.max(0, pistolMeleeSergeants - values.sergeant_bolt_pistol),
+        'bolt pistol': values.sergeant_bolt_pistol,
+        chainsword: Math.max(0, pistolMeleeSergeants),
+        "sergeant's autogun": values.sergeant_autogun,
+        'close combat weapon': counts.troopers + values.sergeant_autogun,
+        lasgun: Math.max(0, basicTroopers) + values.vox_caster,
+        'vox-caster': values.vox_caster,
+        flamer: values.flamer,
+        'grenade launcher': values.grenade_launcher,
+        meltagun: values.meltagun,
+        'plasma gun': values.plasma_gun,
+      };
+
+      return Object.fromEntries(Object.entries(quantities).filter(([, value]) => Number(value) > 0));
+    }
+
+    function cadianShockTroopsWargearErrors() {
+      const errorBox = document.getElementById('cadianShockRulesError');
+      return errorBox?.textContent?.trim() || '';
+    }
+
+    function renderKriegCommandWargearOptions(unitName, modelCount) {      builderWeaponOptions.innerHTML = `
+        <div class="rules-wargear" data-rules-unit="krieg-command-squad">
+          <div class="rules-error" id="kriegCommandRulesError"></div>
+          <div class="rules-group">
+            <div class="rules-group-title">Lord Commissar</div>
+            <div class="rules-derived">The Lord Commissar's power weapon can be replaced with 1 power fist. The Lord Commissar's laspistol can be replaced with 1 plasma pistol.</div>
+            ${rulesNumberLine('commissar_power_fist', '1 power fist', 0, 1)}
+            ${rulesNumberLine('commissar_plasma_pistol', '1 plasma pistol', 0, 1)}
+          </div>
+          <div class="rules-group">
+            <div class="rules-group-title">Veteran Guardsman with chainsword</div>
+            <div class="rules-derived">This Veteran Guardsman's chainsword can be replaced with 1 trench club or 1 power weapon. This Veteran Guardsman's laspistol can be replaced with 1 bolt pistol or 1 plasma pistol.</div>
+            ${rulesNumberLine('veteran_trench_club', '1 trench club', 0, 1)}
+            ${rulesNumberLine('veteran_power_weapon', '1 power weapon', 0, 1)}
+            ${rulesNumberLine('veteran_bolt_pistol', '1 bolt pistol', 0, 1)}
+            ${rulesNumberLine('veteran_plasma_pistol', '1 plasma pistol', 0, 1)}
+            <div class="rules-derived" id="kriegCommandDerivedChainswordVeteran"></div>
+          </div>
+          <div class="rules-group">
+            <div class="rules-group-title">Veteran Guardsman with boltgun</div>
+            <div class="rules-derived">This Veteran Guardsman's boltgun can be replaced with 1 flamer, 1 grenade launcher, 1 meltagun, or 1 plasma gun.</div>
+            ${rulesNumberLine('veteran_flamer', '1 flamer', 0, 1)}
+            ${rulesNumberLine('veteran_grenade_launcher', '1 grenade launcher', 0, 1)}
+            ${rulesNumberLine('veteran_meltagun', '1 meltagun', 0, 1)}
+            ${rulesNumberLine('veteran_plasma_gun', '1 plasma gun', 0, 1)}
+            <div class="rules-derived" id="kriegCommandDerivedBoltgunVeteran"></div>
+          </div>
+          <div class="rules-group">
+            <div class="rules-group-title">Veteran Guardsman with alchemyk counteragents</div>
+            <div class="rules-derived">Fixed: laspistol; close combat weapon; alchemyk counteragents; servo-scribes. No wargear options.</div>
+          </div>
+          <div class="rules-group">
+            <div class="rules-group-title">Veteran Guardsman with master vox</div>
+            <div class="rules-derived">Fixed: lasgun; close combat weapon; master vox. No wargear options.</div>
+          </div>
+          <div class="rules-group">
+            <div class="rules-group-title">Veteran Guardsman with regimental standard</div>
+            <div class="rules-derived">Fixed: lasgun; close combat weapon; regimental standard. No wargear options.</div>
+          </div>
+        </div>
+      `;
+      builderWeaponOptions.querySelectorAll('.dkok-option').forEach(input => {
+        input.addEventListener('input', () => selectedKriegCommandWeaponQuantities());
+        input.addEventListener('change', () => selectedKriegCommandWeaponQuantities());
+      });
+      selectedKriegCommandWeaponQuantities();
+      updateBuilderSelectedPoints();
+    }
+
+    function selectedKriegCommandWeaponQuantities() {
+      const values = {
+        commissar_power_fist: ruleInputValue('commissar_power_fist'),
+        commissar_plasma_pistol: ruleInputValue('commissar_plasma_pistol'),
+        veteran_trench_club: ruleInputValue('veteran_trench_club'),
+        veteran_power_weapon: ruleInputValue('veteran_power_weapon'),
+        veteran_bolt_pistol: ruleInputValue('veteran_bolt_pistol'),
+        veteran_plasma_pistol: ruleInputValue('veteran_plasma_pistol'),
+        veteran_flamer: ruleInputValue('veteran_flamer'),
+        veteran_grenade_launcher: ruleInputValue('veteran_grenade_launcher'),
+        veteran_meltagun: ruleInputValue('veteran_meltagun'),
+        veteran_plasma_gun: ruleInputValue('veteran_plasma_gun'),
+      };
+      const chainswordReplacements = values.veteran_trench_club + values.veteran_power_weapon;
+      const veteranPistolReplacements = values.veteran_bolt_pistol + values.veteran_plasma_pistol;
+      const boltgunReplacements = values.veteran_flamer + values.veteran_grenade_launcher + values.veteran_meltagun + values.veteran_plasma_gun;
+      const errors = [];
+
+      if (chainswordReplacements > 1) errors.push(`Chainsword Veteran melee replacements must total 1 or fewer; currently ${chainswordReplacements}.`);
+      if (veteranPistolReplacements > 1) errors.push(`Chainsword Veteran pistol replacements must total 1 or fewer; currently ${veteranPistolReplacements}.`);
+      if (boltgunReplacements > 1) errors.push(`Boltgun Veteran weapon replacements must total 1 or fewer; currently ${boltgunReplacements}.`);
+
+      const errorBox = document.getElementById('kriegCommandRulesError');
+      if (errorBox) errorBox.innerHTML = errors.map(escapeHtml).join('<br>');
+      const chainswordDerived = document.getElementById('kriegCommandDerivedChainswordVeteran');
+      if (chainswordDerived) chainswordDerived.textContent = `Unupgraded laspistol: ${Math.max(0, 1 - veteranPistolReplacements)}. Unupgraded chainsword: ${Math.max(0, 1 - chainswordReplacements)}.`;
+      const boltgunDerived = document.getElementById('kriegCommandDerivedBoltgunVeteran');
+      if (boltgunDerived) boltgunDerived.textContent = `Unupgraded boltgun: ${Math.max(0, 1 - boltgunReplacements)}.`;
+
+      const quantities = {
+        laspistol: 2 + Math.max(0, 1 - veteranPistolReplacements),
+        'plasma pistol': values.commissar_plasma_pistol + values.veteran_plasma_pistol,
+        'bolt pistol': values.veteran_bolt_pistol,
+        'power weapon': Math.max(0, 1 - values.commissar_power_fist) + values.veteran_power_weapon,
+        'power fist': values.commissar_power_fist,
+        chainsword: Math.max(0, 1 - chainswordReplacements),
+        'trench club': values.veteran_trench_club,
+        'close combat weapon': 4,
+        lasgun: 2,
+        boltgun: Math.max(0, 1 - boltgunReplacements),
+        flamer: values.veteran_flamer,
+        'grenade launcher': values.veteran_grenade_launcher,
+        meltagun: values.veteran_meltagun,
+        'plasma gun': values.veteran_plasma_gun,
+        'alchemyk counteragents': 1,
+        'servo-scribes': 1,
+        'master vox': 1,
+        'regimental standard': 1,
+      };
+
+      return Object.fromEntries(Object.entries(quantities).filter(([, value]) => Number(value) > 0));
+    }
+
+    function kriegCommandWargearErrors() {
+      const errorBox = document.getElementById('kriegCommandRulesError');
+      return errorBox?.textContent?.trim() || '';
+    }
+
+    function renderLemanRussBattleTankWargearOptions(unitName, modelCount) {
+      const russConfig = LEMAN_RUSS_CONFIGS[unitName] || LEMAN_RUSS_CONFIGS['Leman Russ Battle Tank'];      const turretHtml = russConfig.turretOptions?.length
+        ? `
+          <div class="rules-group">
+            <div class="rules-group-title">Turret weapon</div>
+            <div class="rules-derived">${russConfig.turretOptions?.length ? "This model's Leman Russ battle cannon can be replaced with one of the following: 1 demolisher battle cannon; 1 eradicator nova cannon; 1 executioner plasma cannon; 1 exterminator autocannon; 1 punisher gatling cannon; 1 vanquisher battle cannon." : `Fixed: ${escapeHtml(russConfig.turretLabel)}. No wargear options.`}</div>
+            ${rulesSelectLine('russ_turret_weapon', 'Turret weapon', russConfig.turret, russConfig.turretOptions)}
+          </div>
+        `
+        : `
+          <div class="rules-group">
+            <div class="rules-group-title">Turret weapon</div>
+            <div class="rules-derived">Fixed: ${escapeHtml(russConfig.turretLabel)}. No wargear options.</div>
+          </div>
+        `;
+      builderWeaponOptions.innerHTML = `
+        <div class="rules-wargear" data-rules-unit="leman-russ-battle-tank">
+          <div class="rules-error" id="lemanRussRulesError"></div>
+          ${turretHtml}
+          <div class="rules-group">
+            <div class="rules-group-title">Hull weapon</div>
+            <div class="rules-derived">This model's lascannon can be replaced with one of the following: 1 heavy bolter; 1 heavy flamer.</div>
+            ${rulesSelectLine('russ_hull_weapon', 'Hull weapon', 'lascannon', [
+              { value: 'lascannon', label: 'Lascannon' },
+              { value: 'heavy bolter', label: 'Heavy bolter' },
+              { value: 'heavy flamer', label: 'Heavy flamer' },
+            ])}
+          </div>
+          <div class="rules-group">
+            <div class="rules-group-title">Sponson weapons</div>
+            <div class="rules-derived">This model can be equipped with one of the following: 2 heavy bolters; 2 heavy flamers; 2 multi-meltas; 2 plasma cannons.</div>
+            ${rulesSelectLine('russ_sponsons', 'Sponsons', '', [
+              { value: '', label: 'None' },
+              { value: 'heavy bolter', label: '2 heavy bolters' },
+              { value: 'heavy flamer', label: '2 heavy flamers' },
+              { value: 'multi-melta', label: '2 multi-meltas' },
+              { value: 'plasma cannon', label: '2 plasma cannons' },
+            ])}
+          </div>
+          <div class="rules-group">
+            <div class="rules-group-title">Pintle weapon</div>
+            <div class="rules-derived">This model can be equipped with one of the following: 1 heavy stubber; 1 storm bolter.</div>
+            ${rulesSelectLine('russ_pintle', 'Pintle weapon', '', [
+              { value: '', label: 'None' },
+              { value: 'heavy stubber', label: 'Heavy stubber' },
+              { value: 'storm bolter', label: 'Storm bolter' },
+            ])}
+          </div>
+          <div class="rules-group">
+            <div class="rules-group-title">One-shot missile</div>
+            <div class="rules-derived">This model can be equipped with 1 hunter-killer missile.</div>
+            ${rulesSelectLine('russ_hunter_killer', 'Hunter-killer missile', '', [
+              { value: '', label: 'None' },
+              { value: 'hunter-killer missile', label: 'Hunter-killer missile' },
+            ])}
+          </div>
+          <div class="rules-group">
+            <div class="rules-group-title">Chassis</div>
+            <div class="rules-derived">Fixed: armoured tracks. No wargear options.</div>
+          </div>
+        </div>
+      `;
+      builderWeaponOptions.querySelectorAll('.rules-select-option').forEach(input => {
+        input.addEventListener('input', () => selectedLemanRussBattleTankWeaponQuantities());
+        input.addEventListener('change', () => selectedLemanRussBattleTankWeaponQuantities());
+      });
+      selectedLemanRussBattleTankWeaponQuantities();
+      updateBuilderSelectedPoints();
+    }
+
+    function selectedLemanRussBattleTankWeaponQuantities() {
+      const russConfig = LEMAN_RUSS_CONFIGS[builderUnitSelect.value] || LEMAN_RUSS_CONFIGS['Leman Russ Battle Tank'];
+      const turretWeapon = ruleSelectValue('russ_turret_weapon') || russConfig.turret;
+      const hullWeapon = ruleSelectValue('russ_hull_weapon') || 'lascannon';
+      const sponsons = ruleSelectValue('russ_sponsons');
+      const pintle = ruleSelectValue('russ_pintle');
+      const hunterKiller = ruleSelectValue('russ_hunter_killer');
+      const quantities = {
+        [turretWeapon]: 1,
+        'armoured tracks': 1,
+        [hullWeapon]: 1,
+      };
+      if (sponsons) quantities[sponsons] = (quantities[sponsons] || 0) + 2;
+      if (pintle) quantities[pintle] = (quantities[pintle] || 0) + 1;
+      if (hunterKiller) quantities[hunterKiller] = (quantities[hunterKiller] || 0) + 1;
+
+      const errorBox = document.getElementById('lemanRussRulesError');
+      if (errorBox) errorBox.textContent = '';
+      return Object.fromEntries(Object.entries(quantities).filter(([, value]) => Number(value) > 0));
+    }
+
+    function lemanRussBattleTankWargearErrors() {
+      const errorBox = document.getElementById('lemanRussRulesError');
+      return errorBox?.textContent?.trim() || '';
+    }
+
+    const LEMAN_RUSS_CONFIGS = {
+      'Leman Russ Battle Tank': { turret: 'leman russ battle cannon', turretLabel: 'Leman Russ battle cannon' },
+      'Leman Russ Demolisher': { turret: 'demolisher battle cannon', turretLabel: 'Demolisher battle cannon' },
+      'Leman Russ Eradicator': { turret: 'eradicator nova cannon', turretLabel: 'Eradicator nova cannon' },
+      'Leman Russ Executioner': { turret: 'executioner plasma cannon', turretLabel: 'Executioner plasma cannon' },
+      'Leman Russ Exterminator': { turret: 'exterminator autocannon', turretLabel: 'Exterminator autocannon' },
+      'Leman Russ Punisher': { turret: 'punisher gatling cannon', turretLabel: 'Punisher gatling cannon' },
+      'Leman Russ Vanquisher': { turret: 'vanquisher battle cannon', turretLabel: 'Vanquisher battle cannon' },
+      'Leman Russ Commander': {
+        turret: 'leman russ battle cannon',
+        turretLabel: 'Leman Russ battle cannon',
+        turretOptions: [
+          { value: 'leman russ battle cannon', label: 'Leman Russ battle cannon' },
+          { value: 'demolisher battle cannon', label: 'Demolisher battle cannon' },
+          { value: 'eradicator nova cannon', label: 'Eradicator nova cannon' },
+          { value: 'executioner plasma cannon', label: 'Executioner plasma cannon' },
+          { value: 'exterminator autocannon', label: 'Exterminator autocannon' },
+          { value: 'punisher gatling cannon', label: 'Punisher gatling cannon' },
+          { value: 'vanquisher battle cannon', label: 'Vanquisher battle cannon' },
+        ],
+      },
+    };
+
+    function renderRogalDornBattleTankWargearOptions(unitName, modelCount) {      builderWeaponOptions.innerHTML = `
+        <div class="rules-wargear" data-rules-unit="rogal-dorn-battle-tank">
+          <div class="rules-error" id="rogalDornRulesError"></div>
+          <div class="rules-group">
+            <div class="rules-group-title">Primary turret weapon</div>
+            <div class="rules-derived">This model's twin battle cannon can be replaced with 1 oppressor cannon and 1 coaxial autocannon.</div>
+            ${rulesSelectLine('dorn_primary_turret', 'Primary turret', 'twin battle cannon', [
+              { value: 'twin battle cannon', label: 'Twin battle cannon' },
+              { value: 'oppressor cannon', label: 'Oppressor cannon and coaxial autocannon' },
+            ])}
+          </div>
+          <div class="rules-group">
+            <div class="rules-group-title">Secondary turret weapon</div>
+            <div class="rules-derived">This model's castigator gatling cannon can be replaced with 1 pulveriser cannon.</div>
+            ${rulesSelectLine('dorn_secondary_turret', 'Secondary turret', 'castigator gatling cannon', [
+              { value: 'castigator gatling cannon', label: 'Castigator gatling cannon' },
+              { value: 'pulveriser cannon', label: 'Pulveriser cannon' },
+            ])}
+          </div>
+          <div class="rules-group">
+            <div class="rules-group-title">Forward mount weapons</div>
+            <div class="rules-derived">This model can be equipped with one of the following: 2 meltaguns; 2 additional heavy stubbers.</div>
+            ${rulesSelectLine('dorn_forward_mounts', 'Forward mounts', '', [
+              { value: '', label: 'None' },
+              { value: 'meltagun', label: '2 meltaguns' },
+              { value: 'heavy stubber', label: '2 additional heavy stubbers' },
+            ])}
+          </div>
+          <div class="rules-group">
+            <div class="rules-group-title">Side weapons</div>
+            <div class="rules-derived">This model can be equipped with one of the following: 2 heavy bolters; 2 multi-meltas.</div>
+            ${rulesSelectLine('dorn_side_weapons', 'Side weapons', '', [
+              { value: '', label: 'None' },
+              { value: 'heavy bolter', label: '2 heavy bolters' },
+              { value: 'multi-melta', label: '2 multi-meltas' },
+            ])}
+          </div>
+          <div class="rules-group">
+            <div class="rules-group-title">Pintle weapon</div>
+            <div class="rules-derived">Fixed: heavy stubber. No wargear options.</div>
+          </div>
+          <div class="rules-group">
+            <div class="rules-group-title">Chassis</div>
+            <div class="rules-derived">Fixed: armoured tracks. No wargear options.</div>
+          </div>
+        </div>
+      `;
+      builderWeaponOptions.querySelectorAll('.rules-select-option').forEach(input => {
+        input.addEventListener('input', () => selectedRogalDornBattleTankWeaponQuantities());
+        input.addEventListener('change', () => selectedRogalDornBattleTankWeaponQuantities());
+      });
+      selectedRogalDornBattleTankWeaponQuantities();
+      updateBuilderSelectedPoints();
+    }
+
+    function selectedRogalDornBattleTankWeaponQuantities() {
+      const primaryTurret = ruleSelectValue('dorn_primary_turret') || 'twin battle cannon';
+      const secondaryTurret = ruleSelectValue('dorn_secondary_turret') || 'castigator gatling cannon';
+      const forwardMounts = ruleSelectValue('dorn_forward_mounts');
+      const sideWeapons = ruleSelectValue('dorn_side_weapons');
+      const quantities = {
+        'armoured tracks': 1,
+        'heavy stubber': 1,
+        [primaryTurret]: 1,
+        [secondaryTurret]: 1,
+      };
+      if (primaryTurret === 'oppressor cannon') quantities['coaxial autocannon'] = 1;
+      if (forwardMounts) quantities[forwardMounts] = (quantities[forwardMounts] || 0) + 2;
+      if (sideWeapons) quantities[sideWeapons] = (quantities[sideWeapons] || 0) + 2;
+
+      const errorBox = document.getElementById('rogalDornRulesError');
+      if (errorBox) errorBox.textContent = '';
+      return Object.fromEntries(Object.entries(quantities).filter(([, value]) => Number(value) > 0));
+    }
+
+    function rogalDornBattleTankWargearErrors() {
+      const errorBox = document.getElementById('rogalDornRulesError');
+      return errorBox?.textContent?.trim() || '';
+    }
+
+    function renderScoutSentinelsWargearOptions(unitName, modelCount) {
+      const models = Math.max(1, Number(modelCount || 1));
+      const sentinelLabel = unitName === 'Armoured Sentinels' ? 'Armoured Sentinel' : 'Scout Sentinel';
+      const sentinelPlural = unitName === 'Armoured Sentinels' ? 'Armoured Sentinels' : 'Scout Sentinels';      builderWeaponOptions.innerHTML = `
+        <div class="rules-wargear" data-rules-unit="scout-sentinels">
+          <div class="rules-error" id="scoutSentinelsRulesError"></div>
+          <div class="rules-group">
+            <div class="rules-group-title">Main weapon upgrades</div>
+            <div class="rules-derived">Any number of models can each have their multi-laser replaced with one of the following: 1 autocannon; 1 heavy flamer; 1 lascannon; 1 missile launcher; 1 plasma cannon.</div>
+            ${rulesNumberLine('scout_autocannon', 'Autocannon', 0, models)}
+            ${rulesNumberLine('scout_heavy_flamer', 'Heavy flamer', 0, models)}
+            ${rulesNumberLine('scout_lascannon', 'Lascannon', 0, models)}
+            ${rulesNumberLine('scout_missile_launcher', 'Missile launcher', 0, models)}
+            ${rulesNumberLine('scout_plasma_cannon', 'Plasma cannon', 0, models)}
+            <div class="rules-derived" id="scoutSentinelsDerivedWeapons"></div>
+          </div>
+          <div class="rules-group">
+            <div class="rules-group-title">Optional Equipment</div>
+            <div class="rules-derived">Any number of models can each be equipped with 1 Sentinel chainsaw. Any number of models can each be equipped with 1 hunter-killer missile.</div>
+            ${rulesNumberLine('scout_sentinel_chainsaw', 'Sentinel chainsaw', 0, models)}
+            ${rulesNumberLine('scout_hunter_killer', 'Hunter-killer missile', 0, models)}
+          </div>
+          <div class="rules-group">
+            <div class="rules-group-title">Chassis</div>
+            <div class="rules-derived">Fixed: close combat weapon on every model. No wargear options.</div>
+          </div>
+        </div>
+      `;
+      builderWeaponOptions.querySelectorAll('.dkok-option').forEach(input => {
+        input.addEventListener('input', () => selectedScoutSentinelsWeaponQuantities());
+        input.addEventListener('change', () => selectedScoutSentinelsWeaponQuantities());
+      });
+      selectedScoutSentinelsWeaponQuantities();
+      updateBuilderSelectedPoints();
+    }
+
+    function selectedScoutSentinelsWeaponQuantities() {
+      const models = Math.max(1, Number(builderModelCount.value || 1));
+      const values = {
+        autocannon: ruleInputValue('scout_autocannon'),
+        heavy_flamer: ruleInputValue('scout_heavy_flamer'),
+        lascannon: ruleInputValue('scout_lascannon'),
+        missile_launcher: ruleInputValue('scout_missile_launcher'),
+        plasma_cannon: ruleInputValue('scout_plasma_cannon'),
+        sentinel_chainsaw: ruleInputValue('scout_sentinel_chainsaw'),
+        hunter_killer: ruleInputValue('scout_hunter_killer'),
+      };
+      const upgradedMainWeapons = values.autocannon + values.heavy_flamer + values.lascannon + values.missile_launcher + values.plasma_cannon;
+      const multiLasers = models - upgradedMainWeapons;
+      const errors = [];
+      if (upgradedMainWeapons > models) errors.push(`Main weapon upgrades must total ${models} or fewer; currently ${upgradedMainWeapons}.`);
+
+      const errorBox = document.getElementById('scoutSentinelsRulesError');
+      if (errorBox) errorBox.innerHTML = errors.map(escapeHtml).join('<br>');
+      const derived = document.getElementById('scoutSentinelsDerivedWeapons');
+      if (derived) derived.textContent = `Unupgraded multi-lasers: ${Math.max(0, multiLasers)}. Upgraded main weapons: ${upgradedMainWeapons}/${models}.`;
+
+      const quantities = {
+        'multi-laser': Math.max(0, multiLasers),
+        autocannon: values.autocannon,
+        'heavy flamer': values.heavy_flamer,
+        lascannon: values.lascannon,
+        'missile launcher': values.missile_launcher,
+        'plasma cannon': values.plasma_cannon,
+        'sentinel chainsaw': values.sentinel_chainsaw,
+        'hunter-killer missile': values.hunter_killer,
+        'close combat weapon': models,
+      };
+
+      return Object.fromEntries(Object.entries(quantities).filter(([, value]) => Number(value) > 0));
+    }
+
+    function scoutSentinelsWargearErrors() {
+      const errorBox = document.getElementById('scoutSentinelsRulesError');
+      return errorBox?.textContent?.trim() || '';
+    }
+
+    function mappedQuantityKey(unitName, key) {
+      const normalized = normalizeWeaponProfileKey(key);
+      const groups = weaponGroupsForUnit(builderData.units?.[unitName]);
+      if (groups.some(group => group.key === normalized)) return normalized;
+      const loose = groups.find(group => group.key.startsWith(normalized + ' (') || group.key.startsWith(normalized + ' - '));
+      return loose?.key || normalized;
+    }
+
+    function addConfiguredQuantity(quantities, unitName, key, amount = 1) {
+      const value = Number(amount || 0);
+      if (!value) return;
+      const mappedKey = mappedQuantityKey(unitName, key);
+      quantities[mappedKey] = (quantities[mappedKey] || 0) + value;
+    }
+
+    function configuredBaseQuantities(unitName, modelCount, override = null) {
+      const base = override || baseWargearQuantities(currentBuilderFactionSlug, unitName, modelCount);
+      const quantities = {};
+      Object.entries(base || {}).forEach(([key, value]) => addConfiguredQuantity(quantities, unitName, key, value));
+      return quantities;
+    }
+
+    function configuredNumberValue(key) {
+      return ruleInputValue('configured_' + key);
+    }
+
+    function configuredSelectValue(key) {
+      return ruleSelectValue('configured_' + key);
+    }
+
+    function configuredMax(max, modelCount, unitName) {
+      return typeof max === 'function' ? max(Number(modelCount || 0), unitName) : max;
+    }
+
+    function renderConfiguredInfantryWargearOptions(unitName, modelCount) {
+      const config = window.ASTRA_MILITARUM_INFANTRY_RULE_CONFIGS?.[unitName];
+      if (!config) return;      const sections = config.sections.map(section => {
+        const title = typeof section.title === 'function' ? section.title(modelCount) : section.title;
+        const description = typeof section.description === 'function' ? section.description(modelCount) : section.description;
+        const controls = (section.controls || []).map(control => {
+          if (control.type === 'select') return rulesSelectLine('configured_' + control.key, control.label, control.value || '', control.options);
+          return rulesNumberLine('configured_' + control.key, control.label, control.value || 0, configuredMax(control.max, modelCount, unitName));
+        }).join('');
+        return `
+          <div class="rules-group">
+            <div class="rules-group-title">${escapeHtml(title)}</div>
+            ${description ? `<div class="rules-derived">${escapeHtml(description)}</div>` : ''}
+            ${controls || '<div class="rules-derived">Fixed loadout. No wargear options.</div>'}
+          </div>
+        `;
+      }).join('');
+
+      builderWeaponOptions.innerHTML = `
+        <div class="rules-wargear" data-rules-unit="configured-infantry">
+          <div class="rules-error" id="configuredInfantryRulesError"></div>
+          ${sections}
+          <div class="rules-derived" id="configuredInfantryDerived"></div>
+        </div>
+      `;
+
+      builderWeaponOptions.querySelectorAll('.dkok-option, .rules-select-option').forEach(input => {
+        input.addEventListener('input', () => selectedConfiguredInfantryWeaponQuantities());
+        input.addEventListener('change', () => selectedConfiguredInfantryWeaponQuantities());
+      });
+      selectedConfiguredInfantryWeaponQuantities();
+      updateBuilderSelectedPoints();
+    }
+
+    function selectedConfiguredInfantryWeaponQuantities() {
+      const unitName = builderUnitSelect.value;
+      const config = window.ASTRA_MILITARUM_INFANTRY_RULE_CONFIGS?.[unitName];
+      if (!config) return {};
+      const modelCount = Number(builderModelCount.value || 1);
+      const context = {
+        unitName,
+        modelCount,
+        number: configuredNumberValue,
+        select: configuredSelectValue,
+        base: override => configuredBaseQuantities(unitName, modelCount, override),
+        add: (quantities, key, amount) => addConfiguredQuantity(quantities, unitName, key, amount),
+        errors: [],
+        derived: [],
+      };
+      const quantities = config.quantities(context);
+      const errorBox = document.getElementById('configuredInfantryRulesError');
+      if (errorBox) errorBox.innerHTML = context.errors.map(escapeHtml).join('<br>');
+      const derived = document.getElementById('configuredInfantryDerived');
+      if (derived) derived.textContent = context.derived.join(' ');
+      return Object.fromEntries(Object.entries(quantities).filter(([, value]) => Number(value) > 0));
+    }
+
+    function configuredInfantryWargearErrors() {
+      const errorBox = document.getElementById('configuredInfantryRulesError');
+      return errorBox?.textContent?.trim() || '';
+    }
+    const ASTRA_MILITARUM_WARGEAR_RULES = {
+      'Death Korps Of Krieg': {
+        render: renderDeathKorpsWargearOptions,
+        quantities: selectedDeathKorpsWeaponQuantities,
+        errors: deathKorpsWargearErrors,
+      },
+      'Cadian Shock Troops': {
+        render: renderCadianShockTroopsWargearOptions,
+        quantities: selectedCadianShockTroopsWeaponQuantities,
+        errors: cadianShockTroopsWargearErrors,
+      },
+      'Krieg Command Squad': {
+        render: renderKriegCommandWargearOptions,
+        quantities: selectedKriegCommandWeaponQuantities,
+        errors: kriegCommandWargearErrors,
+      },
+      'Leman Russ Battle Tank': {
+        render: renderLemanRussBattleTankWargearOptions,
+        quantities: selectedLemanRussBattleTankWeaponQuantities,
+        errors: lemanRussBattleTankWargearErrors,
+      },
+      'Leman Russ Commander': {
+        render: renderLemanRussBattleTankWargearOptions,
+        quantities: selectedLemanRussBattleTankWeaponQuantities,
+        errors: lemanRussBattleTankWargearErrors,
+      },
+      'Leman Russ Demolisher': {
+        render: renderLemanRussBattleTankWargearOptions,
+        quantities: selectedLemanRussBattleTankWeaponQuantities,
+        errors: lemanRussBattleTankWargearErrors,
+      },
+      'Leman Russ Eradicator': {
+        render: renderLemanRussBattleTankWargearOptions,
+        quantities: selectedLemanRussBattleTankWeaponQuantities,
+        errors: lemanRussBattleTankWargearErrors,
+      },
+      'Leman Russ Executioner': {
+        render: renderLemanRussBattleTankWargearOptions,
+        quantities: selectedLemanRussBattleTankWeaponQuantities,
+        errors: lemanRussBattleTankWargearErrors,
+      },
+      'Leman Russ Exterminator': {
+        render: renderLemanRussBattleTankWargearOptions,
+        quantities: selectedLemanRussBattleTankWeaponQuantities,
+        errors: lemanRussBattleTankWargearErrors,
+      },
+      'Leman Russ Punisher': {
+        render: renderLemanRussBattleTankWargearOptions,
+        quantities: selectedLemanRussBattleTankWeaponQuantities,
+        errors: lemanRussBattleTankWargearErrors,
+      },
+      'Leman Russ Vanquisher': {
+        render: renderLemanRussBattleTankWargearOptions,
+        quantities: selectedLemanRussBattleTankWeaponQuantities,
+        errors: lemanRussBattleTankWargearErrors,
+      },
+      'Rogal Dorn Battle Tank': {
+        render: renderRogalDornBattleTankWargearOptions,
+        quantities: selectedRogalDornBattleTankWeaponQuantities,
+        errors: rogalDornBattleTankWargearErrors,
+      },
+      'Armoured Sentinels': {
+        render: renderScoutSentinelsWargearOptions,
+        quantities: selectedScoutSentinelsWeaponQuantities,
+        errors: scoutSentinelsWargearErrors,
+      },
+      'Scout Sentinels': {
+        render: renderScoutSentinelsWargearOptions,
+        quantities: selectedScoutSentinelsWeaponQuantities,
+        errors: scoutSentinelsWargearErrors,
+      },
+    };
+
+
+    Object.keys(window.ASTRA_MILITARUM_INFANTRY_RULE_CONFIGS || {}).forEach(unitName => {
+      if (!ASTRA_MILITARUM_WARGEAR_RULES[unitName]) {
+        ASTRA_MILITARUM_WARGEAR_RULES[unitName] = {
+          render: renderConfiguredInfantryWargearOptions,
+          quantities: selectedConfiguredInfantryWeaponQuantities,
+          errors: configuredInfantryWargearErrors,
+        };
+      }
+    });
+    function defaultBuilderWeaponQuantities(unitName, models) {
+      const unit = builderData.units?.[unitName];
+      const base = baseWargearQuantities(currentBuilderFactionSlug, unitName, models);
+      const quantities = {};
+      weaponGroupsForUnit(unit).forEach(group => {
+        quantities[group.key] = Number(base[group.key] || 0);
+      });
+      return quantities;
+    }
+
+    function weaponQuantityForProfile(listEntry, profileName) {
+      if (!activeCombatList || !listEntry) return null;
+      const key = normalizeWeaponProfileKey(profileName);
+      if (listEntry.weaponQuantities && Object.hasOwn(listEntry.weaponQuantities, key)) {
+        return Number(listEntry.weaponQuantities[key] || 0);
+      }
+      return Array.isArray(listEntry.weapons) && listEntry.weapons.includes(profileName)
+        ? Number(listEntry.models || 1)
+        : 0;
+    }
+
+    function formatAllowedCounts(counts) {
+      if (!counts?.allowed?.length) return 'No parsed model-count restriction';
+      return counts.allowed.length > 8
+        ? `${counts.min}-${counts.max} models`
+        : `${counts.allowed.join(', ')} model${counts.allowed.length === 1 && counts.allowed[0] === 1 ? '' : 's'}`;
+    }
+
+    function enforceBuilderModelComposition({ reset = false } = {}) {
+      const composition = getUnitCompositionEntry(currentBuilderFactionSlug, builderUnitSelect.value);
+      const counts = composition?.counts;
+      const previousValue = builderModelCount.value;
+      builderModelCount.innerHTML = '';
+
+      if (!counts?.allowed?.length) {
+        const opt = document.createElement('option');
+        opt.value = '';
+        opt.textContent = 'Composition unavailable';
+        builderModelCount.appendChild(opt);
+        builderModelCount.disabled = true;
+        builderCompositionNote.textContent = composition
+          ? `Unit Composition: ${composition.lines.join(' | ')}. Model count cannot be selected because this composition could not be parsed safely.`
+          : 'Unit Composition: not generated for this faction/unit yet. Model count cannot be selected.';
+        return;
+      }
+
+      builderModelCount.disabled = false;
+      counts.allowed.forEach(count => {
+        const opt = document.createElement('option');
+        opt.value = String(count);
+        opt.textContent = `${count} model${count === 1 ? '' : 's'}`;
+        builderModelCount.appendChild(opt);
+      });
+      const preferredValue = !reset && counts.allowed.map(String).includes(previousValue)
+        ? previousValue
+        : String(counts.allowed[0]);
+      builderModelCount.value = preferredValue;
+      builderCompositionNote.textContent = `Unit Composition: ${composition.lines.join(' | ')}.`;
+    }
+
+    function normalizeBuilderModelCount() {
+      const composition = getUnitCompositionEntry(currentBuilderFactionSlug, builderUnitSelect.value);
+      const allowed = composition?.counts?.allowed?.map(Number);
+      if (!allowed?.length) return;
+
+      const value = Number(builderModelCount.value || allowed[0]);
+      if (allowed.includes(value)) return;
+      builderModelCount.value = String(allowed.reduce((closest, candidate) =>
+        Math.abs(candidate - value) < Math.abs(closest - value) ? candidate : closest,
+      allowed[0]));
+    }
+
+    function calculateUnitPoints(factionSlug, unitName, models) {
+      const entry = getUnitPointsEntry(factionSlug, unitName);
+      const modelCount = Math.max(1, Number(models || 1));
+      if (!entry?.variants?.length) {
+        return { points: null, label: 'No points found', bracket: null };
+      }
+
+      const sorted = [...entry.variants].sort((a, b) => a.models - b.models);
+      const bracket = sorted.find(variant => modelCount <= Number(variant.models)) || sorted[sorted.length - 1];
+      return {
+        points: Number(bracket.points),
+        label: `${bracket.points} pts (${bracket.label})`,
+        bracket,
+      };
+    }
+
+    function calculateArmyListPoints(list) {
+      const result = { totalKnown: 0, hasUnknown: false };
+      for (const entry of list?.units || []) {
+        const unitPoints = calculateUnitPoints(list.factionSlug, entry.unitName, entry.models);
+        if (unitPoints.points === null) {
+          result.hasUnknown = true;
+        } else {
+          result.totalKnown += unitPoints.points;
+        }
+      }
+      return result;
+    }
+
+    function formatPointsTotal(points) {
+      return points.hasUnknown ? `${points.totalKnown}+ pts` : `${points.totalKnown} pts`;
+    }
+
+    function syncBuilderListDraftName() {
+      activeBuilderList.name = builderListName.value.trim() || 'New Strike Force';
+    }
+
+    function populateArmyListSelectors() {
+      savedArmyListSelect.innerHTML = '';
+      combatArmyListSelect.innerHTML = '';
+
+      const sandboxOpt = document.createElement('option');
+      sandboxOpt.value = '';
+      sandboxOpt.textContent = 'Sandbox mode - all units';
+      combatArmyListSelect.appendChild(sandboxOpt);
+
+      if (!armyLists.length) {
+        const emptyOpt = document.createElement('option');
+        emptyOpt.value = '';
+        emptyOpt.textContent = 'No saved lists yet';
+        savedArmyListSelect.appendChild(emptyOpt);
+      }
+
+      armyLists.forEach(list => {
+        const savedOpt = document.createElement('option');
+        savedOpt.value = list.id;
+        savedOpt.textContent = armyListLabel(list);
+        savedArmyListSelect.appendChild(savedOpt);
+
+        const combatOpt = document.createElement('option');
+        combatOpt.value = list.id;
+        combatOpt.textContent = armyListLabel(list);
+        combatArmyListSelect.appendChild(combatOpt);
+      });
+
+      if (activeBuilderList?.id && armyLists.some(list => list.id === activeBuilderList.id)) {
+        savedArmyListSelect.value = activeBuilderList.id;
+      }
+      combatArmyListSelect.value = activeCombatList?.id || '';
+    }
 
     function escapeHtml(value) {
       return String(value ?? '')
@@ -3055,12 +4562,13 @@
       if (unit?.source?.datasheet) {
         parts.push(`<a href="${unit.source.datasheet}" target="_blank" rel="noreferrer">Open Wahapedia datasheet</a>`);
       }
-      dataSourceNote.innerHTML = parts.join(' · ');
+      dataSourceNote.innerHTML = parts.join(' - ');
     }
 
     function populateFactions() {
       factionSelect.innerHTML = '';
       targetFactionSelect.innerHTML = '';
+      builderFactionSelect.innerHTML = '';
       factionManifest.forEach(faction => {
         const opt = document.createElement('option');
         opt.value = faction.slug;
@@ -3071,9 +4579,15 @@
         targetOpt.value = faction.slug;
         targetOpt.textContent = faction.name;
         targetFactionSelect.appendChild(targetOpt);
+
+        const builderOpt = document.createElement('option');
+        builderOpt.value = faction.slug;
+        builderOpt.textContent = faction.name;
+        builderFactionSelect.appendChild(builderOpt);
       });
       factionSelect.value = currentFactionSlug;
       targetFactionSelect.value = currentTargetFactionSlug;
+      builderFactionSelect.value = currentBuilderFactionSlug;
     }
 
     function loadFactionScript(faction) {
@@ -3113,7 +4627,6 @@
       }
 
       factionSelect.value = currentFactionSlug;
-      document.getElementById('factionPill').textContent = `Faction: ${data.faction?.name || faction.name || 'Unknown'}`;
       populateUnits();
     }
 
@@ -3164,6 +4677,358 @@
       populateTargetUnits();
     }
 
+    async function setBuilderFaction(slug, { resetUnits = true } = {}) {
+      const faction = factionManifest.find(entry => entry.slug === slug) || factionManifest[0];
+      if (!faction) return;
+
+      currentBuilderFactionSlug = faction.slug;
+      builderFactionSelect.value = currentBuilderFactionSlug;
+
+      await loadFactionScript(faction);
+      const loaded = window.WH40K_FACTION_DATABASES?.[faction.slug];
+      builderData = loaded ? structuredClone(loaded) : structuredClone(defaultData);
+
+      activeBuilderList.factionSlug = currentBuilderFactionSlug;
+      activeBuilderList.factionName = builderData.faction?.name || faction.name;
+      if (resetUnits) activeBuilderList.units = [];
+
+      document.getElementById('builderFactionPill').textContent = `Faction: ${activeBuilderList.factionName}`;
+      populateBuilderUnits();
+      renderBuilderList();
+    }
+
+    function populateBuilderUnits() {
+      builderUnitSelect.innerHTML = '';
+      Object.keys(builderData.units || {}).forEach(name => {
+        const opt = document.createElement('option');
+        opt.value = name;
+        opt.textContent = name;
+        builderUnitSelect.appendChild(opt);
+      });
+      renderBuilderWeaponOptions({ resetModelCount: true });
+    }
+
+    function renderBuilderWeaponOptions({ resetModelCount = false } = {}) {
+      const unitName = builderUnitSelect.value;
+      const unit = builderData.units?.[unitName];
+      enforceBuilderModelComposition({ reset: resetModelCount });
+      const modelCount = Number(builderModelCount.value || 0);
+      const hardcodedRule = getBuilderWargearRule(unitName);
+      if (hardcodedRule) {
+        hardcodedRule.render(unitName, modelCount);
+        return;
+      }
+      const groups = weaponGroupsForUnit(unit);
+      if (!groups.length) {
+        builderWeaponOptions.innerHTML = '<div class="army-empty">No weapon profiles found for this unit.</div>';
+        updateBuilderSelectedPoints();
+        return;
+      }
+
+      const defaults = defaultBuilderWeaponQuantities(unitName, modelCount);      builderWeaponOptions.innerHTML = groups.map(group => {
+        const value = defaults[group.key] || 0;
+        const max = Math.max(value, inferWargearMax(currentBuilderFactionSlug, unitName, group.key, modelCount));
+        return `
+          <label class="wargear-line">
+            <span>${escapeHtml(group.label)}</span>
+            <input type="number" class="builder-weapon-option" data-weapon-key="${escapeHtml(group.key)}" data-weapon-label="${escapeHtml(group.label)}" min="0" max="${max}" value="${value}" />
+          </label>
+        `;
+      }).join('');
+      updateBuilderSelectedPoints();
+    }
+
+    function updateBuilderSelectedPoints() {
+      const unitName = builderUnitSelect.value;
+      const unitPoints = calculateUnitPoints(currentBuilderFactionSlug, unitName, builderModelCount.value);
+      document.getElementById('builderSelectedPoints').textContent = `Points: ${unitPoints.label}`;
+    }
+
+    function selectedBuilderWeaponQuantities() {
+      const hardcodedRule = getBuilderWargearRule();
+      if (hardcodedRule) return hardcodedRule.quantities();
+      const quantities = {};
+      builderWeaponOptions.querySelectorAll('.builder-weapon-option').forEach(input => {
+        const key = input.dataset.weaponKey;
+        if (!key) return;
+        const max = Number(input.max || 0);
+        const value = Math.max(0, Math.min(max || Infinity, Number(input.value || 0)));
+        input.value = String(value);
+        if (value > 0) quantities[key] = value;
+      });
+      return enforceBuilderWargearGroupLimits(quantities);
+    }
+
+    function selectedBuilderWargearConfig() {
+      const config = {};
+      builderWeaponOptions.querySelectorAll('.dkok-option, .rules-select-option, .builder-weapon-option').forEach(input => {
+        const key = input.dataset.key || input.dataset.weaponKey;
+        if (!key) return;
+        config[`${input.classList.contains('builder-weapon-option') ? 'legacy' : 'rule'}:${key}`] = input.value;
+      });
+      return config;
+    }
+
+    function applyBuilderWargearConfig(config = {}) {
+      builderWeaponOptions.querySelectorAll('.dkok-option, .rules-select-option, .builder-weapon-option').forEach(input => {
+        const key = input.dataset.key || input.dataset.weaponKey;
+        if (!key) return;
+        const configKey = `${input.classList.contains('builder-weapon-option') ? 'legacy' : 'rule'}:${key}`;
+        if (Object.prototype.hasOwnProperty.call(config, configKey)) {
+          input.value = config[configKey];
+        }
+      });
+    }
+
+    function applyLegacyBuilderWeaponQuantities(quantities = {}) {
+      builderWeaponOptions.querySelectorAll('.builder-weapon-option').forEach(input => {
+        const key = input.dataset.weaponKey;
+        if (key && Object.prototype.hasOwnProperty.call(quantities, key)) {
+          input.value = quantities[key];
+        }
+      });
+    }
+
+    function selectedBuilderWeapons() {
+      const unit = builderData.units?.[builderUnitSelect.value];
+      const quantities = selectedBuilderWeaponQuantities();
+      return Object.keys(unit?.weapons || {}).filter(profileName => quantities[normalizeWeaponProfileKey(profileName)] > 0);
+    }
+
+    function formatWeaponQuantities(entry, unit) {
+      if (entry.weaponQuantities) {
+        return Object.entries(entry.weaponQuantities)
+          .filter(([, count]) => Number(count) > 0)
+          .map(([key, count]) => `${count}x ${rosterWargearLabel(key, unit)}`)
+          .join(', ') || 'No weapons selected';
+      }
+      return Array.isArray(entry.weapons) ? entry.weapons.map(escapeHtml).join(', ') : 'No weapons selected';
+    }
+
+    function formatRosterUnitTitle(entry, index) {
+      const modelLabel = `${entry.models} Model${entry.models === 1 ? '' : 's'}`;
+      const squadName = String(entry.squadName || '').trim();
+      const unitLabel = squadName
+        ? `${entry.unitName} - ${squadName}`
+        : `${entry.unitName} #${index + 1}`;
+      return `${unitLabel} (${modelLabel})`;
+    }
+
+    function clearBuilderUnitEditMode() {
+      editingBuilderUnitId = null;
+      document.getElementById('builderAddUnitBtn').textContent = 'Add Unit to List';
+    }
+
+    function loadBuilderUnitForEdit(unitId) {
+      const entry = activeBuilderList.units.find(unitEntry => unitEntry.id === unitId);
+      if (!entry || !builderData.units?.[entry.unitName]) return;
+
+      editingBuilderUnitId = entry.id;
+      builderUnitSelect.value = entry.unitName;
+      builderSquadName.value = entry.squadName || '';
+      renderBuilderWeaponOptions({ resetModelCount: true });
+      builderModelCount.value = String(entry.models);
+      renderBuilderWeaponOptions();
+      if (entry.wargearConfig) {
+        applyBuilderWargearConfig(entry.wargearConfig);
+      } else {
+        applyLegacyBuilderWeaponQuantities(entry.weaponQuantities);
+      }
+      selectedBuilderWeaponQuantities();
+      updateBuilderSelectedPoints();
+      document.getElementById('builderAddUnitBtn').textContent = 'Update Unit';
+      builderUnitSelect.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    function addBuilderUnit() {
+      const unitName = builderUnitSelect.value;
+      const unit = builderData.units?.[unitName];
+      if (!unit) return;
+      syncBuilderListDraftName();
+      normalizeBuilderModelCount();
+      if (!builderModelCount.value) {
+        alert('Cannot add this unit until its Unit Composition model count is available.');
+        return;
+      }
+
+      const weaponQuantities = selectedBuilderWeaponQuantities();
+      const validationMessage = getBuilderWargearRule(unitName)?.errors?.() || '';
+      if (validationMessage) {
+        alert(validationMessage);
+        return;
+      }
+      const weapons = selectedBuilderWeapons();
+      if (!weapons.length) {
+        alert('Select at least one weapon quantity before adding this unit.');
+        return;
+      }
+      const nextEntry = {
+        id: editingBuilderUnitId || createId('unit'),
+        unitName,
+        models: Math.max(1, Number(builderModelCount.value || 1)),
+        squadName: builderSquadName.value.trim(),
+        weaponQuantities,
+        wargearConfig: selectedBuilderWargearConfig(),
+        weapons: weapons.length ? weapons : Object.keys(unit.weapons || {}).slice(0, 1)
+      };
+      if (editingBuilderUnitId) {
+        const existingIndex = activeBuilderList.units.findIndex(entry => entry.id === editingBuilderUnitId);
+        if (existingIndex >= 0) {
+          activeBuilderList.units[existingIndex] = nextEntry;
+        } else {
+          activeBuilderList.units.push(nextEntry);
+        }
+      } else {
+        activeBuilderList.units.push(nextEntry);
+      }
+      activeBuilderList.updatedAt = new Date().toISOString();
+      clearBuilderUnitEditMode();
+      builderSquadName.value = '';
+      renderBuilderList();
+    }
+
+    function renderBuilderList() {
+      builderListName.value = activeBuilderList.name || '';
+      builderFactionSelect.value = activeBuilderList.factionSlug;
+      document.getElementById('builderFactionPill').textContent = `Faction: ${activeBuilderList.factionName || factionNameForSlug(activeBuilderList.factionSlug)}`;
+      document.getElementById('builderUnitCountPill').textContent = `Units: ${activeBuilderList.units.length}`;
+      document.getElementById('builderPointsPill').textContent = `Points: ${formatPointsTotal(calculateArmyListPoints(activeBuilderList))}`;
+
+      if (!activeBuilderList.units.length) {
+        builderUnitsList.innerHTML = '<div class="army-empty">No units added yet. Configure a unit and add it to this list.</div>';
+        return;
+      }
+
+      builderUnitsList.innerHTML = activeBuilderList.units.map((entry, index) => {
+        const unit = builderData.units?.[entry.unitName];
+        return `
+          <div class="army-unit-row">
+            <strong>${escapeHtml(formatRosterUnitTitle(entry, index))}</strong>
+            <div class="small">${calculateUnitPoints(activeBuilderList.factionSlug, entry.unitName, entry.models).label} - ${escapeHtml(formatWeaponQuantities(entry, unit))}</div>
+            <div class="army-unit-actions">
+              <button type="button" class="secondary edit-builder-unit" data-unit-id="${escapeHtml(entry.id)}">Edit</button>
+              <button type="button" class="secondary remove-builder-unit" data-unit-id="${escapeHtml(entry.id)}">Remove</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      builderUnitsList.querySelectorAll('.edit-builder-unit').forEach(button => {
+        button.addEventListener('click', () => loadBuilderUnitForEdit(button.dataset.unitId));
+      });
+
+      builderUnitsList.querySelectorAll('.remove-builder-unit').forEach(button => {
+        button.addEventListener('click', () => {
+          if (editingBuilderUnitId === button.dataset.unitId) clearBuilderUnitEditMode();
+          activeBuilderList.units = activeBuilderList.units.filter(entry => entry.id !== button.dataset.unitId);
+          activeBuilderList.updatedAt = new Date().toISOString();
+          renderBuilderList();
+        });
+      });
+    }
+    function saveActiveBuilderList() {
+      activeBuilderList.name = builderListName.value.trim() || 'Untitled Strike Force';
+      activeBuilderList.factionSlug = currentBuilderFactionSlug;
+      activeBuilderList.factionName = builderData.faction?.name || factionNameForSlug(currentBuilderFactionSlug);
+      activeBuilderList.updatedAt = new Date().toISOString();
+
+      const existingIndex = armyLists.findIndex(list => list.id === activeBuilderList.id);
+      if (existingIndex >= 0) {
+        armyLists[existingIndex] = structuredClone(activeBuilderList);
+      } else {
+        armyLists.push(structuredClone(activeBuilderList));
+      }
+      persistArmyLists();
+      if (activeCombatList?.id === activeBuilderList.id) {
+        activeCombatList = structuredClone(activeBuilderList);
+        setCombatArmyList(activeCombatList.id);
+      }
+      renderBuilderList();
+    }
+
+    async function loadBuilderList(id) {
+      const saved = armyLists.find(list => list.id === id);
+      if (!saved) return;
+
+      activeBuilderList = structuredClone(saved);
+      currentBuilderFactionSlug = activeBuilderList.factionSlug;
+      clearBuilderUnitEditMode();
+      builderSquadName.value = '';
+      await setBuilderFaction(activeBuilderList.factionSlug, { resetUnits: false });
+      renderBuilderList();
+      populateArmyListSelectors();
+    }
+
+    function deleteBuilderList(id) {
+      if (!id) return;
+      armyLists = armyLists.filter(list => list.id !== id);
+      if (activeBuilderList.id === id) {
+        activeBuilderList = createEmptyArmyList();
+        currentBuilderFactionSlug = activeBuilderList.factionSlug;
+        clearBuilderUnitEditMode();
+        builderSquadName.value = '';
+        setBuilderFaction(currentBuilderFactionSlug, { resetUnits: true });
+      }
+      if (activeCombatList?.id === id) {
+        activeCombatList = null;
+        setCombatArmyList('');
+      }
+      persistArmyLists();
+      renderBuilderList();
+    }
+
+    async function setCombatArmyList(listId) {
+      activeCombatList = armyLists.find(list => list.id === listId) || null;
+      combatArmyListSelect.value = activeCombatList?.id || '';
+
+      if (!activeCombatList) {
+        factionSelect.disabled = false;
+        factionSelect.title = '';
+        await setFaction(currentFactionSlug);
+        return;
+      }
+
+      factionSelect.disabled = true;
+      factionSelect.title = `Loaded list: ${activeCombatList.name}. Attacker choices are filtered to this roster.`;
+      await setFaction(activeCombatList.factionSlug);
+    }
+
+    function availableCombatUnitNames() {
+      if (!activeCombatList) return Object.keys(data.units || {});
+      return activeCombatList.units
+        .map(entry => entry.unitName)
+        .filter((name, index, arr) => data.units?.[name] && arr.indexOf(name) === index);
+    }
+
+    function selectedCombatListEntry() {
+      if (!activeCombatList) return null;
+      return activeCombatList.units.find(entry => entry.id === unitSelect.value) || null;
+    }
+
+    function selectedCombatUnitName() {
+      return selectedCombatListEntry()?.unitName || unitSelect.value;
+    }
+
+    function availableCombatWeaponNames(unitName, listEntry = selectedCombatListEntry()) {
+      const unit = data.units?.[unitName];
+      if (!unit) return [];
+      if (!activeCombatList) return Object.keys(unit.weapons || {});
+
+      return Object.keys(unit.weapons || {}).filter(name => weaponQuantityForProfile(listEntry, name) > 0);
+    }
+
+    function combatModelCountForWeapon(unitName, weaponName = weaponSelect.value, listEntry = selectedCombatListEntry()) {
+      if (!activeCombatList || listEntry?.unitName !== unitName) return null;
+      const quantity = weaponQuantityForProfile(listEntry, weaponName);
+      return quantity > 0 ? quantity : Number(listEntry.models || 1);
+    }
+
+    function updateModelsFromSelectedWeapon() {
+      const unitName = selectedCombatUnitName();
+      const listModelCount = combatModelCountForWeapon(unitName, weaponSelect.value);
+      if (listModelCount) modelsInput.value = listModelCount;
+    }
+
     function clamp(num, min, max) { return Math.max(min, Math.min(max, num)); }
     function val(el) { return Number(el.value || 0); }
     function cleanNeeded(n) {
@@ -3187,6 +5052,10 @@
     function parseDamage(dmg) {
       if (/^\d+$/.test(String(dmg))) return Number(dmg);
       return null;
+    }
+    function setTextIfPresent(id, text) {
+      const element = document.getElementById(id);
+      if (element) element.textContent = text;
     }
     function parseAttacks(atk) {
       if (/^\d+$/.test(String(atk))) return Number(atk);
@@ -3231,8 +5100,8 @@
     function normalizeAbilityKey(term) {
       return String(term || '')
         .trim()
-        .replace(/[’‘]/g, "'")
-        .replace(/[–—]/g, '-')
+        .replace(/[\u2018\u2019]/g, String.fromCharCode(39))
+        .replace(/[\u2013\u2014\u2212]/g, '-')
         .replace(/\s+/g, ' ')
         .toLowerCase();
     }
@@ -3414,6 +5283,17 @@
       return abilityItems.length ? `Abilities: ${renderTooltipList(abilityItems, { kind: 'unit', datasheetLink })}` : 'None';
     }
 
+    function renderUnitKeywords(unit) {
+      const factionKeywords = Array.isArray(unit?.factionKeywords) ? unit.factionKeywords.filter(Boolean) : [];
+      const keywords = Array.isArray(unit?.keywords) ? unit.keywords.filter(Boolean) : [];
+      if (!factionKeywords.length && !keywords.length) return '';
+      const tooltipLines = [];
+      if (factionKeywords.length) tooltipLines.push(`Faction Keywords: ${factionKeywords.join(', ')}`);
+      if (keywords.length) tooltipLines.push(`Keywords: ${keywords.join(', ')}`);
+      const count = factionKeywords.length + keywords.length;
+      return `Keywords: <span class="tooltip-term" tabindex="0" data-tooltip="${escapeHtml(tooltipLines.join('\n'))}">${count} listed</span>`;
+    }
+
     function statCell(label, value) {
       return `<div class="datasheet-cell"><span class="datasheet-head">${label}</span><span class="datasheet-val">${value ?? '-'}</span></div>`;
     }
@@ -3467,46 +5347,77 @@
     }
 
     function getSelectedWeapon() {
-      const unit = data.units[unitSelect.value];
-      return unit.weapons[weaponSelect.value];
+      const unit = data.units[selectedCombatUnitName()];
+      return unit?.weapons?.[weaponSelect.value];
     }
 
     function populateUnits() {
       unitSelect.innerHTML = '';
-      Object.keys(data.units).forEach(name => {
-        const opt = document.createElement('option');
-        opt.value = name;
-        opt.textContent = name;
-        unitSelect.appendChild(opt);
-      });
+      if (activeCombatList) {
+        activeCombatList.units.forEach((entry, index) => {
+          if (!data.units?.[entry.unitName]) return;
+          const opt = document.createElement('option');
+          opt.value = entry.id;
+          opt.textContent = formatRosterUnitTitle(entry, index);
+          unitSelect.appendChild(opt);
+        });
+      } else {
+        availableCombatUnitNames().forEach(name => {
+          const opt = document.createElement('option');
+          opt.value = name;
+          opt.textContent = name;
+          unitSelect.appendChild(opt);
+        });
+      }
       populateWeapons();
     }
 
     function populateWeapons() {
-      const unit = data.units[unitSelect.value];
+      const unitName = selectedCombatUnitName();
+      const unit = data.units[unitName];
       weaponSelect.innerHTML = '';
-      Object.keys(unit.weapons).forEach(name => {
+      availableCombatWeaponNames(unitName).forEach(name => {
         const opt = document.createElement('option');
         opt.value = name;
         opt.textContent = name;
         weaponSelect.appendChild(opt);
       });
+      updateModelsFromSelectedWeapon();
       render();
     }
 
     function render() {
-      const unit = data.units[unitSelect.value];
+      const unit = data.units[selectedCombatUnitName()];
       const weapon = getSelectedWeapon();
+      if (!unit || !weapon) {
+        document.getElementById('statLineBox').innerHTML = '';
+        unitAbilitiesNote.innerHTML = '';
+        unitKeywordsNote.innerHTML = '';
+        dataSourceNote.innerHTML = '';
+        targetAbilitiesNote.innerHTML = '';
+        targetKeywordsNote.innerHTML = '';
+        setTextIfPresent('phasePill', 'Phase: -');
+        setTextIfPresent('weaponPill', 'Weapon: -');
+        setTextIfPresent('attackSummary', 'Attacks: -');
+        document.getElementById('profileBox').textContent = activeCombatList
+          ? 'No matching units or weapons are configured in the loaded army list.'
+          : 'No unit or weapon selected.';
+        return;
+      }
       const torrent = hasAbility(weapon, 'Torrent');
       const blast = hasAbility(weapon, 'Blast');
       const targetModelCount = Math.max(1, val(targetModels) || 1);
       const blastBonus = blast ? Math.floor(targetModelCount / 5) : 0;
 
+      const targetUnit = targetData.units?.[targetUnitSelect.value];
       renderUnitStatlines(unit);
-      document.getElementById('unitNote').innerHTML = renderUnitNotes(unit);
+      unitAbilitiesNote.innerHTML = renderUnitNotes(unit);
+      unitKeywordsNote.innerHTML = renderUnitKeywords(unit);
+      targetAbilitiesNote.innerHTML = targetUnit ? renderUnitNotes(targetUnit) : '';
+      targetKeywordsNote.innerHTML = targetUnit ? renderUnitKeywords(targetUnit) : '';
       setDataSourceNote(unit);
-      document.getElementById('phasePill').textContent = `Phase: ${weapon.phase}`;
-      document.getElementById('weaponPill').textContent = `${weapon.skillType} ${weapon.skill}+ | S ${weapon.strength} | AP ${weapon.ap} | D ${weapon.damage}`;
+      setTextIfPresent('phasePill', `Phase: ${weapon.phase}`);
+      setTextIfPresent('weaponPill', `${weapon.skillType} ${weapon.skill}+ | S ${weapon.strength} | AP ${weapon.ap} | D ${weapon.damage}`);
 
       const rawAttacksUsed = attacksOverride.value.trim() || weapon.attacks;
       let attackBonus = blastBonus;
@@ -3521,7 +5432,7 @@
       attackBonus += rapidFireBonus;
 
       const attacksUsed = formatAttackExpression(rawAttacksUsed, attackBonus);
-      document.getElementById('attackSummary').textContent = `Attacks: ${attacksUsed} per model${blast ? ` (includes Blast bonus of +${blastBonus} vs ${targetModelCount} target model(s))` : ''}${rapidFireBonus ? `${blast ? ';' : ' ('} Rapid Fire bonus of +${rapidFireBonus}${blast ? '' : ')'}` : ''}`;
+      setTextIfPresent('attackSummary', `Attacks: ${attacksUsed} per model${blast ? ` (includes Blast bonus of +${blastBonus} vs ${targetModelCount} target model(s))` : ''}${rapidFireBonus ? `${blast ? ';' : ' ('} Rapid Fire bonus of +${rapidFireBonus}${blast ? '' : ')'}` : ''}`);
 
       const totalAttackText = /^\d+$/.test(String(attacksUsed))
         ? `${Number(attacksUsed) * Number(modelsInput.value || 1)}`
@@ -3613,13 +5524,58 @@
       bindTooltipInteractions();
     }
 
-    [unitSelect, weaponSelect, modelsInput, attacksOverride, hitMod, woundMod, apMod, saveMod, heavyBox, rapidFireBox, coverBox, armorContemptBox, toughness, save, invuln, damageReduction, targetModels].forEach(el => {
+    [modelsInput, attacksOverride, hitMod, woundMod, apMod, saveMod, heavyBox, rapidFireBox, coverBox, armorContemptBox, toughness, save, invuln, damageReduction, targetModels].forEach(el => {
       el.addEventListener('input', render);
       el.addEventListener('change', render);
     });
 
+    document.getElementById('openArmyBuilderBtn').addEventListener('click', () => showView('builder'));
+    document.getElementById('openCalculatorBtn').addEventListener('click', () => showView('calculator'));
+    document.getElementById('builderCalculatorBtn').addEventListener('click', () => showView('calculator'));
+    document.getElementById('calculatorBuilderBtn').addEventListener('click', () => showView('builder'));
+
+    builderFactionSelect.addEventListener('change', () => {
+      clearBuilderUnitEditMode();
+      builderSquadName.value = '';
+      setBuilderFaction(builderFactionSelect.value, { resetUnits: true });
+    });
+    builderListName.addEventListener('input', syncBuilderListDraftName);
+    builderListName.addEventListener('change', syncBuilderListDraftName);
+    builderUnitSelect.addEventListener('change', () => {
+      clearBuilderUnitEditMode();
+      builderSquadName.value = '';
+      renderBuilderWeaponOptions({ resetModelCount: true });
+    });
+    builderModelCount.addEventListener('input', () => {
+      normalizeBuilderModelCount();
+      renderBuilderWeaponOptions();
+    });
+    builderModelCount.addEventListener('change', () => {
+      normalizeBuilderModelCount();
+      renderBuilderWeaponOptions();
+    });
+    document.getElementById('builderAddUnitBtn').addEventListener('click', addBuilderUnit);
+    document.getElementById('builderSaveListBtn').addEventListener('click', saveActiveBuilderList);
+    document.getElementById('builderLoadListBtn').addEventListener('click', () => loadBuilderList(savedArmyListSelect.value));
+    document.getElementById('builderDeleteListBtn').addEventListener('click', () => deleteBuilderList(savedArmyListSelect.value));
+    document.getElementById('builderNewListBtn').addEventListener('click', () => {
+      activeBuilderList = createEmptyArmyList();
+      currentBuilderFactionSlug = activeBuilderList.factionSlug;
+      clearBuilderUnitEditMode();
+      builderSquadName.value = '';
+      setBuilderFaction(currentBuilderFactionSlug, { resetUnits: true });
+      populateArmyListSelectors();
+    });
+
+    combatArmyListSelect.addEventListener('change', () => setCombatArmyList(combatArmyListSelect.value));
+
     unitSelect.addEventListener('change', populateWeapons);
+    weaponSelect.addEventListener('change', () => {
+      updateModelsFromSelectedWeapon();
+      render();
+    });
     factionSelect.addEventListener('change', () => {
+      if (activeCombatList) return;
       setFaction(factionSelect.value);
     });
     targetFactionSelect.addEventListener('change', () => {
@@ -3644,33 +5600,12 @@
       render();
     });
 
-    document.getElementById('presetInfantry').addEventListener('click', () => {
-      hideFloatingTooltip();
-      toughness.value = 3;
-      save.value = 5;
-      invuln.value = '';
-      render();
-    });
-
-    document.getElementById('presetElite').addEventListener('click', () => {
-      hideFloatingTooltip();
-      toughness.value = 4;
-      save.value = 3;
-      invuln.value = '';
-      render();
-    });
-
-    document.getElementById('presetVehicle').addEventListener('click', () => {
-      hideFloatingTooltip();
-      toughness.value = 10;
-      save.value = 2;
-      invuln.value = '';
-      render();
-    });
-
     populateFactions();
+    populateArmyListSelectors();
     setFaction(currentFactionSlug);
     setTargetFaction(currentTargetFactionSlug);
+    setBuilderFaction(currentBuilderFactionSlug, { resetUnits: false });
+    showView('landing');
     document.addEventListener('click', event => {
       if (!event.target.closest('.tooltip-term') && !event.target.closest('.floating-tooltip')) {
         hideFloatingTooltip();
@@ -3698,4 +5633,3 @@
   </script>
 </body>
 </html>
-
