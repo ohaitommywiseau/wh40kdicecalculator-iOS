@@ -37,6 +37,38 @@
       font-display: swap;
     }
     * { box-sizing: border-box; }
+    [hidden] {
+      display: none !important;
+    }
+    * {
+      scrollbar-width: thin;
+      scrollbar-color: #2acb67 #04100b;
+    }
+    *::-webkit-scrollbar {
+      width: 12px;
+      height: 12px;
+    }
+    *::-webkit-scrollbar-track {
+      background:
+        linear-gradient(180deg, #07130f 0%, #030907 100%);
+      border: 1px solid #12402a;
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,0.55);
+    }
+    *::-webkit-scrollbar-thumb {
+      background:
+        linear-gradient(180deg, #1f7f48 0%, #2acb67 45%, #1f7f48 100%);
+      border: 1px solid #7df8a5;
+      box-shadow:
+        inset 0 0 0 1px rgba(0,0,0,0.35),
+        0 0 8px rgba(42,203,103,0.18);
+    }
+    *::-webkit-scrollbar-thumb:hover {
+      background:
+        linear-gradient(180deg, #2aa95d 0%, #7df8a5 45%, #2aa95d 100%);
+    }
+    *::-webkit-scrollbar-corner {
+      background: #04100b;
+    }
     body {
       margin: 0;
       font-family: "Conduit ITC Std", "Arial Narrow", "Courier New", monospace;
@@ -152,6 +184,21 @@
       position: relative;
       overflow: hidden;
     }
+    #calculatorView.battle-linked .banner {
+      border-color: rgba(105,242,154,0.98);
+      box-shadow:
+        inset 0 0 0 1px rgba(0,0,0,0.5),
+        0 0 0 1px rgba(105,242,154,0.10),
+        0 0 18px rgba(105,242,154,0.12),
+        0 16px 36px rgba(0,0,0,0.34);
+    }
+    .battle-mode-note {
+      margin-top: 10px;
+      padding: 10px 12px;
+      border: 1px solid rgba(34,120,75,0.82);
+      background: linear-gradient(180deg, rgba(11,23,18,0.96) 0%, rgba(5,12,9,0.96) 100%);
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,0.36);
+    }
     .grid {
       display: grid;
       grid-template-columns: repeat(12, 1fr);
@@ -235,6 +282,23 @@
       display: grid;
       gap: 10px;
       margin-top: 10px;
+    }
+    .battle-custom-adjust {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto auto;
+      gap: 6px;
+      margin-top: 8px;
+      align-items: center;
+    }
+    .battle-custom-adjust input {
+      min-width: 0;
+      padding: 8px 9px;
+      font-size: 0.9rem;
+    }
+    .battle-custom-adjust button {
+      padding: 8px 10px;
+      font-size: 0.86rem;
+      min-width: 0;
     }
     .checkline {
       display: flex;
@@ -334,18 +398,37 @@
       background: linear-gradient(180deg, #0c1a13 0%, #060d09 100%);
     }
     button:disabled {
-      color: rgba(125,248,165,0.42);
-      border-color: rgba(34,120,75,0.38);
-      background: linear-gradient(180deg, #0a120e 0%, #060a08 100%);
+      color: rgba(125,248,165,0.68);
+      border-color: rgba(34,120,75,0.62);
+      background: linear-gradient(180deg, #0f1d15 0%, #09110d 100%);
       cursor: not-allowed;
       text-shadow: none;
-      box-shadow: inset 0 0 0 1px rgba(0,0,0,0.3);
+      box-shadow: inset 0 1px 0 rgba(105,242,154,0.06), inset 0 0 0 1px rgba(0,0,0,0.34);
+      opacity: 1;
     }
     button.secondary,
     .preset-btn {
       background: linear-gradient(180deg, #102219 0%, #08130e 100%);
       color: #97ffb9;
       border-color: rgba(34,120,75,0.95);
+    }
+    button:disabled,
+    button:disabled:hover,
+    button:disabled:focus-visible,
+    button.secondary:disabled,
+    button.secondary:disabled:hover,
+    button.secondary:disabled:focus-visible,
+    .preset-btn:disabled,
+    .preset-btn:disabled:hover,
+    .preset-btn:disabled:focus-visible {
+      color: rgba(125,248,165,0.68);
+      border-color: rgba(34,120,75,0.62);
+      background: linear-gradient(180deg, #0f1d15 0%, #09110d 100%);
+      cursor: not-allowed;
+      text-shadow: none;
+      box-shadow: inset 0 1px 0 rgba(105,242,154,0.06), inset 0 0 0 1px rgba(0,0,0,0.34);
+      opacity: 1;
+      transform: none;
     }
     .footer-note {
       margin-top: 18px;
@@ -668,10 +751,25 @@
       gap: 10px;
       margin-top: 12px;
     }
+    .army-unit-list.scrollable-roster {
+      max-height: 300px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+    .battle-log-scroll {
+      max-height: 360px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
     .army-unit-row {
       border: 1px solid var(--border);
       background: rgba(5,12,9,0.72);
       padding: 10px;
+    }
+    .army-unit-row.active-target-group {
+      border-color: rgba(105,242,154,0.78);
+      background: linear-gradient(180deg, rgba(11,23,18,0.96) 0%, rgba(5,12,9,0.96) 100%);
+      box-shadow: 0 0 0 1px rgba(105,242,154,0.08), inset 0 0 0 1px rgba(0,0,0,0.34);
     }
     .army-unit-row strong {
       display: block;
@@ -910,6 +1008,9 @@
           <button type="button" class="landing-action" id="openCalculatorBtn">
             <strong>Combat Calculator</strong>
           </button>
+          <button type="button" class="landing-action" id="openBattleTrackerBtn">
+            <strong>Battle Tracker</strong>
+          </button>
         </div>
       </div>
       <div class="footer-bar landing-footer">
@@ -931,6 +1032,7 @@
               <span class="pill" id="builderPointsPill">Points: 0</span>
               <span class="pill">Local Save</span>
             </div>
+            <button type="button" class="secondary" id="builderBattleTrackerBtn">Battle Tracker</button>
             <button type="button" class="secondary" id="builderCalculatorBtn">Combat Calculator</button>
           </div>
         </div>
@@ -1004,12 +1106,15 @@
             <label class="visually-hidden" for="combatArmyListSelect">Army list filter</label>
             <select id="combatArmyListSelect"></select>
           </div>
+          <button type="button" class="secondary" id="calculatorCancelBattleAttackBtn" hidden>Cancel Attack</button>
+          <button type="button" class="secondary" id="calculatorBattleTrackerBtn">Battle Tracker</button>
           <button type="button" class="secondary" id="calculatorBuilderBtn">Army Builder</button>
         </div>
       </div>
       <div class="subtitle">
         In the grim darkness of the far future there is only war.
       </div>
+      <div class="note battle-mode-note" id="calculatorBattleModeNote" hidden></div>
     </div>
 
     <div class="grid">
@@ -1145,6 +1250,17 @@
             <div class="small result-detail" id="damageExplain"></div>
           </div>
         </div>
+        <div class="battle-custom-adjust" id="calculatorBattleResolveRow" hidden>
+          <input type="number" id="calculatorResolvedDamageInput" min="0" step="1" placeholder="Resolved damage" />
+          <button type="button" id="calculatorRecordBattleWeaponBtn">Record Weapon Damage</button>
+          <button type="button" class="secondary" id="calculatorClearBattleDamageBtn">Clear</button>
+        </div>
+        <div class="note battle-mode-note" id="calculatorBattleResolveNote" hidden></div>
+        <div class="army-unit-list" id="calculatorBattleRecordedWeapons" hidden></div>
+        <div class="checks" id="calculatorBattleFinalizeRow" hidden>
+          <button type="button" class="secondary" id="calculatorBattleNewTargetBtn">New Target</button>
+          <button type="button" id="calculatorApplyBattleAttackBtn">Apply Damage</button>
+        </div>
       </div>
 
       <div class="card span-4">
@@ -1157,6 +1273,227 @@
         <div class="imperial-tagline">Tactica Imperialis v1.0</div>
       </div>
     </div>
+    </section>
+
+    <section class="view" id="battleTrackerView" hidden>
+      <div class="banner">
+        <div class="banner-top">
+          <div class="banner-title">
+            <h1>Battle Tracker</h1>
+          </div>
+          <div class="header-controls">
+            <button type="button" class="secondary" id="battleTrackerBuilderBtn">Army Builder</button>
+            <button type="button" class="secondary" id="battleTrackerCalculatorBtn">Combat Calculator</button>
+          </div>
+        </div>
+        <div class="subtitle">
+          Track battle round, command points, victory points, and game flow from a single cogitator screen.
+        </div>
+      </div>
+
+      <div class="grid">
+        <div class="card span-8">
+          <h2>Battle Setup</h2>
+          <div class="field-grid">
+            <div>
+              <label for="battleNameInput">Battle name</label>
+              <input id="battleNameInput" type="text" value="New Engagement" />
+            </div>
+            <div>
+              <label for="battleYourFactionSelect">Your faction</label>
+              <select id="battleYourFactionSelect"></select>
+            </div>
+            <div>
+              <label for="battleArmyListSelect">Your army list <span class="muted">(optional)</span></label>
+              <select id="battleArmyListSelect"></select>
+            </div>
+            <div>
+              <label for="battleOpponentFactionSelect">Opponent faction</label>
+              <select id="battleOpponentFactionSelect"></select>
+            </div>
+            <div>
+              <label for="battleMissionNameInput">Mission name</label>
+              <input id="battleMissionNameInput" type="text" placeholder="Take and Hold" />
+            </div>
+            <div>
+              <label for="battleDeploymentInput">Deployment</label>
+              <input id="battleDeploymentInput" type="text" placeholder="Search and Destroy" />
+            </div>
+            <div>
+              <label for="battleMissionRuleInput">Mission rule</label>
+              <input id="battleMissionRuleInput" type="text" placeholder="Hidden Supplies" />
+            </div>
+            <div>
+              <label for="battleFirstTurnSelect">First turn</label>
+              <select id="battleFirstTurnSelect">
+                <option value="you">You</option>
+                <option value="opponent">Opponent</option>
+              </select>
+            </div>
+            <div>
+              <label for="battleYourStartingCpInput">Your starting CP</label>
+              <input id="battleYourStartingCpInput" type="number" min="0" step="1" value="0" />
+            </div>
+            <div>
+              <label for="battleOpponentStartingCpInput">Opponent starting CP</label>
+              <input id="battleOpponentStartingCpInput" type="number" min="0" step="1" value="0" />
+            </div>
+          </div>
+          <div class="note" id="battleSetupStatus" style="margin-top:14px;">
+            Configure the battle, then save it or initialize tracking.
+          </div>
+          <div class="army-unit-actions">
+            <button type="button" id="battleStartBtn">Start Battle</button>
+            <button type="button" class="secondary" id="battleEndBattleBtn" disabled>End Battle</button>
+          </div>
+          <div class="checks" id="battleEndConfirmRow" hidden>
+            <div class="note">Are you sure you want to end the battle?</div>
+            <div class="army-unit-actions" style="margin-top:0;">
+              <button type="button" id="battleEndBattleYesBtn">Yes</button>
+              <button type="button" class="secondary" id="battleEndBattleNoBtn">No</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card span-4">
+          <h2>Saved Battles</h2>
+          <div class="field-grid">
+            <div>
+              <label for="savedBattleSelect">Saved battle</label>
+              <select id="savedBattleSelect"></select>
+            </div>
+          </div>
+          <button type="button" class="secondary" id="battleLoadBtn">Load Battle</button>
+          <button type="button" class="secondary" id="battleSaveBtn">Save Battle</button>
+          <button type="button" class="secondary" id="battleDeleteBtn">Delete Battle</button>
+          <button type="button" class="secondary" id="battleNewBtn">New Battle</button>
+          <div class="note" id="battlePersistenceNote" style="margin-top:14px;"></div>
+        </div>
+
+        <div class="card span-4">
+          <h2>Battle State</h2>
+          <div class="result-grid">
+            <div class="result">
+              <div class="kicker">Battle round</div>
+              <div class="big" id="battleRoundBig">1</div>
+            </div>
+            <div class="result">
+              <div class="kicker">Current player</div>
+              <div class="big" id="battleCurrentPlayerBig">You</div>
+            </div>
+            <div class="result">
+              <div class="kicker">Current phase</div>
+              <div class="big" id="battleCurrentPhaseBig">Command</div>
+            </div>
+          </div>
+          <div class="checks" style="margin-top:14px;">
+            <button type="button" class="secondary" id="battleUndoBtn" disabled>Undo Last Action</button>
+            <button type="button" class="secondary" id="battlePrevPhaseBtn">Previous Phase</button>
+            <button type="button" class="secondary" id="battleNextPhaseBtn">Next Phase</button>
+            <button type="button" class="secondary" id="battleEndTurnBtn">End Turn</button>
+            <button type="button" class="secondary" id="battleNextRoundBtn">Next Round</button>
+          </div>
+        </div>
+
+        <div class="card span-8">
+          <h2>Scoreboard</h2>
+          <div class="result-grid">
+            <div class="result">
+              <div class="kicker">You CP</div>
+              <div class="big" id="battleYouCpBig">0</div>
+              <div class="checks">
+                <button type="button" class="secondary battle-adjust-btn" data-side="you" data-stat="cp" data-amount="1">+1 CP</button>
+                <button type="button" class="secondary battle-adjust-btn" data-side="you" data-stat="cp" data-amount="-1">-1 CP</button>
+              </div>
+            </div>
+            <div class="result">
+              <div class="kicker">Opponent CP</div>
+              <div class="big" id="battleOpponentCpBig">0</div>
+              <div class="checks">
+                <button type="button" class="secondary battle-adjust-btn" data-side="opponent" data-stat="cp" data-amount="1">+1 CP</button>
+                <button type="button" class="secondary battle-adjust-btn" data-side="opponent" data-stat="cp" data-amount="-1">-1 CP</button>
+              </div>
+            </div>
+            <div class="result">
+              <div class="kicker">You Primary</div>
+              <div class="big" id="battleYouPrimaryBig">0</div>
+              <div class="checks">
+                <button type="button" class="secondary battle-adjust-btn" data-side="you" data-stat="primaryVp" data-amount="5">+5 VP</button>
+                <button type="button" class="secondary battle-adjust-btn" data-side="you" data-stat="primaryVp" data-amount="-5">-5 VP</button>
+              </div>
+              <div class="battle-custom-adjust">
+                <input type="number" id="battleYouPrimaryCustomInput" min="0" step="1" placeholder="Custom VP" />
+                <button type="button" class="secondary battle-adjust-custom-btn" data-side="you" data-stat="primaryVp" data-input-id="battleYouPrimaryCustomInput">+X</button>
+                <button type="button" class="secondary battle-adjust-custom-btn" data-side="you" data-stat="primaryVp" data-input-id="battleYouPrimaryCustomInput" data-direction="-1">-X</button>
+              </div>
+            </div>
+            <div class="result">
+              <div class="kicker">Opponent Primary</div>
+              <div class="big" id="battleOpponentPrimaryBig">0</div>
+              <div class="checks">
+                <button type="button" class="secondary battle-adjust-btn" data-side="opponent" data-stat="primaryVp" data-amount="5">+5 VP</button>
+                <button type="button" class="secondary battle-adjust-btn" data-side="opponent" data-stat="primaryVp" data-amount="-5">-5 VP</button>
+              </div>
+              <div class="battle-custom-adjust">
+                <input type="number" id="battleOpponentPrimaryCustomInput" min="0" step="1" placeholder="Custom VP" />
+                <button type="button" class="secondary battle-adjust-custom-btn" data-side="opponent" data-stat="primaryVp" data-input-id="battleOpponentPrimaryCustomInput">+X</button>
+                <button type="button" class="secondary battle-adjust-custom-btn" data-side="opponent" data-stat="primaryVp" data-input-id="battleOpponentPrimaryCustomInput" data-direction="-1">-X</button>
+              </div>
+            </div>
+            <div class="result">
+              <div class="kicker">You Secondary</div>
+              <div class="big" id="battleYouSecondaryBig">0</div>
+              <div class="checks">
+                <button type="button" class="secondary battle-adjust-btn" data-side="you" data-stat="secondaryVp" data-amount="5">+5 VP</button>
+                <button type="button" class="secondary battle-adjust-btn" data-side="you" data-stat="secondaryVp" data-amount="-5">-5 VP</button>
+              </div>
+              <div class="battle-custom-adjust">
+                <input type="number" id="battleYouSecondaryCustomInput" min="0" step="1" placeholder="Custom VP" />
+                <button type="button" class="secondary battle-adjust-custom-btn" data-side="you" data-stat="secondaryVp" data-input-id="battleYouSecondaryCustomInput">+X</button>
+                <button type="button" class="secondary battle-adjust-custom-btn" data-side="you" data-stat="secondaryVp" data-input-id="battleYouSecondaryCustomInput" data-direction="-1">-X</button>
+              </div>
+            </div>
+            <div class="result">
+              <div class="kicker">Opponent Secondary</div>
+              <div class="big" id="battleOpponentSecondaryBig">0</div>
+              <div class="checks">
+                <button type="button" class="secondary battle-adjust-btn" data-side="opponent" data-stat="secondaryVp" data-amount="5">+5 VP</button>
+                <button type="button" class="secondary battle-adjust-btn" data-side="opponent" data-stat="secondaryVp" data-amount="-5">-5 VP</button>
+              </div>
+              <div class="battle-custom-adjust">
+                <input type="number" id="battleOpponentSecondaryCustomInput" min="0" step="1" placeholder="Custom VP" />
+                <button type="button" class="secondary battle-adjust-custom-btn" data-side="opponent" data-stat="secondaryVp" data-input-id="battleOpponentSecondaryCustomInput">+X</button>
+                <button type="button" class="secondary battle-adjust-custom-btn" data-side="opponent" data-stat="secondaryVp" data-input-id="battleOpponentSecondaryCustomInput" data-direction="-1">-X</button>
+              </div>
+            </div>
+            <div class="result">
+              <div class="kicker">You Total</div>
+              <div class="big" id="battleYouTotalBig">0</div>
+            </div>
+            <div class="result">
+              <div class="kicker">Opponent Total</div>
+              <div class="big" id="battleOpponentTotalBig">0</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card span-12">
+          <h2>Battle Log</h2>
+          <div class="note" id="battleLogEmpty">No actions logged yet.</div>
+          <div class="note profile-note battle-log-scroll" id="battleLogList" hidden></div>
+        </div>
+
+        <div class="card span-12">
+          <h2>Unit State Tracker</h2>
+          <div class="note" id="battleUnitStateSummary"></div>
+          <div class="army-unit-list scrollable-roster" id="battleUnitStateList"></div>
+        </div>
+
+        <div class="footer-bar span-12">
+          <div class="footer-quote">It is better to die for the Emperor than to live for yourself.</div>
+          <div class="imperial-tagline">Tactica Imperialis v1.0</div>
+        </div>
+      </div>
     </section>
   </div>
 
@@ -3388,6 +3725,58 @@
     const landingView = document.getElementById('landingView');
     const armyBuilderView = document.getElementById('armyBuilderView');
     const calculatorView = document.getElementById('calculatorView');
+    const battleTrackerView = document.getElementById('battleTrackerView');
+    const calculatorCancelBattleAttackBtn = document.getElementById('calculatorCancelBattleAttackBtn');
+    const calculatorBattleModeNote = document.getElementById('calculatorBattleModeNote');
+    const calculatorBattleTrackerBtn = document.getElementById('calculatorBattleTrackerBtn');
+    const calculatorBuilderBtn = document.getElementById('calculatorBuilderBtn');
+    const calculatorBattleResolveRow = document.getElementById('calculatorBattleResolveRow');
+    const calculatorResolvedDamageInput = document.getElementById('calculatorResolvedDamageInput');
+    const calculatorRecordBattleWeaponBtn = document.getElementById('calculatorRecordBattleWeaponBtn');
+    const calculatorApplyBattleAttackBtn = document.getElementById('calculatorApplyBattleAttackBtn');
+    const calculatorClearBattleDamageBtn = document.getElementById('calculatorClearBattleDamageBtn');
+    const calculatorBattleResolveNote = document.getElementById('calculatorBattleResolveNote');
+    const calculatorBattleRecordedWeapons = document.getElementById('calculatorBattleRecordedWeapons');
+    const calculatorBattleFinalizeRow = document.getElementById('calculatorBattleFinalizeRow');
+    const calculatorBattleNewTargetBtn = document.getElementById('calculatorBattleNewTargetBtn');
+    const battleNameInput = document.getElementById('battleNameInput');
+    const battleYourFactionSelect = document.getElementById('battleYourFactionSelect');
+    const battleArmyListSelect = document.getElementById('battleArmyListSelect');
+    const battleOpponentFactionSelect = document.getElementById('battleOpponentFactionSelect');
+    const battleMissionNameInput = document.getElementById('battleMissionNameInput');
+    const battleDeploymentInput = document.getElementById('battleDeploymentInput');
+    const battleMissionRuleInput = document.getElementById('battleMissionRuleInput');
+    const battleFirstTurnSelect = document.getElementById('battleFirstTurnSelect');
+    const battleYourStartingCpInput = document.getElementById('battleYourStartingCpInput');
+    const battleOpponentStartingCpInput = document.getElementById('battleOpponentStartingCpInput');
+    const battleSetupStatus = document.getElementById('battleSetupStatus');
+    const savedBattleSelect = document.getElementById('savedBattleSelect');
+    const battlePersistenceNote = document.getElementById('battlePersistenceNote');
+    const battleRoundBig = document.getElementById('battleRoundBig');
+    const battleCurrentPlayerBig = document.getElementById('battleCurrentPlayerBig');
+    const battleCurrentPhaseBig = document.getElementById('battleCurrentPhaseBig');
+    const battleYouCpBig = document.getElementById('battleYouCpBig');
+    const battleOpponentCpBig = document.getElementById('battleOpponentCpBig');
+    const battleYouPrimaryBig = document.getElementById('battleYouPrimaryBig');
+    const battleOpponentPrimaryBig = document.getElementById('battleOpponentPrimaryBig');
+    const battleYouSecondaryBig = document.getElementById('battleYouSecondaryBig');
+    const battleOpponentSecondaryBig = document.getElementById('battleOpponentSecondaryBig');
+    const battleYouTotalBig = document.getElementById('battleYouTotalBig');
+    const battleOpponentTotalBig = document.getElementById('battleOpponentTotalBig');
+    const battleLogEmpty = document.getElementById('battleLogEmpty');
+    const battleLogList = document.getElementById('battleLogList');
+    const battleUnitStateSummary = document.getElementById('battleUnitStateSummary');
+    const battleUnitStateList = document.getElementById('battleUnitStateList');
+    const battleUndoBtn = document.getElementById('battleUndoBtn');
+    const battleStartBtn = document.getElementById('battleStartBtn');
+    const battlePrevPhaseBtn = document.getElementById('battlePrevPhaseBtn');
+    const battleNextPhaseBtn = document.getElementById('battleNextPhaseBtn');
+    const battleEndTurnBtn = document.getElementById('battleEndTurnBtn');
+    const battleNextRoundBtn = document.getElementById('battleNextRoundBtn');
+    const battleEndBattleBtn = document.getElementById('battleEndBattleBtn');
+    const battleEndConfirmRow = document.getElementById('battleEndConfirmRow');
+    const battleEndBattleYesBtn = document.getElementById('battleEndBattleYesBtn');
+    const battleEndBattleNoBtn = document.getElementById('battleEndBattleNoBtn');
     const builderListName = document.getElementById('builderListName');
     const builderFactionSelect = document.getElementById('builderFactionSelect');
     const builderUnitSelect = document.getElementById('builderUnitSelect');
@@ -3400,8 +3789,58 @@
     const builderCompositionNote = document.getElementById('builderCompositionNote');
 
     const ARMY_LIST_STORAGE_KEY = 'wh40kArmyLists.v1';
+    const BATTLE_STORAGE_KEY = 'wh40kBattles.v1';
+    const BATTLE_DRAFT_STORAGE_KEY = 'wh40kBattleDraft.v1';
+    const BATTLE_PHASES = ['Command', 'Movement', 'Shooting', 'Charge', 'Fight'];
+    const ASTRA_MILITARUM_MIXED_WOUND_BUCKETS = {
+      'Cadian Command Squad': {
+        5: [
+          { label: 'Cadian Veteran Guardsman', count: 4, wounds: 1 },
+          { label: 'Cadian Commander', count: 1, wounds: 3 },
+        ]
+      },
+      'Catachan Command Squad': {
+        5: [
+          { label: 'Veteran Guardsman', count: 4, wounds: 1 },
+          { label: 'Catachan Commander', count: 1, wounds: 3 },
+        ]
+      },
+      'Krieg Command Squad': {
+        6: [
+          { label: 'Veteran Guardsman', count: 5, wounds: 1 },
+          { label: 'Lord Commissar', count: 1, wounds: 3 },
+        ]
+      },
+      'Krieg Heavy Weapons Squad': {
+        4: [
+          { label: 'Heavy Weapons Gunner', count: 3, wounds: 2 },
+          { label: 'Fire Coordinator', count: 1, wounds: 1 },
+        ]
+      },
+      'Militarum Tempestus Command Squad': {
+        5: [
+          { label: 'Tempestus Scion', count: 4, wounds: 1 },
+          { label: 'Tempestor Prime', count: 1, wounds: 3 },
+        ]
+      },
+      'Gaunt’s Ghosts': {
+        6: [
+          { label: 'Tanith Ghost', count: 5, wounds: 2 },
+          { label: 'Ibram Gaunt', count: 1, wounds: 3 },
+        ]
+      },
+      "Gaunt's Ghosts": {
+        6: [
+          { label: 'Tanith Ghost', count: 5, wounds: 2 },
+          { label: 'Ibram Gaunt', count: 1, wounds: 3 },
+        ]
+      },
+    };
     let armyLists = loadArmyLists();
+    let battles = loadBattles();
     let activeBuilderList = createEmptyArmyList();
+    let activeBattle = loadBattleDraft() || createEmptyBattle();
+    let battleUndoStack = [];
     let builderData = structuredClone(defaultData);
     let currentBuilderFactionSlug = 'astra-militarum';
     let editingBuilderUnitId = null;
@@ -3429,6 +3868,40 @@
       };
     }
 
+    function createEmptyBattle() {
+      const timestamp = new Date().toISOString();
+      return {
+        id: createId('battle'),
+        name: 'New Engagement',
+        yourFactionSlug: 'astra-militarum',
+        opponentFactionSlug: 'astra-militarum',
+        yourArmyListId: '',
+        missionName: '',
+        deployment: '',
+        missionRule: '',
+        firstTurn: 'you',
+        isStarted: false,
+        startedAt: '',
+        isEnded: false,
+        endedAt: '',
+        round: 1,
+        currentPlayer: 'you',
+        currentPhase: 'Command',
+        players: {
+          you: { cp: 0, primaryVp: 0, secondaryVp: 0, totalVp: 0 },
+          opponent: { cp: 0, primaryVp: 0, secondaryVp: 0, totalVp: 0 },
+        },
+        unitStates: {},
+        phaseActions: {},
+        pendingAttackContext: null,
+        unitDamage: {},
+        oneUseStatus: {},
+        log: [],
+        createdAt: timestamp,
+        updatedAt: timestamp
+      };
+    }
+
     function loadArmyLists() {
       try {
         const parsed = JSON.parse(localStorage.getItem(ARMY_LIST_STORAGE_KEY) || '[]');
@@ -3439,9 +3912,70 @@
       }
     }
 
+    function loadBattles() {
+      try {
+        const parsed = JSON.parse(localStorage.getItem(BATTLE_STORAGE_KEY) || '[]');
+        return Array.isArray(parsed) ? parsed.map(normalizeBattleRecord) : [];
+      } catch (err) {
+        console.warn('Failed to load saved battles:', err);
+        return [];
+      }
+    }
+
+    function loadBattleDraft() {
+      try {
+        const parsed = JSON.parse(localStorage.getItem(BATTLE_DRAFT_STORAGE_KEY) || 'null');
+        return parsed ? normalizeBattleRecord(parsed) : null;
+      } catch (err) {
+        console.warn('Failed to load active battle draft:', err);
+        return null;
+      }
+    }
+
     function persistArmyLists() {
       localStorage.setItem(ARMY_LIST_STORAGE_KEY, JSON.stringify(armyLists));
       populateArmyListSelectors();
+      populateBattleArmyListOptions();
+    }
+
+    function persistBattles() {
+      localStorage.setItem(BATTLE_STORAGE_KEY, JSON.stringify(battles));
+      populateSavedBattleOptions();
+    }
+
+    function persistBattleDraft() {
+      localStorage.setItem(BATTLE_DRAFT_STORAGE_KEY, JSON.stringify(normalizeBattleRecord(activeBattle)));
+    }
+
+    function upsertSavedBattle(snapshot = activeBattle) {
+      const normalized = normalizeBattleRecord(snapshot);
+      const existingIndex = battles.findIndex(battle => battle.id === normalized.id);
+      if (existingIndex >= 0) battles.splice(existingIndex, 1, normalized);
+      else battles.push(normalized);
+      persistBattles();
+    }
+
+    function syncActiveBattlePersistence({ updateSaved = false } = {}) {
+      activeBattle = normalizeBattleRecord(activeBattle);
+      persistBattleDraft();
+      if (updateSaved || battles.some(battle => battle.id === activeBattle.id)) {
+        upsertSavedBattle(activeBattle);
+      } else {
+        populateSavedBattleOptions();
+      }
+      renderBattlePersistenceNote();
+    }
+
+    function battleSavedTimestampLabel(value) {
+      if (!value) return 'Not yet saved';
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return 'Not yet saved';
+      return date.toLocaleString([], {
+        month: 'short',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: '2-digit'
+      });
     }
 
     function showView(viewName) {
@@ -3449,6 +3983,7 @@
       landingView.hidden = viewName !== 'landing';
       armyBuilderView.hidden = viewName !== 'builder';
       calculatorView.hidden = viewName !== 'calculator';
+      battleTrackerView.hidden = viewName !== 'battle-tracker';
     }
 
     function factionNameForSlug(slug) {
@@ -3459,6 +3994,85 @@
       const count = list?.units?.length || 0;
       const points = calculateArmyListPoints(list);
       return `${list?.name || 'Untitled List'} (${list?.factionName || factionNameForSlug(list?.factionSlug)} - ${count} unit${count === 1 ? '' : 's'} - ${points.totalKnown}${points.hasUnknown ? '+' : ''} pts)`;
+    }
+
+    function battleLabel(battle) {
+      const yourFaction = factionNameForSlug(battle?.yourFactionSlug);
+      const opponentFaction = factionNameForSlug(battle?.opponentFactionSlug);
+      return `${battle?.name || 'Untitled Battle'} (${yourFaction} vs ${opponentFaction})`;
+    }
+
+    function normalizeBattleRecord(battle) {
+      const normalized = structuredClone(battle || {});
+      normalized.id = normalized.id || createId('battle');
+      normalized.name = normalized.name || 'New Engagement';
+      normalized.yourFactionSlug = normalized.yourFactionSlug || 'astra-militarum';
+      normalized.opponentFactionSlug = normalized.opponentFactionSlug || 'astra-militarum';
+      normalized.yourArmyListId = normalized.yourArmyListId || '';
+      normalized.missionName = normalized.missionName || '';
+      normalized.deployment = normalized.deployment || '';
+      normalized.missionRule = normalized.missionRule || '';
+      normalized.firstTurn = normalized.firstTurn === 'opponent' ? 'opponent' : 'you';
+      normalized.isStarted = normalized.isStarted === true;
+      normalized.startedAt = normalized.startedAt || '';
+      normalized.isEnded = normalized.isEnded === true;
+      normalized.endedAt = normalized.endedAt || '';
+      normalized.round = Math.max(1, Number(normalized.round || 1));
+      normalized.currentPlayer = normalized.currentPlayer === 'opponent' ? 'opponent' : 'you';
+      normalized.currentPhase = BATTLE_PHASES.includes(normalized.currentPhase) ? normalized.currentPhase : 'Command';
+      normalized.players = normalized.players || {};
+      normalized.players.you = normalized.players.you || {};
+      normalized.players.opponent = normalized.players.opponent || {};
+      normalized.players.you.cp = Math.max(0, Number(normalized.players.you.cp || 0));
+      normalized.players.you.primaryVp = Math.max(0, Number(normalized.players.you.primaryVp || 0));
+      normalized.players.you.secondaryVp = Math.max(0, Number(normalized.players.you.secondaryVp || 0));
+      normalized.players.opponent.cp = Math.max(0, Number(normalized.players.opponent.cp || 0));
+      normalized.players.opponent.primaryVp = Math.max(0, Number(normalized.players.opponent.primaryVp || 0));
+      normalized.players.opponent.secondaryVp = Math.max(0, Number(normalized.players.opponent.secondaryVp || 0));
+      normalized.players.you.totalVp = normalized.players.you.primaryVp + normalized.players.you.secondaryVp;
+      normalized.players.opponent.totalVp = normalized.players.opponent.primaryVp + normalized.players.opponent.secondaryVp;
+      normalized.unitStates = normalized.unitStates && typeof normalized.unitStates === 'object' ? normalized.unitStates : {};
+      normalized.phaseActions = normalized.phaseActions && typeof normalized.phaseActions === 'object' ? normalized.phaseActions : {};
+      normalized.pendingAttackContext = normalized.pendingAttackContext && typeof normalized.pendingAttackContext === 'object'
+        ? normalized.pendingAttackContext
+        : null;
+      if (normalized.pendingAttackContext) {
+        const legacyRecordedWeapons = Array.isArray(normalized.pendingAttackContext.recordedWeapons)
+          ? normalized.pendingAttackContext.recordedWeapons
+          : [];
+        normalized.pendingAttackContext.targetGroups = Array.isArray(normalized.pendingAttackContext.targetGroups)
+          ? normalized.pendingAttackContext.targetGroups.map(group => ({
+              id: group?.id || createId('attack-target'),
+              targetUnitName: group?.targetUnitName || '',
+              recordedWeapons: Array.isArray(group?.recordedWeapons) ? group.recordedWeapons : [],
+            }))
+          : [];
+        if (!normalized.pendingAttackContext.targetGroups.length && legacyRecordedWeapons.length) {
+          normalized.pendingAttackContext.targetGroups = [{
+            id: createId('attack-target'),
+            targetUnitName: '',
+            recordedWeapons: legacyRecordedWeapons,
+          }];
+        }
+        if (!normalized.pendingAttackContext.targetGroups.length) {
+          normalized.pendingAttackContext.targetGroups = [{
+            id: createId('attack-target'),
+            targetUnitName: '',
+            recordedWeapons: [],
+          }];
+        }
+        normalized.pendingAttackContext.activeTargetGroupId = normalized.pendingAttackContext.activeTargetGroupId
+          || normalized.pendingAttackContext.targetGroups[normalized.pendingAttackContext.targetGroups.length - 1]?.id
+          || normalized.pendingAttackContext.targetGroups[0]?.id
+          || '';
+        delete normalized.pendingAttackContext.recordedWeapons;
+      }
+      normalized.unitDamage = normalized.unitDamage && typeof normalized.unitDamage === 'object' ? normalized.unitDamage : {};
+      normalized.oneUseStatus = normalized.oneUseStatus && typeof normalized.oneUseStatus === 'object' ? normalized.oneUseStatus : {};
+      normalized.log = Array.isArray(normalized.log) ? normalized.log : [];
+      normalized.createdAt = normalized.createdAt || new Date().toISOString();
+      normalized.updatedAt = normalized.updatedAt || normalized.createdAt;
+      return normalized;
     }
 
     function getUnitPointsEntry(factionSlug, unitName) {
@@ -4545,6 +5159,45 @@
       combatArmyListSelect.value = activeCombatList?.id || '';
     }
 
+    function populateBattleArmyListOptions() {
+      battleArmyListSelect.innerHTML = '';
+      const noneOpt = document.createElement('option');
+      noneOpt.value = '';
+      noneOpt.textContent = 'No linked army list';
+      battleArmyListSelect.appendChild(noneOpt);
+
+      armyLists.forEach(list => {
+        const opt = document.createElement('option');
+        opt.value = list.id;
+        opt.textContent = armyListLabel(list);
+        battleArmyListSelect.appendChild(opt);
+      });
+
+      battleArmyListSelect.value = activeBattle?.yourArmyListId || '';
+    }
+
+    function populateSavedBattleOptions() {
+      savedBattleSelect.innerHTML = '';
+      if (!battles.length) {
+        const emptyOpt = document.createElement('option');
+        emptyOpt.value = '';
+        emptyOpt.textContent = 'No saved battles yet';
+        savedBattleSelect.appendChild(emptyOpt);
+        return;
+      }
+
+      battles.forEach(battle => {
+        const opt = document.createElement('option');
+        opt.value = battle.id;
+        opt.textContent = battleLabel(battle);
+        savedBattleSelect.appendChild(opt);
+      });
+
+      if (activeBattle?.id && battles.some(battle => battle.id === activeBattle.id)) {
+        savedBattleSelect.value = activeBattle.id;
+      }
+    }
+
     function escapeHtml(value) {
       return String(value ?? '')
         .replaceAll('&', '&amp;')
@@ -4569,6 +5222,8 @@
       factionSelect.innerHTML = '';
       targetFactionSelect.innerHTML = '';
       builderFactionSelect.innerHTML = '';
+      battleYourFactionSelect.innerHTML = '';
+      battleOpponentFactionSelect.innerHTML = '';
       factionManifest.forEach(faction => {
         const opt = document.createElement('option');
         opt.value = faction.slug;
@@ -4584,10 +5239,1164 @@
         builderOpt.value = faction.slug;
         builderOpt.textContent = faction.name;
         builderFactionSelect.appendChild(builderOpt);
+
+        const yourBattleOpt = document.createElement('option');
+        yourBattleOpt.value = faction.slug;
+        yourBattleOpt.textContent = faction.name;
+        battleYourFactionSelect.appendChild(yourBattleOpt);
+
+        const opponentBattleOpt = document.createElement('option');
+        opponentBattleOpt.value = faction.slug;
+        opponentBattleOpt.textContent = faction.name;
+        battleOpponentFactionSelect.appendChild(opponentBattleOpt);
       });
       factionSelect.value = currentFactionSlug;
       targetFactionSelect.value = currentTargetFactionSlug;
       builderFactionSelect.value = currentBuilderFactionSlug;
+      battleYourFactionSelect.value = activeBattle?.yourFactionSlug || 'astra-militarum';
+      battleOpponentFactionSelect.value = activeBattle?.opponentFactionSlug || 'astra-militarum';
+    }
+
+    function normalizeBattleStartingCp(input) {
+      const normalized = Math.max(0, Math.floor(Number(input.value || 0)));
+      input.value = String(Number.isFinite(normalized) ? normalized : 0);
+      return normalized;
+    }
+
+    function linkedArmyListForBattle() {
+      return armyLists.find(list => list.id === activeBattle?.yourArmyListId) || null;
+    }
+
+    function linkedBattleUnits() {
+      return linkedArmyListForBattle()?.units || [];
+    }
+
+    function linkedBattleFactionData() {
+      const list = linkedArmyListForBattle();
+      if (!list?.factionSlug) return null;
+      return window.WH40K_FACTION_DATABASES?.[list.factionSlug] || null;
+    }
+
+    function ensureBattleFactionDataLoaded() {
+      const list = linkedArmyListForBattle();
+      if (!list?.factionSlug) return Promise.resolve(null);
+      const loaded = linkedBattleFactionData();
+      if (loaded) return Promise.resolve(loaded);
+      const faction = factionManifest.find(entry => entry.slug === list.factionSlug);
+      if (!faction) return Promise.resolve(null);
+      return loadFactionScript(faction).then(() => linkedBattleFactionData()).catch(() => null);
+    }
+
+    function battleUnitStatusLabel(status) {
+      const labels = {
+        ready: 'Ready',
+        reserves: 'Reserves',
+        battleshocked: 'Battle-shocked',
+        destroyed: 'Destroyed',
+      };
+      return labels[status] || 'Ready';
+    }
+
+    function battleHasStarted() {
+      return activeBattle?.isStarted === true;
+    }
+
+    function battleHasEnded() {
+      return activeBattle?.isEnded === true;
+    }
+
+    function battleLiveEditingEnabled() {
+      return battleHasStarted() && !battleHasEnded();
+    }
+
+    function hideBattleEndConfirmation() {
+      battleEndConfirmRow.hidden = true;
+    }
+
+    function currentBattleUnitAction() {
+      if (!battleHasStarted() || activeBattle.currentPlayer !== 'you') return null;
+      const actionMap = {
+        Movement: 'move',
+        Shooting: 'shoot',
+        Charge: 'charge',
+        Fight: 'fight',
+      };
+      return actionMap[activeBattle.currentPhase] || null;
+    }
+
+    function battlePhaseActionLabel(action) {
+      const labels = {
+        move: 'Move',
+        shoot: 'Shoot',
+        charge: 'Charge',
+        fight: 'Fight',
+      };
+      return labels[action] || '';
+    }
+
+    function battlePhaseActionPastTense(action) {
+      const labels = {
+        move: 'moved',
+        shoot: 'shot',
+        charge: 'charged',
+        fight: 'fought',
+      };
+      return labels[action] || action;
+    }
+
+    function battlePhaseActionKey(unitId, action) {
+      return [
+        unitId,
+        activeBattle.round || 1,
+        activeBattle.currentPlayer || 'you',
+        activeBattle.currentPhase || 'Command',
+        action,
+      ].join('::');
+    }
+
+    function hasBattlePhaseActionBeenUsed(unitId, action) {
+      if (!unitId || !action) return false;
+      return activeBattle.phaseActions?.[battlePhaseActionKey(unitId, action)] === true;
+    }
+
+    function activeBattleAttackContext() {
+      return activeBattle?.pendingAttackContext || null;
+    }
+
+    function battleAttackTargetGroups() {
+      return Array.isArray(activeBattleAttackContext()?.targetGroups) ? activeBattleAttackContext().targetGroups : [];
+    }
+
+    function activeBattleAttackTargetGroup() {
+      const context = activeBattleAttackContext();
+      if (!context) return null;
+      return battleAttackTargetGroups().find(group => group.id === context.activeTargetGroupId) || battleAttackTargetGroups()[0] || null;
+    }
+
+    function battleAttackAllRecordedWeapons() {
+      return battleAttackTargetGroups().flatMap(group => Array.isArray(group.recordedWeapons) ? group.recordedWeapons : []);
+    }
+
+    function battleAttackRecordedWeaponNames() {
+      return new Set(battleAttackAllRecordedWeapons().map(entry => entry.weaponName));
+    }
+
+    function battleAttackRecordedTotalDamage() {
+      return battleAttackAllRecordedWeapons().reduce((sum, entry) => sum + Math.max(0, Number(entry.damage || 0)), 0);
+    }
+
+    function battleAttackTargetGroupTotalDamage(group) {
+      if (!group || !Array.isArray(group.recordedWeapons)) return 0;
+      return group.recordedWeapons.reduce((sum, entry) => sum + Math.max(0, Number(entry.damage || 0)), 0);
+    }
+
+    function battleAttackCompletedTargetGroups() {
+      return battleAttackTargetGroups().filter(group => Array.isArray(group.recordedWeapons) && group.recordedWeapons.length);
+    }
+
+    function updateBattleAttackApplyState() {
+      const context = activeBattleAttackContext();
+      if (!context) {
+        calculatorRecordBattleWeaponBtn.disabled = false;
+        calculatorBattleNewTargetBtn.disabled = false;
+        calculatorApplyBattleAttackBtn.disabled = false;
+        return;
+      }
+      const hasWeapon = Boolean(getSelectedWeapon());
+      const hasDamage = Number.isFinite(Number(calculatorResolvedDamageInput.value || '')) && Number(calculatorResolvedDamageInput.value || 0) >= 0;
+      const activeGroup = activeBattleAttackTargetGroup();
+      const targetName = activeGroup?.targetUnitName || targetUnitSelect.value || '';
+      const hasRecordedWeapons = battleAttackCompletedTargetGroups().length > 0;
+      calculatorRecordBattleWeaponBtn.disabled = !(hasWeapon && hasDamage && targetName);
+      calculatorBattleNewTargetBtn.disabled = !(activeGroup && activeGroup.recordedWeapons.length > 0);
+      calculatorApplyBattleAttackBtn.disabled = !hasRecordedWeapons;
+    }
+
+    function renderCalculatorBattleMode() {
+      const context = activeBattleAttackContext();
+      if (!context) {
+        calculatorView.classList.remove('battle-linked');
+        calculatorBattleModeNote.hidden = true;
+        calculatorBattleModeNote.textContent = '';
+        calculatorCancelBattleAttackBtn.hidden = true;
+        calculatorBattleResolveRow.hidden = true;
+        calculatorBattleResolveNote.hidden = true;
+        calculatorBattleResolveNote.textContent = '';
+        calculatorBattleRecordedWeapons.hidden = true;
+        calculatorBattleRecordedWeapons.innerHTML = '';
+        calculatorBattleFinalizeRow.hidden = true;
+        calculatorRecordBattleWeaponBtn.textContent = 'Record Weapon Damage';
+        calculatorApplyBattleAttackBtn.textContent = 'Apply Damage';
+        calculatorBattleTrackerBtn.disabled = false;
+        calculatorBuilderBtn.disabled = false;
+        combatArmyListSelect.disabled = false;
+        unitSelect.disabled = false;
+        targetFactionSelect.disabled = false;
+        factionSelect.disabled = Boolean(activeCombatList);
+        updateBattleAttackApplyState();
+        return;
+      }
+      if (
+        !battleLiveEditingEnabled()
+        || context.battleId !== activeBattle.id
+        || context.round !== activeBattle.round
+        || context.player !== activeBattle.currentPlayer
+        || context.phase !== activeBattle.currentPhase
+        || context.action !== currentBattleUnitAction()
+      ) {
+        clearBattleAttackContext();
+        return;
+      }
+      calculatorView.classList.add('battle-linked');
+      const linkedUnits = linkedBattleUnits();
+      const entry = linkedUnits.find(unit => unit.id === context.unitId);
+      const unitLabel = entry ? formatRosterUnitTitle(entry, linkedUnits.indexOf(entry)) : context.unitName || 'Linked unit';
+      const actionLabel = battlePhaseActionLabel(context.action);
+      const targetGroups = battleAttackTargetGroups();
+      const activeGroup = activeBattleAttackTargetGroup();
+      const completedGroups = battleAttackCompletedTargetGroups();
+      const activeTargetName = activeGroup?.targetUnitName || targetUnitSelect.value || 'Select a target unit';
+      const activeTargetTotal = battleAttackTargetGroupTotalDamage(activeGroup);
+      if (activeGroup?.targetUnitName && targetUnitSelect.querySelector(`option[value="${activeGroup.targetUnitName}"]`)) {
+        targetUnitSelect.value = activeGroup.targetUnitName;
+      }
+      calculatorBattleModeNote.hidden = false;
+      calculatorBattleModeNote.textContent = `Battle-linked ${actionLabel} action: ${unitLabel}. Opponent faction synced from Battle Tracker.`;
+      calculatorCancelBattleAttackBtn.hidden = false;
+      calculatorBattleResolveRow.hidden = false;
+      calculatorRecordBattleWeaponBtn.textContent = `Record ${actionLabel} Weapon`;
+      calculatorApplyBattleAttackBtn.textContent = `Apply ${actionLabel}`;
+      calculatorBattleResolveNote.hidden = false;
+      calculatorBattleResolveNote.textContent = `Current target: ${activeTargetName}. Target groups: ${completedGroups.length}. Current target total: ${activeTargetTotal}.`;
+      const showActiveTargetGroup = Boolean(activeGroup && !activeGroup.recordedWeapons.length && completedGroups.length > 0);
+      const activeGroupMarkup = showActiveTargetGroup ? `
+        <div class="army-unit-row active-target-group">
+          <strong>Target ${completedGroups.length + 1}: ${escapeHtml(activeTargetName)}</strong>
+          <div class="small">New target in progress. Record weapons for this target or choose a different target before recording.</div>
+        </div>
+      ` : '';
+      calculatorBattleRecordedWeapons.hidden = !(completedGroups.length || showActiveTargetGroup);
+      calculatorBattleRecordedWeapons.innerHTML = completedGroups.map((group, groupIndex) => `
+        <div class="army-unit-row">
+          <strong>Target ${groupIndex + 1}: ${escapeHtml(group.targetUnitName || 'Unknown Target')}</strong>
+          <div class="small">Target total: ${battleAttackTargetGroupTotalDamage(group)} damage</div>
+          ${group.recordedWeapons.map(entry => `
+            <div class="small">${escapeHtml(entry.weaponName)} - ${escapeHtml(String(entry.damage))} damage recorded</div>
+            <div class="army-unit-actions">
+              <button type="button" class="secondary calculator-remove-recorded-weapon-btn" data-group-id="${escapeHtml(group.id)}" data-weapon-name="${escapeHtml(entry.weaponName)}">Remove</button>
+            </div>
+          `).join('')}
+        </div>
+      `).join('') + activeGroupMarkup;
+      calculatorBattleFinalizeRow.hidden = completedGroups.length === 0;
+      calculatorBattleTrackerBtn.disabled = true;
+      calculatorBuilderBtn.disabled = true;
+      combatArmyListSelect.disabled = true;
+      factionSelect.disabled = true;
+      unitSelect.disabled = true;
+      targetFactionSelect.disabled = true;
+      targetUnitSelect.disabled = Boolean(activeGroup && activeGroup.recordedWeapons.length > 0);
+      calculatorBattleRecordedWeapons.querySelectorAll('.calculator-remove-recorded-weapon-btn').forEach(button => {
+        button.addEventListener('click', () => removeRecordedBattleAttackWeapon(button.dataset.groupId, button.dataset.weaponName));
+      });
+      updateBattleAttackApplyState();
+    }
+
+    function clearBattleAttackContext({ persist = true, renderCalculator = true } = {}) {
+      if (!activeBattle?.pendingAttackContext) return;
+      activeBattle.pendingAttackContext = null;
+      calculatorResolvedDamageInput.value = '';
+      calculatorBattleResolveNote.textContent = '';
+      if (persist) syncActiveBattlePersistence();
+      if (renderCalculator) renderCalculatorBattleMode();
+    }
+
+    async function beginBattleAttackContext(unitId, action) {
+      if (!battleLiveEditingEnabled()) return;
+      const linkedList = linkedArmyListForBattle();
+      const linkedUnits = linkedBattleUnits();
+      const entry = linkedUnits.find(unit => unit.id === unitId);
+      const currentAction = currentBattleUnitAction();
+      if (!linkedList || !entry || !['shoot', 'fight'].includes(action) || action !== currentAction) return;
+      activeBattle.pendingAttackContext = {
+        unitId,
+        unitName: entry.unitName,
+        action,
+        targetGroups: [{
+          id: createId('attack-target'),
+          targetUnitName: '',
+          recordedWeapons: [],
+        }],
+        activeTargetGroupId: '',
+        battleId: activeBattle.id,
+        armyListId: linkedList.id,
+        opponentFactionSlug: activeBattle.opponentFactionSlug,
+        round: activeBattle.round,
+        player: activeBattle.currentPlayer,
+        phase: activeBattle.currentPhase,
+        createdAt: new Date().toISOString(),
+      };
+      activeBattle.pendingAttackContext.activeTargetGroupId = activeBattle.pendingAttackContext.targetGroups[0].id;
+      syncActiveBattlePersistence();
+      await setCombatArmyList(linkedList.id);
+      if (unitSelect.querySelector(`option[value="${unitId}"]`)) {
+        unitSelect.value = unitId;
+        populateWeapons();
+      }
+      if (activeBattle.opponentFactionSlug) {
+        await setTargetFaction(activeBattle.opponentFactionSlug);
+      }
+      renderCalculatorBattleMode();
+      showView('calculator');
+    }
+
+    function cancelBattleAttackContext() {
+      if (!activeBattleAttackContext()) return;
+      clearBattleAttackContext();
+      showView('battle-tracker');
+      setBattleStatus('Battle-linked attack canceled.');
+    }
+
+    function recordBattleAttackWeapon() {
+      const context = activeBattleAttackContext();
+      const activeGroup = activeBattleAttackTargetGroup();
+      const weapon = getSelectedWeapon();
+      const weaponName = weaponSelect.value || '';
+      const rawDamage = Number(calculatorResolvedDamageInput.value || 0);
+      const damage = Math.max(0, Math.floor(rawDamage));
+      if (!context || !weapon || !weaponName) {
+        calculatorBattleResolveNote.hidden = false;
+        calculatorBattleResolveNote.textContent = 'Select a valid linked weapon profile before recording damage.';
+        return;
+      }
+      if (battleAttackRecordedWeaponNames().has(weaponName)) {
+        calculatorBattleResolveNote.hidden = false;
+        calculatorBattleResolveNote.textContent = `${weaponName} has already been recorded for this attack.`;
+        return;
+      }
+      if (!Number.isFinite(rawDamage) || rawDamage < 0) {
+        calculatorBattleResolveNote.hidden = false;
+        calculatorBattleResolveNote.textContent = 'Enter a resolved damage value of 0 or more.';
+        return;
+      }
+      const targetName = targetUnitSelect.value || activeGroup?.targetUnitName || '';
+      if (!activeGroup || !targetName) {
+        calculatorBattleResolveNote.hidden = false;
+        calculatorBattleResolveNote.textContent = 'Select a target unit before recording weapon damage.';
+        return;
+      }
+      activeGroup.targetUnitName = targetName;
+      activeGroup.recordedWeapons.push({
+        weaponName,
+        damage,
+      });
+      calculatorResolvedDamageInput.value = '';
+      syncActiveBattlePersistence();
+      populateWeapons();
+      renderCalculatorBattleMode();
+    }
+
+    function removeRecordedBattleAttackWeapon(groupId, weaponName) {
+      const context = activeBattleAttackContext();
+      if (!context || !groupId || !weaponName) return;
+      context.targetGroups = battleAttackTargetGroups().map(group => {
+        if (group.id !== groupId) return group;
+        return {
+          ...group,
+          recordedWeapons: group.recordedWeapons.filter(entry => entry.weaponName !== weaponName),
+        };
+      }).filter(group => group.recordedWeapons.length || group.id === context.activeTargetGroupId);
+      if (!context.targetGroups.length) {
+        const fallbackGroup = {
+          id: createId('attack-target'),
+          targetUnitName: '',
+          recordedWeapons: [],
+        };
+        context.targetGroups = [fallbackGroup];
+        context.activeTargetGroupId = fallbackGroup.id;
+      }
+      syncActiveBattlePersistence();
+      populateWeapons();
+      if (weaponSelect.querySelector(`option[value="${weaponName}"]`)) {
+        weaponSelect.value = weaponName;
+      }
+      renderCalculatorBattleMode();
+    }
+
+    function createBattleAttackTargetGroup() {
+      return {
+        id: createId('attack-target'),
+        targetUnitName: '',
+        recordedWeapons: [],
+      };
+    }
+
+    function addBattleAttackTargetGroup() {
+      const context = activeBattleAttackContext();
+      const activeGroup = activeBattleAttackTargetGroup();
+      if (!context || !activeGroup || !activeGroup.recordedWeapons.length) return;
+      const nextGroup = createBattleAttackTargetGroup();
+      context.targetGroups.push(nextGroup);
+      context.activeTargetGroupId = nextGroup.id;
+      calculatorResolvedDamageInput.value = '';
+      syncActiveBattlePersistence();
+      renderCalculatorBattleMode();
+      updateBattleAttackApplyState();
+    }
+
+    function applyBattleAttackResolution() {
+      const context = activeBattleAttackContext();
+      if (!context || !battleLiveEditingEnabled()) return;
+      const linkedUnits = linkedBattleUnits();
+      const entry = linkedUnits.find(unit => unit.id === context.unitId);
+      const completedGroups = battleAttackCompletedTargetGroups();
+      if (!entry) return;
+      if (!completedGroups.length) {
+        calculatorBattleResolveNote.hidden = false;
+        calculatorBattleResolveNote.textContent = 'Record at least one weapon result before applying the attack.';
+        return;
+      }
+      const key = battlePhaseActionKey(context.unitId, context.action);
+      if (activeBattle.phaseActions?.[key]) return;
+      pushBattleUndoSnapshot();
+      activeBattle.phaseActions[key] = true;
+      const targetBreakdown = completedGroups
+        .map((group, index) => `Target ${index + 1}: ${group.targetUnitName}. ${group.recordedWeapons.map(entry => `${entry.weaponName} ${entry.damage}`).join('; ')}. Total damage ${battleAttackTargetGroupTotalDamage(group)}.`)
+        .join(' ');
+      addBattleLogEntry(
+        'phase-action',
+        `${formatRosterUnitTitle(entry, linkedUnits.indexOf(entry))} ${battlePhaseActionPastTense(context.action)}. ${targetBreakdown}`
+      );
+      clearBattleAttackContext({ persist: false, renderCalculator: true });
+      syncActiveBattlePersistence();
+      renderBattleDashboard();
+      showView('battle-tracker');
+      setBattleStatus(`${formatRosterUnitTitle(entry, linkedUnits.indexOf(entry))} ${battlePhaseActionPastTense(context.action)} resolved.`);
+    }
+
+    function reserveUnitsAtBattleStart() {
+      return linkedBattleUnits().filter(entry => (activeBattle.unitStates?.[entry.id] || 'ready') === 'reserves');
+    }
+
+    function updateBattleLiveControls() {
+      const started = battleHasStarted();
+      const ended = battleHasEnded();
+      const liveEditing = battleLiveEditingEnabled();
+      [
+        battleNameInput,
+        battleYourFactionSelect,
+        battleArmyListSelect,
+        battleOpponentFactionSelect,
+        battleMissionNameInput,
+        battleDeploymentInput,
+        battleMissionRuleInput,
+        battleFirstTurnSelect,
+        battleYourStartingCpInput,
+        battleOpponentStartingCpInput,
+      ].forEach(el => {
+        el.disabled = started || ended;
+      });
+      battleStartBtn.disabled = started || ended;
+      battleStartBtn.textContent = ended ? 'Battle Ended' : (started ? 'Battle Started' : 'Start Battle');
+      [
+        battlePrevPhaseBtn,
+        battleNextPhaseBtn,
+        battleEndTurnBtn,
+        battleNextRoundBtn,
+      ].forEach(button => {
+        button.disabled = !liveEditing;
+      });
+      battleUndoBtn.disabled = battleUndoStack.length === 0 || !liveEditing;
+      battleEndBattleBtn.disabled = !started || ended;
+      document.querySelectorAll('.battle-adjust-btn, .battle-adjust-custom-btn').forEach(button => {
+        button.disabled = !liveEditing;
+      });
+      document.querySelectorAll('.battle-custom-adjust input').forEach(input => {
+        input.disabled = !liveEditing;
+      });
+      if (ended) hideBattleEndConfirmation();
+    }
+
+    function syncBattleUnitStates() {
+      const linkedUnits = linkedBattleUnits();
+      const nextStates = {};
+      const nextDamage = {};
+      const nextOneUse = {};
+      linkedUnits.forEach(entry => {
+        const previous = activeBattle.unitStates?.[entry.id];
+        nextStates[entry.id] = previous && ['ready', 'reserves', 'battleshocked', 'destroyed'].includes(previous)
+          ? previous
+          : 'ready';
+        nextDamage[entry.id] = Math.max(0, Number(activeBattle.unitDamage?.[entry.id] || 0));
+        Object.entries(activeBattle.oneUseStatus || {})
+          .filter(([key]) => key.startsWith(`${entry.id}::`))
+          .forEach(([key, value]) => {
+            nextOneUse[key] = Math.max(0, Number(value || 0));
+          });
+      });
+      activeBattle.unitStates = nextStates;
+      activeBattle.unitDamage = nextDamage;
+      activeBattle.oneUseStatus = nextOneUse;
+    }
+
+    function syncBattleDraftFromForm() {
+      activeBattle.name = battleNameInput.value.trim() || 'New Engagement';
+      activeBattle.yourArmyListId = battleArmyListSelect.value || '';
+      const linkedList = linkedArmyListForBattle();
+      activeBattle.yourFactionSlug = linkedList?.factionSlug || battleYourFactionSelect.value || 'astra-militarum';
+      activeBattle.opponentFactionSlug = battleOpponentFactionSelect.value || 'astra-militarum';
+      activeBattle.missionName = battleMissionNameInput.value.trim();
+      activeBattle.deployment = battleDeploymentInput.value.trim();
+      activeBattle.missionRule = battleMissionRuleInput.value.trim();
+      activeBattle.firstTurn = battleFirstTurnSelect.value === 'opponent' ? 'opponent' : 'you';
+      activeBattle.players.you.cp = normalizeBattleStartingCp(battleYourStartingCpInput);
+      activeBattle.players.opponent.cp = normalizeBattleStartingCp(battleOpponentStartingCpInput);
+      syncBattleUnitStates();
+      activeBattle.updatedAt = new Date().toISOString();
+      battleYourFactionSelect.value = activeBattle.yourFactionSlug;
+      syncActiveBattlePersistence();
+      renderBattleDashboard();
+    }
+
+    function ensureBattleTotals() {
+      ['you', 'opponent'].forEach(side => {
+        const player = activeBattle.players?.[side];
+        if (!player) return;
+        player.cp = Math.max(0, Number(player.cp || 0));
+        player.primaryVp = Math.max(0, Number(player.primaryVp || 0));
+        player.secondaryVp = Math.max(0, Number(player.secondaryVp || 0));
+        player.totalVp = player.primaryVp + player.secondaryVp;
+      });
+    }
+
+    function battleSideLabel(side) {
+      return side === 'opponent' ? 'Opponent' : 'You';
+    }
+
+    function battleUnitProfile(entry) {
+      const factionData = linkedBattleFactionData();
+      return factionData?.units?.[entry.unitName] || null;
+    }
+
+    function battleUnitWoundBuckets(entry) {
+      if (!entry) return [];
+      if (linkedArmyListForBattle()?.factionSlug === 'astra-militarum') {
+        const modelCount = Number(entry.models || 0);
+        const trustedBuckets = ASTRA_MILITARUM_MIXED_WOUND_BUCKETS[entry.unitName]?.[modelCount];
+        if (trustedBuckets) return trustedBuckets.map(bucket => ({ ...bucket }));
+      }
+
+      const profile = battleUnitProfile(entry);
+      const woundsPerModel = parseStatNumber(profile?.stats?.wounds);
+      if (!woundsPerModel) return [];
+      return [{ label: entry.unitName, count: Math.max(1, Number(entry.models || 1)), wounds: woundsPerModel }];
+    }
+
+    function battleUnitWoundInfo(entry) {
+      const buckets = battleUnitWoundBuckets(entry);
+      if (!buckets.length) return null;
+      const modelCount = buckets.reduce((sum, bucket) => sum + bucket.count, 0);
+      const totalWounds = buckets.reduce((sum, bucket) => sum + (bucket.count * bucket.wounds), 0);
+      const damageTaken = Math.max(0, Math.min(totalWounds, Number(activeBattle.unitDamage?.[entry.id] || 0)));
+      const woundsRemaining = Math.max(0, totalWounds - damageTaken);
+
+      let remainingDamage = damageTaken;
+      let destroyedModels = 0;
+      let modelsRemaining = modelCount;
+      let currentModelWoundsRemaining = 0;
+      let currentModelLabel = '';
+      let currentModelMaxWounds = 0;
+      const bucketStates = [];
+
+      buckets.forEach(bucket => {
+        const bucketTotal = bucket.count * bucket.wounds;
+        const bucketDamage = Math.max(0, Math.min(bucketTotal, remainingDamage));
+        remainingDamage -= bucketDamage;
+
+        const bucketDestroyed = Math.min(bucket.count, Math.floor(bucketDamage / bucket.wounds));
+        const bucketModelsRemaining = bucketDamage >= bucketTotal ? 0 : bucket.count - bucketDestroyed;
+        const partialDamage = bucketDamage >= bucketTotal ? 0 : bucketDamage % bucket.wounds;
+        const partialWoundsRemaining = bucketModelsRemaining > 0
+          ? (partialDamage === 0 ? bucket.wounds : bucket.wounds - partialDamage)
+          : 0;
+
+        destroyedModels += bucketDestroyed;
+        modelsRemaining -= bucketDestroyed;
+        if (!currentModelLabel && bucketModelsRemaining > 0) {
+          currentModelLabel = bucket.label;
+          currentModelWoundsRemaining = partialWoundsRemaining;
+          currentModelMaxWounds = bucket.wounds;
+        }
+
+        bucketStates.push({
+          ...bucket,
+          destroyed: bucketDestroyed,
+          remaining: bucketModelsRemaining,
+          currentModelWoundsRemaining: partialWoundsRemaining,
+        });
+      });
+
+      return {
+        buckets,
+        bucketStates,
+        modelCount,
+        totalWounds,
+        damageTaken,
+        woundsRemaining,
+        destroyedModels,
+        modelsRemaining,
+        currentModelWoundsRemaining,
+        currentModelLabel,
+        currentModelMaxWounds,
+      };
+    }
+
+    function battleUnitWoundSummary(entry) {
+      const info = battleUnitWoundInfo(entry);
+      if (!info) return 'Wound tracker unavailable; linked datasheet wounds are not loaded yet.';
+      if (info.woundsRemaining <= 0) return `${formatRosterUnitTitle(entry, linkedBattleUnits().indexOf(entry))} has taken ${info.damageTaken} damage and has 0 wounds remaining. Unit destroyed.`;
+      if (info.modelCount === 1) return `${formatRosterUnitTitle(entry, linkedBattleUnits().indexOf(entry))} has taken ${info.damageTaken} damage and has ${info.woundsRemaining} wound${info.woundsRemaining === 1 ? '' : 's'} remaining.`;
+      if (info.buckets.length > 1) {
+        const bucketText = info.bucketStates
+          .map(bucket => {
+            if (bucket.remaining <= 0) return `${bucket.label}: destroyed`;
+            if (bucket.currentModelWoundsRemaining && bucket.currentModelWoundsRemaining < bucket.wounds) {
+              return `${bucket.label}: ${bucket.remaining} remaining, front model ${bucket.currentModelWoundsRemaining}/${bucket.wounds}W`;
+            }
+            return `${bucket.label}: ${bucket.remaining} remaining`;
+          })
+          .join('; ');
+        return `${formatRosterUnitTitle(entry, linkedBattleUnits().indexOf(entry))} has taken ${info.damageTaken} damage. ${bucketText}.`;
+      }
+      const destroyedText = `${info.destroyedModels} model${info.destroyedModels === 1 ? '' : 's'} destroyed`;
+      const remainingText = `${info.modelsRemaining} model${info.modelsRemaining === 1 ? '' : 's'} remaining`;
+      return `${formatRosterUnitTitle(entry, linkedBattleUnits().indexOf(entry))} has taken ${info.damageTaken} damage. ${destroyedText}, ${remainingText}; current model has ${info.currentModelWoundsRemaining}/${info.currentModelMaxWounds} wounds remaining.`;
+    }
+
+    function battleOneUseItems(entry) {
+      const unit = battleUnitProfile(entry);
+      if (!unit) return [];
+      const datasheetLink = unit?.source?.datasheet || '';
+      const items = [];
+      const seen = new Set();
+      const datasheetAbilityEntries = unitAbilityDatabase?.byDatasheet?.[datasheetLink] || {};
+      const isLimitedUseText = text => /once per battle|the first time .* is destroyed|first time .* is destroyed/i.test(String(text || ''));
+      const addItem = item => {
+        if (!item?.id || seen.has(item.id)) return;
+        seen.add(item.id);
+        items.push(item);
+      };
+
+      const unitAbilities = new Set();
+      const noteAbilities = String(unit?.note || '').split(/\s*,\s*/).filter(Boolean);
+      noteAbilities.forEach(name => unitAbilities.add(name));
+      if (Array.isArray(unit?.abilities)) unit.abilities.filter(Boolean).forEach(name => unitAbilities.add(name));
+      Object.entries(datasheetAbilityEntries).forEach(([name, text]) => {
+        if (isLimitedUseText(text)) unitAbilities.add(name);
+      });
+
+      unitAbilities.forEach(name => {
+        if (normalizeAbilityKey(name) === 'one shot') return;
+        const text = getTooltipText(name, { kind: 'unit', datasheetLink });
+        if (isLimitedUseText(text)) {
+          addItem({
+            id: `ability:${normalizeAbilityKey(name)}`,
+            label: name,
+            maxUses: 1,
+            type: 'ability',
+          });
+        }
+      });
+
+      const quantities = entry.weaponQuantities || {};
+      Object.entries(quantities).forEach(([weaponKey, quantity]) => {
+        const count = Math.max(0, Number(quantity || 0));
+        if (!count) return;
+        const matchingProfiles = Object.entries(unit.weapons || {}).filter(([profileName]) => normalizeWeaponProfileKey(profileName) === weaponKey);
+        const hasOneShot = matchingProfiles.some(([, profile]) =>
+          (profile?.abilities || []).some(ability => normalizeAbilityKey(ability) === 'one shot')
+        );
+        const oneUseWeaponAbility = matchingProfiles.some(([, profile]) =>
+          (profile?.abilities || []).some(ability => isLimitedUseText(getTooltipText(ability, { kind: 'weapon', datasheetLink })))
+        );
+        if (hasOneShot || oneUseWeaponAbility) {
+          addItem({
+            id: `weapon:${weaponKey}`,
+            label: rosterWargearLabel(weaponKey, unit),
+            maxUses: count,
+            type: 'weapon',
+          });
+        }
+      });
+
+      return items;
+    }
+
+    function oneUseStateKey(unitId, itemId) {
+      return `${unitId}::${itemId}`;
+    }
+
+    function pushBattleUndoSnapshot() {
+      battleUndoStack.push(structuredClone(normalizeBattleRecord(activeBattle)));
+      if (battleUndoStack.length > 20) battleUndoStack.shift();
+    }
+
+    function updateBattleUndoButton() {
+      battleUndoBtn.disabled = battleUndoStack.length === 0 || !battleLiveEditingEnabled();
+    }
+
+    function addBattleLogEntry(type, text) {
+      if (!Array.isArray(activeBattle.log)) activeBattle.log = [];
+      activeBattle.log.unshift({
+        id: createId('battle-log'),
+        type,
+        text,
+        round: activeBattle.round,
+        player: activeBattle.currentPlayer,
+        phase: activeBattle.currentPhase,
+        createdAt: new Date().toISOString()
+      });
+      activeBattle.updatedAt = new Date().toISOString();
+    }
+
+    function renderBattleLog() {
+      const entries = Array.isArray(activeBattle.log) ? activeBattle.log : [];
+      if (!entries.length) {
+        battleLogEmpty.hidden = false;
+        battleLogList.hidden = true;
+        battleLogList.innerHTML = '';
+        return;
+      }
+      battleLogEmpty.hidden = true;
+      battleLogList.hidden = false;
+      battleLogList.innerHTML = entries.map(entry => {
+        const prefix = `Round ${escapeHtml(entry.round)}, ${escapeHtml(battleSideLabel(entry.player))}, ${escapeHtml(entry.phase)}`;
+        return `<div style="margin-bottom:10px;"><strong>${prefix}</strong><br />${escapeHtml(entry.text)}</div>`;
+      }).join('');
+    }
+
+    function renderBattleUnitStates() {
+      syncBattleUnitStates();
+      const linkedUnits = linkedBattleUnits();
+      if (!linkedUnits.length) {
+        battleUnitStateSummary.textContent = 'Link an army list in Battle Setup to track unit states.';
+        battleUnitStateList.innerHTML = '<div class="army-empty">No linked roster units available for state tracking.</div>';
+        return;
+      }
+
+      if (!linkedBattleFactionData()) {
+        battleUnitStateSummary.textContent = 'Loading linked roster datasheets for wound tracking...';
+        battleUnitStateList.innerHTML = '<div class="army-empty">Fetching the linked faction datasheets for battle-state tools.</div>';
+        ensureBattleFactionDataLoaded().then(() => renderBattleDashboard());
+        return;
+      }
+
+      const counts = linkedUnits.reduce((acc, entry) => {
+        const status = activeBattle.unitStates?.[entry.id] || 'ready';
+        acc[status] = (acc[status] || 0) + 1;
+        return acc;
+      }, { ready: 0, reserves: 0, battleshocked: 0, destroyed: 0 });
+
+      battleUnitStateSummary.textContent = battleHasStarted()
+        ? `Ready ${counts.ready || 0} - Reserves ${counts.reserves || 0} - Battle-shocked ${counts.battleshocked || 0} - Destroyed ${counts.destroyed || 0}`
+        : `Ready ${counts.ready || 0} - Reserves ${counts.reserves || 0}`;
+      battleUnitStateList.innerHTML = linkedUnits.map((entry, index) => {
+        const status = activeBattle.unitStates?.[entry.id] || 'ready';
+        const woundInfo = battleUnitWoundInfo(entry);
+        const oneUseItems = battleHasStarted() ? battleOneUseItems(entry) : [];
+        const liveEditing = battleLiveEditingEnabled();
+        const phaseAction = currentBattleUnitAction();
+        const phaseActionUsed = phaseAction ? hasBattlePhaseActionBeenUsed(entry.id, phaseAction) : false;
+        const woundSelect = battleHasStarted() && woundInfo
+          ? `
+            <label class="wargear-line" style="margin-top:8px;">
+              <span>Wounds remaining</span>
+              <select class="battle-unit-wounds-select" data-unit-id="${escapeHtml(entry.id)}" ${liveEditing ? '' : 'disabled'}>
+                ${Array.from({ length: woundInfo.totalWounds + 1 }, (_, offset) => {
+                  const remaining = woundInfo.totalWounds - offset;
+                  const selected = remaining === woundInfo.woundsRemaining ? ' selected' : '';
+                  return `<option value="${remaining}"${selected}>${remaining}</option>`;
+                }).join('')}
+              </select>
+            </label>
+          `
+          : (battleHasStarted() ? '<div class="small">Wound tracker unavailable; datasheet wounds could not be resolved.</div>' : '');
+        const oneUseControls = oneUseItems.length
+          ? `
+            <div class="checks" style="margin-top:8px;">
+              ${oneUseItems.map(item => {
+                const key = oneUseStateKey(entry.id, item.id);
+                const remaining = Math.max(0, Math.min(item.maxUses, Number(activeBattle.oneUseStatus?.[key] ?? item.maxUses)));
+                const expended = remaining === 0;
+                return `
+                  <label class="checkline">
+                    <input type="checkbox" class="battle-one-use-checkbox" data-unit-id="${escapeHtml(entry.id)}" data-item-id="${escapeHtml(item.id)}" data-item-label="${escapeHtml(item.label)}" data-max-uses="${item.maxUses}" ${expended ? 'checked' : ''} ${liveEditing ? '' : 'disabled'} />
+                    ${escapeHtml(item.label)} <span class="muted">(${item.type === 'weapon' ? 'Weapon' : 'Ability'}${item.maxUses > 1 ? `, ${remaining}/${item.maxUses} remaining` : ''})</span>
+                  </label>
+                `;
+              }).join('')}
+            </div>
+          `
+          : '';
+        const stateButtons = battleHasStarted()
+          ? `
+              <button type="button" class="secondary battle-unit-state-btn" data-unit-id="${escapeHtml(entry.id)}" data-state="ready" ${liveEditing ? '' : 'disabled'}>Ready</button>
+              <button type="button" class="secondary battle-unit-state-btn" data-unit-id="${escapeHtml(entry.id)}" data-state="reserves" ${liveEditing ? '' : 'disabled'}>Reserves</button>
+              <button type="button" class="secondary battle-unit-state-btn" data-unit-id="${escapeHtml(entry.id)}" data-state="battleshocked" ${liveEditing ? '' : 'disabled'}>Battle-shocked</button>
+              <button type="button" class="secondary battle-unit-state-btn" data-unit-id="${escapeHtml(entry.id)}" data-state="destroyed" ${liveEditing ? '' : 'disabled'}>Destroyed</button>
+            `
+          : `
+              <button type="button" class="secondary battle-unit-state-btn" data-unit-id="${escapeHtml(entry.id)}" data-state="ready">Ready</button>
+              <button type="button" class="secondary battle-unit-state-btn" data-unit-id="${escapeHtml(entry.id)}" data-state="reserves">Reserves</button>
+            `;
+        const phaseActionControls = phaseAction
+          ? `
+            <div class="army-unit-actions">
+              <button
+                type="button"
+                class="secondary battle-unit-phase-action-btn"
+                data-unit-id="${escapeHtml(entry.id)}"
+                data-action="${escapeHtml(phaseAction)}"
+                ${(liveEditing && !phaseActionUsed) ? '' : 'disabled'}
+              >${escapeHtml(battlePhaseActionLabel(phaseAction))}</button>
+            </div>
+          `
+          : '';
+        return `
+          <div class="army-unit-row">
+            <strong>${escapeHtml(formatRosterUnitTitle(entry, index))}</strong>
+            <div class="small">Current state: ${escapeHtml(battleUnitStatusLabel(status))}</div>
+            ${battleHasStarted() ? `<div class="small">${escapeHtml(battleUnitWoundSummary(entry))}</div>` : ''}
+            ${woundSelect}
+            ${oneUseControls}
+            <div class="army-unit-actions">
+              ${stateButtons}
+            </div>
+            ${phaseActionControls}
+          </div>
+        `;
+      }).join('');
+
+      battleUnitStateList.querySelectorAll('.battle-unit-state-btn').forEach(button => {
+        const unitId = button.dataset.unitId;
+        const state = button.dataset.state;
+        button.disabled = button.disabled || (activeBattle.unitStates?.[unitId] || 'ready') === state;
+        button.addEventListener('click', () => setBattleUnitState(unitId, state));
+      });
+      battleUnitStateList.querySelectorAll('.battle-unit-phase-action-btn').forEach(button => {
+        button.addEventListener('click', () => {
+          const action = button.dataset.action;
+          if (action === 'shoot' || action === 'fight') {
+            beginBattleAttackContext(button.dataset.unitId, action);
+            return;
+          }
+          setBattlePhaseActionUsed(button.dataset.unitId, action);
+        });
+      });
+      battleUnitStateList.querySelectorAll('.battle-unit-wounds-select').forEach(select => {
+        select.addEventListener('change', () => setBattleUnitWoundsRemaining(select.dataset.unitId, select.value));
+      });
+      battleUnitStateList.querySelectorAll('.battle-one-use-checkbox').forEach(checkbox => {
+        checkbox.addEventListener('change', () => setBattleOneUseRemaining(
+          checkbox.dataset.unitId,
+          checkbox.dataset.itemId,
+          checkbox.dataset.itemLabel,
+          Number(checkbox.dataset.maxUses || 0),
+          checkbox.checked ? 0 : Number(checkbox.dataset.maxUses || 0)
+        ));
+      });
+    }
+
+    function renderBattleDashboard() {
+      ensureBattleTotals();
+      updateBattleLiveControls();
+      battleRoundBig.textContent = String(activeBattle.round || 1);
+      battleCurrentPlayerBig.textContent = battleSideLabel(activeBattle.currentPlayer);
+      battleCurrentPhaseBig.textContent = activeBattle.currentPhase || 'Command';
+      battleYouCpBig.textContent = String(activeBattle.players?.you?.cp || 0);
+      battleOpponentCpBig.textContent = String(activeBattle.players?.opponent?.cp || 0);
+      battleYouPrimaryBig.textContent = String(activeBattle.players?.you?.primaryVp || 0);
+      battleOpponentPrimaryBig.textContent = String(activeBattle.players?.opponent?.primaryVp || 0);
+      battleYouSecondaryBig.textContent = String(activeBattle.players?.you?.secondaryVp || 0);
+      battleOpponentSecondaryBig.textContent = String(activeBattle.players?.opponent?.secondaryVp || 0);
+      battleYouTotalBig.textContent = String(activeBattle.players?.you?.totalVp || 0);
+      battleOpponentTotalBig.textContent = String(activeBattle.players?.opponent?.totalVp || 0);
+      renderBattleLog();
+      renderBattleUnitStates();
+      updateBattleUndoButton();
+    }
+
+    function renderBattlePersistenceNote() {
+      const savedRecord = battles.find(battle => battle.id === activeBattle.id);
+      const parts = ['Active battle draft autosaves locally.'];
+      if (battleHasEnded()) parts.push('Battle is locked for review.');
+      if (savedRecord) {
+        parts.push(`Named save synced ${battleSavedTimestampLabel(savedRecord.updatedAt)}.`);
+      } else {
+        parts.push('This draft is not in the saved battles list yet.');
+      }
+      battlePersistenceNote.textContent = parts.join(' ');
+    }
+
+    function renderBattleSetup() {
+      activeBattle = normalizeBattleRecord(activeBattle);
+      battleNameInput.value = activeBattle.name || 'New Engagement';
+      battleArmyListSelect.value = activeBattle.yourArmyListId || '';
+      battleYourFactionSelect.value = activeBattle.yourFactionSlug || 'astra-militarum';
+      battleOpponentFactionSelect.value = activeBattle.opponentFactionSlug || 'astra-militarum';
+      battleMissionNameInput.value = activeBattle.missionName || '';
+      battleDeploymentInput.value = activeBattle.deployment || '';
+      battleMissionRuleInput.value = activeBattle.missionRule || '';
+      battleFirstTurnSelect.value = activeBattle.firstTurn === 'opponent' ? 'opponent' : 'you';
+      battleYourStartingCpInput.value = String(Math.max(0, Number(activeBattle.players?.you?.cp || 0)));
+      battleOpponentStartingCpInput.value = String(Math.max(0, Number(activeBattle.players?.opponent?.cp || 0)));
+      populateBattleArmyListOptions();
+      populateSavedBattleOptions();
+      hideBattleEndConfirmation();
+      renderBattlePersistenceNote();
+      updateBattleLiveControls();
+      renderBattleDashboard();
+    }
+
+    function setBattleStatus(message) {
+      battleSetupStatus.textContent = message;
+    }
+
+    function saveActiveBattle() {
+      syncBattleDraftFromForm();
+      syncActiveBattlePersistence({ updateSaved: true });
+      renderBattlePersistenceNote();
+      setBattleStatus(`Saved battle: ${activeBattle.name}.`);
+    }
+
+    function loadBattle(battleId) {
+      const record = battles.find(battle => battle.id === battleId);
+      if (!record) return;
+      clearBattleAttackContext({ persist: false, renderCalculator: false });
+      activeBattle = normalizeBattleRecord(record);
+      battleUndoStack = [];
+      persistBattleDraft();
+      renderBattleSetup();
+      setBattleStatus(`Loaded battle: ${activeBattle.name}.`);
+    }
+
+    function deleteBattle(battleId) {
+      if (!battleId) return;
+      const record = battles.find(battle => battle.id === battleId);
+      if (!record) return;
+      battles = battles.filter(battle => battle.id !== battleId);
+      persistBattles();
+      if (activeBattle.id === battleId) {
+        activeBattle = createEmptyBattle();
+        battleUndoStack = [];
+        persistBattleDraft();
+        renderBattleSetup();
+      } else {
+        populateSavedBattleOptions();
+        renderBattlePersistenceNote();
+        renderBattleDashboard();
+      }
+      setBattleStatus(`Deleted battle: ${record.name}.`);
+    }
+
+    function startBattleTracking() {
+      if (battleHasEnded()) {
+        setBattleStatus('Battle already ended.');
+        return;
+      }
+      if (battleHasStarted()) {
+        setBattleStatus('Battle already started.');
+        return;
+      }
+      pushBattleUndoSnapshot();
+      syncBattleDraftFromForm();
+      clearBattleAttackContext({ persist: false, renderCalculator: false });
+      const startedAt = new Date().toISOString();
+      const reserveUnits = reserveUnitsAtBattleStart();
+      const linkedList = linkedArmyListForBattle();
+      activeBattle.isStarted = true;
+      activeBattle.startedAt = startedAt;
+      activeBattle.round = 1;
+      activeBattle.currentPlayer = activeBattle.firstTurn;
+      activeBattle.currentPhase = 'Command';
+      if (!Array.isArray(activeBattle.log)) activeBattle.log = [];
+      addBattleLogEntry(
+        'setup',
+        `${activeBattle.name} started. ${battleSideLabel(activeBattle.firstTurn)} has the first turn. Starting CP: You ${activeBattle.players?.you?.cp || 0}, Opponent ${activeBattle.players?.opponent?.cp || 0}.${linkedList ? ` Linked roster: ${linkedList.name}.` : ''} ${reserveUnits.length} unit${reserveUnits.length === 1 ? '' : 's'} in Reserves.`
+      );
+      syncActiveBattlePersistence();
+      renderBattleDashboard();
+      setBattleStatus('Battle started.');
+    }
+
+    function promptEndBattle() {
+      if (!battleLiveEditingEnabled()) return;
+      battleEndConfirmRow.hidden = false;
+      setBattleStatus('Confirm ending the battle.');
+    }
+
+    function cancelEndBattle() {
+      hideBattleEndConfirmation();
+      setBattleStatus(battleHasEnded() ? 'Battle ended. Review mode active.' : 'Battle in progress.');
+    }
+
+    function endBattleTracking() {
+      if (!battleLiveEditingEnabled()) return;
+      pushBattleUndoSnapshot();
+      clearBattleAttackContext({ persist: false, renderCalculator: false });
+      activeBattle.isEnded = true;
+      activeBattle.endedAt = new Date().toISOString();
+      addBattleLogEntry('end', `${activeBattle.name} ended.`);
+      hideBattleEndConfirmation();
+      syncActiveBattlePersistence();
+      renderBattleDashboard();
+      setBattleStatus('Battle ended. Review mode active.');
+    }
+
+    function moveBattlePhase(direction) {
+      if (!battleLiveEditingEnabled()) return;
+      const index = BATTLE_PHASES.indexOf(activeBattle.currentPhase || 'Command');
+      const currentIndex = index >= 0 ? index : 0;
+      const nextIndex = Math.max(0, Math.min(BATTLE_PHASES.length - 1, currentIndex + direction));
+      if (nextIndex === currentIndex) return;
+      pushBattleUndoSnapshot();
+      activeBattle.currentPhase = BATTLE_PHASES[nextIndex];
+      addBattleLogEntry('phase', `${battleSideLabel(activeBattle.currentPlayer)} moved to the ${activeBattle.currentPhase} phase.`);
+      syncActiveBattlePersistence();
+      renderBattleDashboard();
+    }
+
+    function endBattleTurn() {
+      if (!battleLiveEditingEnabled()) return;
+      pushBattleUndoSnapshot();
+      activeBattle.currentPlayer = activeBattle.currentPlayer === 'opponent' ? 'you' : 'opponent';
+      activeBattle.currentPhase = 'Command';
+      addBattleLogEntry('turn', `${battleSideLabel(activeBattle.currentPlayer)} began their turn.`);
+      syncActiveBattlePersistence();
+      renderBattleDashboard();
+    }
+
+    function nextBattleRound() {
+      if (!battleLiveEditingEnabled()) return;
+      pushBattleUndoSnapshot();
+      activeBattle.round = Math.max(1, Number(activeBattle.round || 1) + 1);
+      activeBattle.currentPlayer = activeBattle.firstTurn;
+      activeBattle.currentPhase = 'Command';
+      addBattleLogEntry('round', `Battle Round ${activeBattle.round} began.`);
+      syncActiveBattlePersistence();
+      renderBattleDashboard();
+    }
+
+    function adjustBattleStat(side, stat, amount) {
+      if (!battleLiveEditingEnabled()) return;
+      const player = activeBattle.players?.[side];
+      if (!player) return;
+      const delta = Number(amount || 0);
+      if (!Number.isFinite(delta)) return;
+      pushBattleUndoSnapshot();
+      player[stat] = Math.max(0, Number(player[stat] || 0) + delta);
+      ensureBattleTotals();
+      const statLabel = stat === 'cp' ? 'CP' : stat === 'primaryVp' ? 'Primary VP' : 'Secondary VP';
+      const verb = delta >= 0 ? 'gained' : 'lost';
+      const value = Math.abs(delta);
+      addBattleLogEntry('score', `${battleSideLabel(side)} ${verb} ${value} ${statLabel}.`);
+      syncActiveBattlePersistence();
+      renderBattleDashboard();
+    }
+
+    function adjustBattleCustomStat(side, stat, inputId, direction = 1) {
+      const input = document.getElementById(inputId);
+      if (!input) return;
+      const rawValue = Number(input.value || 0);
+      if (!Number.isFinite(rawValue) || rawValue <= 0) return;
+      adjustBattleStat(side, stat, rawValue * (Number(direction || 1) < 0 ? -1 : 1));
+      input.value = '';
+    }
+
+    function setBattleUnitState(unitId, nextState) {
+      const linkedUnits = linkedBattleUnits();
+      const entry = linkedUnits.find(unit => unit.id === unitId);
+      if (!entry) return;
+      const allowedStates = battleHasStarted()
+        ? ['ready', 'reserves', 'battleshocked', 'destroyed']
+        : ['ready', 'reserves'];
+      const normalizedState = allowedStates.includes(nextState) ? nextState : 'ready';
+      const currentState = activeBattle.unitStates?.[unitId] || 'ready';
+      if (currentState === normalizedState) return;
+      pushBattleUndoSnapshot();
+      activeBattle.unitStates[unitId] = normalizedState;
+      if (battleHasStarted()) {
+        addBattleLogEntry('unit-state', `${formatRosterUnitTitle(entry, linkedUnits.indexOf(entry))} marked ${battleUnitStatusLabel(normalizedState)}.`);
+      }
+      syncActiveBattlePersistence();
+      renderBattleDashboard();
+    }
+
+    function setBattlePhaseActionUsed(unitId, action) {
+      if (!battleLiveEditingEnabled()) return;
+      const linkedUnits = linkedBattleUnits();
+      const entry = linkedUnits.find(unit => unit.id === unitId);
+      const currentAction = currentBattleUnitAction();
+      if (!entry || !action || action !== currentAction) return;
+      const key = battlePhaseActionKey(unitId, action);
+      if (activeBattle.phaseActions?.[key]) return;
+      pushBattleUndoSnapshot();
+      activeBattle.phaseActions[key] = true;
+      addBattleLogEntry('phase-action', `${formatRosterUnitTitle(entry, linkedUnits.indexOf(entry))} ${battlePhaseActionPastTense(action)}.`);
+      syncActiveBattlePersistence();
+      renderBattleDashboard();
+    }
+
+    function setBattleUnitWoundsRemaining(unitId, remainingValue) {
+      if (!battleLiveEditingEnabled()) return;
+      const linkedUnits = linkedBattleUnits();
+      const entry = linkedUnits.find(unit => unit.id === unitId);
+      const info = entry ? battleUnitWoundInfo(entry) : null;
+      if (!entry || !info) return;
+      const woundsRemaining = Math.max(0, Math.min(info.totalWounds, Number(remainingValue || info.totalWounds)));
+      const damageTaken = info.totalWounds - woundsRemaining;
+      if (damageTaken === info.damageTaken) return;
+      pushBattleUndoSnapshot();
+      activeBattle.unitDamage[unitId] = damageTaken;
+      if (woundsRemaining <= 0) {
+        activeBattle.unitStates[unitId] = 'destroyed';
+      } else if ((activeBattle.unitStates?.[unitId] || 'ready') === 'destroyed') {
+        activeBattle.unitStates[unitId] = 'ready';
+      }
+      addBattleLogEntry('wounds', battleUnitWoundSummary(entry));
+      syncActiveBattlePersistence();
+      renderBattleDashboard();
+    }
+
+    function setBattleOneUseRemaining(unitId, itemId, itemLabel, maxUses, remainingValue) {
+      if (!battleLiveEditingEnabled()) return;
+      const linkedUnits = linkedBattleUnits();
+      const entry = linkedUnits.find(unit => unit.id === unitId);
+      if (!entry) return;
+      const key = oneUseStateKey(unitId, itemId);
+      const clampedRemaining = Math.max(0, Math.min(Number(maxUses || 0), Number(remainingValue || 0)));
+      const previousRemaining = Math.max(0, Math.min(Number(maxUses || 0), Number(activeBattle.oneUseStatus?.[key] ?? maxUses)));
+      if (clampedRemaining === previousRemaining) return;
+      pushBattleUndoSnapshot();
+      activeBattle.oneUseStatus[key] = clampedRemaining;
+      const used = Math.max(0, Number(maxUses || 0) - clampedRemaining);
+      const previousUsed = Math.max(0, Number(maxUses || 0) - previousRemaining);
+      const delta = used - previousUsed;
+      const actionText = delta > 0
+        ? `${formatRosterUnitTitle(entry, linkedBattleUnits().indexOf(entry))} expended ${delta} use${delta === 1 ? '' : 's'} of ${itemLabel}. ${clampedRemaining} remaining.`
+        : `${formatRosterUnitTitle(entry, linkedBattleUnits().indexOf(entry))} restored ${Math.abs(delta)} use${Math.abs(delta) === 1 ? '' : 's'} of ${itemLabel}. ${clampedRemaining} remaining.`;
+      addBattleLogEntry('one-use', actionText);
+      syncActiveBattlePersistence();
+      renderBattleDashboard();
+    }
+
+    function undoBattleAction() {
+      const snapshot = battleUndoStack.pop();
+      if (!snapshot) return;
+      activeBattle = normalizeBattleRecord(snapshot);
+      syncActiveBattlePersistence();
+      renderBattleSetup();
+      setBattleStatus('Reverted the last live battle action.');
     }
 
     function loadFactionScript(faction) {
@@ -5010,11 +6819,29 @@
     }
 
     function availableCombatWeaponNames(unitName, listEntry = selectedCombatListEntry()) {
+      const context = activeBattleAttackContext();
       const unit = data.units?.[unitName];
       if (!unit) return [];
-      if (!activeCombatList) return Object.keys(unit.weapons || {});
-
-      return Object.keys(unit.weapons || {}).filter(name => weaponQuantityForProfile(listEntry, name) > 0);
+      let names = Object.keys(unit.weapons || {});
+      if (activeCombatList) {
+        names = names.filter(name => weaponQuantityForProfile(listEntry, name) > 0);
+      }
+      if (context?.action === 'shoot') {
+        names = names.filter(name => {
+          const weapon = unit.weapons?.[name];
+          return weapon?.phase === 'Shooting' || weapon?.type === 'Ranged';
+        });
+      } else if (context?.action === 'fight') {
+        names = names.filter(name => {
+          const weapon = unit.weapons?.[name];
+          return weapon?.phase === 'Fight' || weapon?.type === 'Melee';
+        });
+      }
+      if (context) {
+        const recordedWeaponNames = battleAttackRecordedWeaponNames();
+        names = names.filter(name => !recordedWeaponNames.has(name));
+      }
+      return names;
     }
 
     function combatModelCountForWeapon(unitName, weaponName = weaponSelect.value, listEntry = selectedCombatListEntry()) {
@@ -5353,8 +7180,10 @@
 
     function populateUnits() {
       unitSelect.innerHTML = '';
+      const context = activeBattleAttackContext();
       if (activeCombatList) {
         activeCombatList.units.forEach((entry, index) => {
+          if (context && entry.id !== context.unitId) return;
           if (!data.units?.[entry.unitName]) return;
           const opt = document.createElement('option');
           opt.value = entry.id;
@@ -5374,7 +7203,7 @@
 
     function populateWeapons() {
       const unitName = selectedCombatUnitName();
-      const unit = data.units[unitName];
+      const previousValue = weaponSelect.value;
       weaponSelect.innerHTML = '';
       availableCombatWeaponNames(unitName).forEach(name => {
         const opt = document.createElement('option');
@@ -5382,11 +7211,15 @@
         opt.textContent = name;
         weaponSelect.appendChild(opt);
       });
+      if (previousValue && weaponSelect.querySelector(`option[value="${previousValue}"]`)) {
+        weaponSelect.value = previousValue;
+      }
       updateModelsFromSelectedWeapon();
       render();
     }
 
     function render() {
+      renderCalculatorBattleMode();
       const unit = data.units[selectedCombatUnitName()];
       const weapon = getSelectedWeapon();
       if (!unit || !weapon) {
@@ -5530,9 +7363,83 @@
     });
 
     document.getElementById('openArmyBuilderBtn').addEventListener('click', () => showView('builder'));
-    document.getElementById('openCalculatorBtn').addEventListener('click', () => showView('calculator'));
-    document.getElementById('builderCalculatorBtn').addEventListener('click', () => showView('calculator'));
+    document.getElementById('openCalculatorBtn').addEventListener('click', () => {
+      clearBattleAttackContext();
+      showView('calculator');
+    });
+    document.getElementById('openBattleTrackerBtn').addEventListener('click', () => showView('battle-tracker'));
+    document.getElementById('builderBattleTrackerBtn').addEventListener('click', () => showView('battle-tracker'));
+    document.getElementById('builderCalculatorBtn').addEventListener('click', () => {
+      clearBattleAttackContext();
+      showView('calculator');
+    });
+    document.getElementById('calculatorBattleTrackerBtn').addEventListener('click', () => {
+      clearBattleAttackContext();
+      showView('battle-tracker');
+    });
     document.getElementById('calculatorBuilderBtn').addEventListener('click', () => showView('builder'));
+    document.getElementById('battleTrackerBuilderBtn').addEventListener('click', () => showView('builder'));
+    document.getElementById('battleTrackerCalculatorBtn').addEventListener('click', () => {
+      clearBattleAttackContext();
+      showView('calculator');
+    });
+    calculatorCancelBattleAttackBtn.addEventListener('click', cancelBattleAttackContext);
+    calculatorRecordBattleWeaponBtn.addEventListener('click', recordBattleAttackWeapon);
+    calculatorBattleNewTargetBtn.addEventListener('click', addBattleAttackTargetGroup);
+    calculatorApplyBattleAttackBtn.addEventListener('click', applyBattleAttackResolution);
+    calculatorClearBattleDamageBtn.addEventListener('click', () => {
+      calculatorResolvedDamageInput.value = '';
+      updateBattleAttackApplyState();
+    });
+
+    [
+      battleNameInput,
+      battleYourFactionSelect,
+      battleArmyListSelect,
+      battleOpponentFactionSelect,
+      battleMissionNameInput,
+      battleDeploymentInput,
+      battleMissionRuleInput,
+      battleFirstTurnSelect,
+      battleYourStartingCpInput,
+      battleOpponentStartingCpInput,
+    ].forEach(el => {
+      const eventName = el.tagName === 'SELECT' ? 'change' : 'input';
+      el.addEventListener(eventName, syncBattleDraftFromForm);
+      if (eventName !== 'change') el.addEventListener('change', syncBattleDraftFromForm);
+    });
+
+    document.getElementById('battleStartBtn').addEventListener('click', startBattleTracking);
+    battleEndBattleBtn.addEventListener('click', promptEndBattle);
+    battleEndBattleYesBtn.addEventListener('click', endBattleTracking);
+    battleEndBattleNoBtn.addEventListener('click', cancelEndBattle);
+    document.getElementById('battleSaveBtn').addEventListener('click', saveActiveBattle);
+    document.getElementById('battleLoadBtn').addEventListener('click', () => loadBattle(savedBattleSelect.value));
+    document.getElementById('battleDeleteBtn').addEventListener('click', () => deleteBattle(savedBattleSelect.value));
+    document.getElementById('battleNewBtn').addEventListener('click', () => {
+      clearBattleAttackContext({ persist: false, renderCalculator: false });
+      activeBattle = createEmptyBattle();
+      battleUndoStack = [];
+      persistBattleDraft();
+      renderBattleSetup();
+      setBattleStatus('New battle draft ready.');
+    });
+    battleUndoBtn.addEventListener('click', undoBattleAction);
+    document.getElementById('battlePrevPhaseBtn').addEventListener('click', () => moveBattlePhase(-1));
+    document.getElementById('battleNextPhaseBtn').addEventListener('click', () => moveBattlePhase(1));
+    document.getElementById('battleEndTurnBtn').addEventListener('click', endBattleTurn);
+    document.getElementById('battleNextRoundBtn').addEventListener('click', nextBattleRound);
+    Array.from(document.querySelectorAll('.battle-adjust-btn')).forEach(button => {
+      button.addEventListener('click', () => adjustBattleStat(button.dataset.side, button.dataset.stat, button.dataset.amount));
+    });
+    Array.from(document.querySelectorAll('.battle-adjust-custom-btn')).forEach(button => {
+      button.addEventListener('click', () => adjustBattleCustomStat(
+        button.dataset.side,
+        button.dataset.stat,
+        button.dataset.inputId,
+        button.dataset.direction || 1
+      ));
+    });
 
     builderFactionSelect.addEventListener('change', () => {
       clearBuilderUnitEditMode();
@@ -5572,6 +7479,7 @@
     unitSelect.addEventListener('change', populateWeapons);
     weaponSelect.addEventListener('change', () => {
       updateModelsFromSelectedWeapon();
+      renderCalculatorBattleMode();
       render();
     });
     factionSelect.addEventListener('change', () => {
@@ -5580,11 +7488,17 @@
     });
     targetFactionSelect.addEventListener('change', () => {
       hideFloatingTooltip();
+      if (activeBattleAttackContext()) return;
       setTargetFaction(targetFactionSelect.value);
     });
     targetUnitSelect.addEventListener('change', () => {
       hideFloatingTooltip();
+      const activeGroup = activeBattleAttackTargetGroup();
+      if (activeBattleAttackContext() && activeGroup && !activeGroup.recordedWeapons.length) {
+        activeGroup.targetUnitName = targetUnitSelect.value || '';
+      }
       applyTargetUnit(targetData.units?.[targetUnitSelect.value]);
+      renderCalculatorBattleMode();
     });
 
     document.getElementById('resetModifiersBtn').addEventListener('click', () => {
@@ -5602,9 +7516,12 @@
 
     populateFactions();
     populateArmyListSelectors();
+    populateBattleArmyListOptions();
+    populateSavedBattleOptions();
     setFaction(currentFactionSlug);
     setTargetFaction(currentTargetFactionSlug);
     setBuilderFaction(currentBuilderFactionSlug, { resetUnits: false });
+    renderBattleSetup();
     showView('landing');
     document.addEventListener('click', event => {
       if (!event.target.closest('.tooltip-term') && !event.target.closest('.floating-tooltip')) {
