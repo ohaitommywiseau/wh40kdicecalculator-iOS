@@ -57,6 +57,43 @@ function battleLiveEditingEnabled() {
   return battleHasStarted() && !battleHasEnded();
 }
 
+function battlePanelChoice() {
+  return activeBattle?.ui?.panel || 'scoreboard';
+}
+
+function ensureBattlePanelChoice() {
+  if (!battlePanelSections?.length) return battlePanelChoice();
+  const available = battlePanelSections.map(section => section.dataset.panel).filter(Boolean);
+  let choice = battlePanelChoice();
+  if (!available.includes(choice)) {
+    choice = available[0] || 'scoreboard';
+    activeBattle.ui = activeBattle.ui || {};
+    activeBattle.ui.panel = choice;
+  }
+  return choice;
+}
+
+function renderBattlePanelVisibility() {
+  if (!battlePanelSections?.length || !battlePanelButtons?.length) return;
+  const choice = ensureBattlePanelChoice();
+  battlePanelSections.forEach(section => {
+    section.hidden = section.dataset.panel !== choice;
+  });
+  battlePanelButtons.forEach(button => {
+    const active = button.dataset.panel === choice;
+    button.classList.toggle('is-active', active);
+    button.setAttribute('aria-pressed', active ? 'true' : 'false');
+  });
+}
+
+function setBattlePanelChoice(panel) {
+  if (!panel) return;
+  activeBattle.ui = activeBattle.ui || {};
+  activeBattle.ui.panel = panel;
+  syncActiveBattlePersistence();
+  renderBattlePanelVisibility();
+}
+
 function hideBattleEndConfirmation() {
   battleEndConfirmRow.hidden = true;
 }
@@ -846,7 +883,6 @@ function renderBattleSecondaryObjectivePanel(side, container) {
   const selectedCount = selectedObjectives.length;
   const currentTotal = battleSecondaryObjectiveTotal(sideState);
   const addDisabled = !editable || availableObjectives.length === 0;
-  const isExpanded = sideState.isExpanded === true;
   const selectOptions = availableObjectives.length
     ? availableObjectives.map(objective => `<option value="${escapeHtml(objective.id)}">${escapeHtml(objective.name)}</option>`).join('')
     : '<option value="">No remaining objectives</option>';
@@ -854,9 +890,8 @@ function renderBattleSecondaryObjectivePanel(side, container) {
   container.innerHTML = `
     <div class="battle-secondary-summary-row">
       <div class="battle-secondary-meta"><strong>${escapeHtml(battleSideLabel(side))}</strong> - ${escapeHtml(battleRoleLabel(role))} deck. ${selectedCount} tracked. ${currentTotal}VP scored.</div>
-      <button type="button" class="secondary battle-secondary-toggle-btn" data-side="${escapeHtml(side)}">${isExpanded ? 'Hide' : 'Manage'}</button>
     </div>
-    <div class="battle-secondary-panel-body" ${isExpanded ? '' : 'hidden'}>
+    <div class="battle-secondary-panel-body">
       <div class="battle-secondary-toolbar">
         <div>
           <label for="battleSecondarySelect-${side}">Add objective</label>
@@ -916,10 +951,6 @@ function renderBattleSecondaryObjectivePanel(side, container) {
     </div>
   `;
 
-  const toggleButton = container.querySelector('.battle-secondary-toggle-btn');
-  if (toggleButton) {
-    toggleButton.addEventListener('click', () => toggleBattleSecondaryPanel(toggleButton.dataset.side));
-  }
   const addButton = container.querySelector('.battle-secondary-add-btn');
   const select = container.querySelector(`#battleSecondarySelect-${side}`);
   if (addButton && select) {
@@ -1355,6 +1386,7 @@ function renderBattleDashboard() {
   renderBattleStratagems();
   renderBattleLog();
   renderBattleUnitStates();
+  renderBattlePanelVisibility();
   updateBattleUndoButton();
 }
 

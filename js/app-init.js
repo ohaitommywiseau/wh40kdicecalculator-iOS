@@ -107,6 +107,9 @@ Array.from(document.querySelectorAll('.battle-adjust-custom-btn')).forEach(butto
     button.dataset.direction || 1
   ));
 });
+battlePanelButtons.forEach(button => {
+  button.addEventListener('click', () => setBattlePanelChoice(button.dataset.panel));
+});
 
 builderFactionSelect.addEventListener('change', () => {
   clearBuilderUnitEditMode();

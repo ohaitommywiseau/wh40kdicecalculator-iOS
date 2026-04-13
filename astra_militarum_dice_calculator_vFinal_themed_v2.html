@@ -20,22 +20,37 @@
   <div class="wrap">
     <section class="view landing-view" id="landingView">
       <div class="card landing-panel">
-        <h1 class="landing-title">Codex Tactica</h1>
-        <div class="note">
-          Select a module.
+        <div class="landing-omnissiah" aria-hidden="true">
+          <img class="omnissiah-image" src="./assets/omnissiah-terminal.png" alt="" />
+          <div class="omnissiah-scanlines"></div>
         </div>
-        <div class="landing-actions">
+        <h1 class="landing-title">Codex Tactica</h1>
+        <div class="landing-kicker">Command Hub</div>
+        <div class="landing-subtitle">
+          Orchestrate rosters, calculate engagements, and track the battle state from one cogitator stack.
+        </div>
+        <div class="landing-meta">
+          <span class="landing-chip">Offline Ready</span>
+          <span class="landing-chip">iPad Optimized</span>
+          <span class="landing-chip">Local Saves</span>
+        </div>
+        <div class="landing-divider"></div>
+        <div class="landing-actions landing-grid">
           <button type="button" class="landing-action" id="openArmyBuilderBtn">
-            <strong>Army Builder</strong>
+            <span class="landing-action-label">Army Builder</span>
+            <span class="landing-action-sub">Craft lists and detachment loadouts.</span>
           </button>
           <button type="button" class="landing-action" id="openCalculatorBtn">
-            <strong>Combat Calculator</strong>
+            <span class="landing-action-label">Combat Calculator</span>
+            <span class="landing-action-sub">Resolve hit, wound, save, and damage.</span>
           </button>
           <button type="button" class="landing-action" id="openBattleTrackerBtn">
-            <strong>Battle Tracker</strong>
+            <span class="landing-action-label">Battle Tracker</span>
+            <span class="landing-action-sub">Scoreboard, objectives, and unit states.</span>
           </button>
           <button type="button" class="landing-action" id="openRulebookBtn">
-            <strong>Rulebook</strong>
+            <span class="landing-action-label">Rulebook</span>
+            <span class="landing-action-sub">Search the core rules fast.</span>
           </button>
         </div>
       </div>
@@ -132,7 +147,7 @@
           </div>
           <div class="detachment-reference" id="builderDetachmentDetailsPanel" hidden></div>
           <div class="datasheet-label" style="margin-top:14px;">Available weapon profiles</div>
-          <div class="weapon-option-grid" id="builderWeaponOptions"></div>
+          <div class="weapon-option-grid builder-weapon-frame" id="builderWeaponOptions"></div>
           <div class="points-readout" id="builderSelectedPoints">Points: -</div>
           <div class="composition-note" id="builderCompositionNote"></div>
           <div class="attack-check-note">
@@ -153,7 +168,7 @@
           <button type="button" class="secondary" id="builderLoadListBtn">Load List</button>
           <button type="button" class="secondary" id="builderSaveListBtn">Save List</button>
           <button type="button" class="secondary" id="builderDeleteListBtn">Delete List</button>
-          <div class="army-unit-list" id="builderUnitsList"></div>
+          <div class="army-unit-list builder-results-frame" id="builderUnitsList"></div>
         </div>
       </div>
 
@@ -487,9 +502,23 @@
           </div>
         </div>
 
-        <div class="card span-8">
-          <h2>Scoreboard</h2>
-          <div class="result-grid">
+        <div class="card span-8 battle-panel-card">
+          <div class="battle-panel-card-header">
+            <h2>Battle Intel</h2>
+          </div>
+          <div class="battle-panel-toggle-row battle-panel-toggle-full">
+            <div class="battle-panel-toggle-label">View</div>
+            <div class="battle-panel-toggle-buttons">
+              <button type="button" class="secondary battle-panel-toggle-btn" data-panel="scoreboard" aria-pressed="true">Scoreboard</button>
+              <button type="button" class="secondary battle-panel-toggle-btn" data-panel="secondaries" aria-pressed="false">Secondaries</button>
+              <button type="button" class="secondary battle-panel-toggle-btn" data-panel="log" aria-pressed="false">Battle Log</button>
+              <button type="button" class="secondary battle-panel-toggle-btn" data-panel="units" aria-pressed="false">Unit State</button>
+            </div>
+          </div>
+
+          <div class="battle-panel battle-panel-block" data-panel="scoreboard">
+            <div class="battle-panel-title">Scoreboard</div>
+            <div class="result-grid">
             <div class="result">
               <div class="kicker">You CP</div>
               <div class="big" id="battleYouCpBig">0</div>
@@ -551,22 +580,33 @@
               <div class="big" id="battleOpponentTotalBig">0</div>
             </div>
           </div>
-          <div class="battle-score-secondary-strip">
-            <div class="battle-score-secondary-inline" id="battleSecondaryYouPanel"></div>
-            <div class="battle-score-secondary-inline" id="battleSecondaryOpponentPanel"></div>
           </div>
-        </div>
 
-        <div class="card span-12">
-          <h2>Battle Log</h2>
-          <div class="note" id="battleLogEmpty">No actions logged yet.</div>
-          <div class="note profile-note battle-log-scroll" id="battleLogList" hidden></div>
-        </div>
+          <div class="battle-panel battle-panel-block" data-panel="secondaries">
+            <div class="battle-panel-title">Secondary Objectives</div>
+            <div class="battle-panel-scroll">
+              <div class="battle-score-secondary-strip">
+                <div class="battle-score-secondary-inline" id="battleSecondaryYouPanel"></div>
+                <div class="battle-score-secondary-inline" id="battleSecondaryOpponentPanel"></div>
+              </div>
+            </div>
+          </div>
 
-        <div class="card span-12">
-          <h2>Unit State Tracker</h2>
-          <div class="note" id="battleUnitStateSummary"></div>
-          <div class="army-unit-list scrollable-roster" id="battleUnitStateList"></div>
+          <div class="battle-panel battle-panel-block" data-panel="log">
+            <div class="battle-panel-title">Battle Log</div>
+            <div class="battle-panel-scroll">
+              <div class="note" id="battleLogEmpty">No actions logged yet.</div>
+              <div class="note profile-note battle-log-scroll" id="battleLogList" hidden></div>
+            </div>
+          </div>
+
+          <div class="battle-panel battle-panel-block" data-panel="units">
+            <div class="battle-panel-title">Unit State Tracker</div>
+            <div class="battle-panel-scroll">
+              <div class="note" id="battleUnitStateSummary"></div>
+              <div class="army-unit-list scrollable-roster" id="battleUnitStateList"></div>
+            </div>
+          </div>
         </div>
 
         <div class="footer-bar span-12">
@@ -671,7 +711,7 @@
 
         <div class="card span-8">
           <h2>Results</h2>
-          <div class="army-unit-list" id="rulebookResults"></div>
+          <div class="army-unit-list rulebook-results-frame" id="rulebookResults"></div>
         </div>
 
         <div class="footer-bar span-12">
