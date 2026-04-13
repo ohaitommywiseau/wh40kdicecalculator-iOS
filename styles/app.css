@@ -981,6 +981,12 @@
       flex: 1 1 0;
       min-height: 0;
     }
+    .battle-panel {
+      display: none;
+    }
+    .battle-panel.is-active {
+      display: grid;
+    }
     .battle-panel-card-header {
       display: flex;
       flex-wrap: wrap;

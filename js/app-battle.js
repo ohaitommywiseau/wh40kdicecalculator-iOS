@@ -77,7 +77,9 @@ function renderBattlePanelVisibility() {
   if (!battlePanelSections?.length || !battlePanelButtons?.length) return;
   const choice = ensureBattlePanelChoice();
   battlePanelSections.forEach(section => {
-    section.hidden = section.dataset.panel !== choice;
+    const active = section.dataset.panel === choice;
+    section.hidden = !active;
+    section.classList.toggle('is-active', active);
   });
   battlePanelButtons.forEach(button => {
     const active = button.dataset.panel === choice;
