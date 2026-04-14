@@ -15,6 +15,9 @@ const factionManifest = Array.isArray(window.WH40K_FACTION_MANIFEST) && window.W
 const pointsDatabase = window.WH40K_POINTS_DATABASE || { source: {}, byFaction: {} };
 const unitCompositionDatabase = window.WH40K_UNIT_COMPOSITION_DATABASE || { source: {}, byFaction: {} };
 const wargearDatabase = window.WH40K_WARGEAR_DATABASE || { source: {}, byFaction: {} };
+const bootScreen = document.getElementById('bootScreen');
+const bootLog = document.getElementById('bootLog');
+const bootStatus = document.getElementById('bootStatus');
 
 document.getElementById('openArmyBuilderBtn').addEventListener('click', () => showView('builder'));
 document.getElementById('openCalculatorBtn').addEventListener('click', () => {
@@ -210,7 +213,7 @@ loadStoredRulebookImport().then(() => {
 }).catch(() => {
   renderRulebookImportStatus('Imported rulebook storage could not be loaded on this device.');
 });
-showView('landing');
+runBootSequence();
 document.addEventListener('click', event => {
   if (!event.target.closest('.tooltip-term') && !event.target.closest('.floating-tooltip')) {
     hideFloatingTooltip();
@@ -226,5 +229,77 @@ document.addEventListener('keydown', event => {
 });
 window.addEventListener('resize', hideFloatingTooltip);
 window.addEventListener('scroll', hideFloatingTooltip, true);
+
+function runBootSequence() {
+  if (!bootScreen || !bootLog || !bootStatus) {
+    showView('landing');
+    return;
+  }
+
+  const bootLines = [
+    '+++ COGITATOR CORE AWAKENING +++',
+    'Litany of activation: intoned.',
+    'Machine-spirit handshake: complete.',
+    'Noospheric link: secured.',
+    'Munitorum calculators: online.',
+    'Tactica strata: indexed.',
+    'Strategic auguries: calibrated.',
+    'Astra data-tethers: synchronized.',
+    'Sanctified memory caches: ready.',
+    'Omnissiah\'s will: affirmed.',
+  ];
+
+  let lineIndex = 0;
+  let sequenceDone = false;
+  const maxBootLines = 9;
+
+  const appendLine = (text) => {
+    const line = document.createElement('span');
+    line.className = 'boot-line';
+    line.textContent = text;
+    bootLog.appendChild(line);
+    while (bootLog.childElementCount > maxBootLines) {
+      bootLog.removeChild(bootLog.firstElementChild);
+    }
+  };
+
+  const finishBoot = () => {
+    if (sequenceDone) return;
+    sequenceDone = true;
+    bootStatus.textContent = 'SYSTEMS NOMINAL. COGITATOR READY.';
+    bootScreen.classList.add('boot-exit');
+    setTimeout(() => {
+      bootScreen.style.display = 'none';
+      showView('landing');
+    }, 650);
+  };
+
+  const skipBoot = () => {
+    bootStatus.textContent = 'PRIORITY OVERRIDE ACCEPTED.';
+    finishBoot();
+  };
+
+  bootScreen.addEventListener('click', skipBoot, { once: true });
+  bootScreen.addEventListener('touchstart', skipBoot, { once: true });
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape' || event.key === 'Enter' || event.key === ' ') {
+      skipBoot();
+    }
+  }, { once: true });
+
+  appendLine('Rite initiated. Stand by...');
+  const timer = setInterval(() => {
+    if (sequenceDone) {
+      clearInterval(timer);
+      return;
+    }
+    appendLine(bootLines[lineIndex]);
+    lineIndex += 1;
+    if (lineIndex >= bootLines.length) {
+      clearInterval(timer);
+      setTimeout(finishBoot, 800);
+    }
+  }, 480);
+}
 
 
