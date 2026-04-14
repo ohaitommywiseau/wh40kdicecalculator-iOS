@@ -980,6 +980,14 @@
     .battle-panel-card .battle-panel-block {
       flex: 1 1 0;
       min-height: 0;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      z-index: 1;
+    }
+    .battle-panel-toggle-row {
+      position: relative;
+      z-index: 2;
     }
     .battle-panel {
       display: none;
@@ -1018,7 +1026,8 @@
       letter-spacing: 0.05em;
     }
     .battle-panel-scroll {
-      height: 100%;
+      flex: 1 1 auto;
+      min-height: 0;
       overflow-y: auto;
       padding-right: 6px;
     }
