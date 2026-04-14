@@ -19,39 +19,41 @@
 <body>
   <div class="wrap">
     <section class="view landing-view" id="landingView">
-      <div class="card landing-panel">
-        <div class="landing-omnissiah" aria-hidden="true">
-          <img class="omnissiah-image" src="./assets/omnissiah-terminal.png" alt="" />
-          <div class="omnissiah-scanlines"></div>
-        </div>
-        <h1 class="landing-title">Codex Tactica</h1>
-        <div class="landing-kicker">Command Hub</div>
-        <div class="landing-subtitle">
-          Orchestrate rosters, calculate engagements, and track the battle state from one cogitator stack.
-        </div>
-        <div class="landing-meta">
-          <span class="landing-chip">Offline Ready</span>
-          <span class="landing-chip">iPad Optimized</span>
-          <span class="landing-chip">Local Saves</span>
-        </div>
-        <div class="landing-divider"></div>
-        <div class="landing-actions landing-grid">
-          <button type="button" class="landing-action" id="openArmyBuilderBtn">
-            <span class="landing-action-label">Army Builder</span>
-            <span class="landing-action-sub">Craft lists and detachment loadouts.</span>
-          </button>
-          <button type="button" class="landing-action" id="openCalculatorBtn">
-            <span class="landing-action-label">Combat Calculator</span>
-            <span class="landing-action-sub">Resolve hit, wound, save, and damage.</span>
-          </button>
-          <button type="button" class="landing-action" id="openBattleTrackerBtn">
-            <span class="landing-action-label">Battle Tracker</span>
-            <span class="landing-action-sub">Scoreboard, objectives, and unit states.</span>
-          </button>
-          <button type="button" class="landing-action" id="openRulebookBtn">
-            <span class="landing-action-label">Rulebook</span>
-            <span class="landing-action-sub">Search the core rules fast.</span>
-          </button>
+      <div class="view-body">
+        <div class="card landing-panel">
+          <div class="landing-omnissiah" aria-hidden="true">
+            <img class="omnissiah-image" src="./assets/omnissiah-terminal.png" alt="" />
+            <div class="omnissiah-scanlines"></div>
+          </div>
+          <h1 class="landing-title">Codex Tactica</h1>
+          <div class="landing-kicker">Command Hub</div>
+          <div class="landing-subtitle">
+            Orchestrate rosters, calculate engagements, and track the battle state from one cogitator stack.
+          </div>
+          <div class="landing-meta">
+            <span class="landing-chip">Offline Ready</span>
+            <span class="landing-chip">iPad Optimized</span>
+            <span class="landing-chip">Local Saves</span>
+          </div>
+          <div class="landing-divider"></div>
+          <div class="landing-actions landing-grid">
+            <button type="button" class="landing-action" id="openArmyBuilderBtn">
+              <span class="landing-action-label">Army Builder</span>
+              <span class="landing-action-sub">Craft lists and detachment loadouts.</span>
+            </button>
+            <button type="button" class="landing-action" id="openCalculatorBtn">
+              <span class="landing-action-label">Combat Calculator</span>
+              <span class="landing-action-sub">Resolve hit, wound, save, and damage.</span>
+            </button>
+            <button type="button" class="landing-action" id="openBattleTrackerBtn">
+              <span class="landing-action-label">Battle Tracker</span>
+              <span class="landing-action-sub">Scoreboard, objectives, and unit states.</span>
+            </button>
+            <button type="button" class="landing-action" id="openRulebookBtn">
+              <span class="landing-action-label">Rulebook</span>
+              <span class="landing-action-sub">Search the core rules fast.</span>
+            </button>
+          </div>
         </div>
       </div>
       <div class="footer-bar landing-footer">
@@ -61,21 +63,23 @@
     </section>
 
     <section class="view landing-view" id="rulebookEditionView" hidden>
-      <div class="card landing-panel">
-        <h1 class="landing-title">Rulebook Archive</h1>
-        <div class="note">
-          Select an edition.
-        </div>
-        <div class="landing-actions">
-          <button type="button" class="landing-action" id="openRulebook10thBtn">
-            <strong>Warhammer 40,000 10th Edition</strong>
-          </button>
-        </div>
-        <div class="note" style="margin-top:16px;">
-          Additional editions can be added here later without changing the main landing page flow.
-        </div>
-        <div class="header-controls" style="justify-content:center; margin-top:18px;">
-          <button type="button" class="secondary" id="rulebookEditionBackBtn">Back</button>
+      <div class="view-body">
+        <div class="card landing-panel">
+          <h1 class="landing-title">Rulebook Archive</h1>
+          <div class="note">
+            Select an edition.
+          </div>
+          <div class="landing-actions">
+            <button type="button" class="landing-action" id="openRulebook10thBtn">
+              <strong>Warhammer 40,000 10th Edition</strong>
+            </button>
+          </div>
+          <div class="note" style="margin-top:16px;">
+            Additional editions can be added here later without changing the main landing page flow.
+          </div>
+          <div class="header-controls" style="justify-content:center; margin-top:18px;">
+            <button type="button" class="secondary" id="rulebookEditionBackBtn">Back</button>
+          </div>
         </div>
       </div>
       <div class="footer-bar landing-footer">
@@ -111,7 +115,8 @@
         </div>
       </div>
 
-      <div class="list-builder-layout">
+      <div class="view-body">
+        <div class="list-builder-layout">
         <div class="card">
           <h2>Configure List</h2>
           <div class="field-grid">
@@ -202,13 +207,14 @@
           <button type="button" class="secondary" id="calculatorCancelBattleAttackBtn" hidden>Cancel Attack</button>
         </div>
       </div>
-      <div class="subtitle">
-        In the grim darkness of the far future there is only war.
-      </div>
-      <div class="note battle-mode-note" id="calculatorBattleModeNote" hidden></div>
+    <div class="subtitle">
+      In the grim darkness of the far future there is only war.
     </div>
+    <div class="note battle-mode-note" id="calculatorBattleModeNote" hidden></div>
+  </div>
 
-    <div class="grid">
+    <div class="view-body">
+      <div class="grid">
       <div class="card span-4">
         <h2>Unit & Weapon</h2>
         <div class="field-grid">
@@ -359,10 +365,12 @@
         <div class="note profile-note" id="profileBox"></div>
       </div>
 
-      <div class="footer-bar span-12">
-        <div class="footer-quote">Heresy grows from idleness.</div>
-        <div class="imperial-tagline">Tactica Imperialis v1.0</div>
       </div>
+    </div>
+
+    <div class="footer-bar">
+      <div class="footer-quote">Heresy grows from idleness.</div>
+      <div class="imperial-tagline">Tactica Imperialis v1.0</div>
     </div>
     </section>
 
@@ -385,12 +393,13 @@
             </div>
           </div>
         </div>
-        <div class="subtitle">
-          Track battle round, command points, victory points, and game flow from a single cogitator screen.
-        </div>
+      <div class="subtitle">
+        Track battle round, command points, victory points, and game flow from a single cogitator screen.
       </div>
+    </div>
 
-      <div class="grid">
+      <div class="view-body">
+        <div class="grid">
         <div class="card span-8">
           <h2>Battle Setup</h2>
           <div class="field-grid">
@@ -609,10 +618,10 @@
           </div>
         </div>
 
-        <div class="footer-bar span-12">
-          <div class="footer-quote">It is better to die for the Emperor than to live for yourself.</div>
-          <div class="imperial-tagline">Tactica Imperialis v1.0</div>
-        </div>
+      </div>
+      <div class="footer-bar">
+        <div class="footer-quote">It is better to die for the Emperor than to live for yourself.</div>
+        <div class="imperial-tagline">Tactica Imperialis v1.0</div>
       </div>
     </section>
 
@@ -626,12 +635,13 @@
             <button type="button" class="secondary" id="battleStratagemsBackBtn">Back</button>
           </div>
         </div>
-        <div class="subtitle">
-          Review core and detachment stratagems, search by keyword, and track CP usage away from the main battle dashboard.
-        </div>
+      <div class="subtitle">
+        Review core and detachment stratagems, search by keyword, and track CP usage away from the main battle dashboard.
       </div>
+    </div>
 
-      <div class="grid">
+      <div class="view-body">
+        <div class="grid">
         <div class="card span-12">
           <h2>Stratagems</h2>
           <div class="note" id="battleStratagemSummary"></div>
@@ -644,11 +654,11 @@
           </div>
           <div class="army-unit-list" id="battleStratagemList"></div>
         </div>
-
-        <div class="footer-bar span-12">
-          <div class="footer-quote">Knowledge is power, guard it well.</div>
-          <div class="imperial-tagline">Tactica Imperialis v1.0</div>
         </div>
+      </div>
+      <div class="footer-bar">
+        <div class="footer-quote">Knowledge is power, guard it well.</div>
+        <div class="imperial-tagline">Tactica Imperialis v1.0</div>
       </div>
     </section>
 
@@ -677,7 +687,8 @@
         </div>
       </div>
 
-      <div class="grid">
+      <div class="view-body">
+        <div class="grid">
         <div class="card span-4">
           <h2>Reference</h2>
           <div class="note" id="rulebookSummary"></div>
@@ -714,10 +725,11 @@
           <div class="army-unit-list rulebook-results-frame" id="rulebookResults"></div>
         </div>
 
-        <div class="footer-bar span-12">
-          <div class="footer-quote">Blessed is the mind too small for doubt.</div>
-          <div class="imperial-tagline">Tactica Imperialis v1.0</div>
         </div>
+      </div>
+      <div class="footer-bar">
+        <div class="footer-quote">Blessed is the mind too small for doubt.</div>
+        <div class="imperial-tagline">Tactica Imperialis v1.0</div>
       </div>
     </section>
   </div>
