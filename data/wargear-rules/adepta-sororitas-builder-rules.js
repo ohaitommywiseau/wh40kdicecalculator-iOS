@@ -76,6 +76,7 @@
         controls: [
           { type: 'select', key: 'superior_ranged', label: 'Superior ranged weapon', value: 'boltgun', options: [
             { value: 'boltgun', label: 'Boltgun' },
+            { value: 'bolt pistol', label: 'Bolt pistol' },
             { value: 'combi-weapon', label: 'Combi-weapon' },
             { value: 'condemnor boltgun', label: 'Condemnor boltgun' },
             { value: 'inferno pistol', label: 'Inferno pistol' },
@@ -107,8 +108,9 @@
         add(ctx, q, 'close combat weapon', nonSuperiorCount + (superiorMelee === 'close combat weapon' ? 1 : 0));
         if (specialWeapon) add(ctx, q, specialWeapon, 1);
         if (heavyWeapon) add(ctx, q, heavyWeapon, 1);
+        if (superiorRanged === 'bolt pistol') add(ctx, q, 'bolt pistol', 1);
         if (superiorRanged === 'plasma pistol') addPlasmaPistol(ctx, q, 1);
-        else if (superiorRanged !== 'boltgun') add(ctx, q, superiorRanged, 1);
+        else if (superiorRanged !== 'boltgun' && superiorRanged !== 'bolt pistol') add(ctx, q, superiorRanged, 1);
         if (superiorMelee !== 'close combat weapon') add(ctx, q, superiorMelee, 1);
         if (select(ctx, 'simulacrum', 'no') === 'yes') ctx.derived.push('Simulacrum Imperialis equipped.');
         return q;
@@ -125,22 +127,37 @@
             { value: 'condemnor boltgun', label: 'Condemnor boltgun' },
             { value: 'inferno pistol', label: 'Inferno pistol' },
             { value: 'plasma pistol', label: 'Plasma pistol' },
-            { value: 'brazier of holy fire', label: 'Brazier of holy fire' },
           ] },
           { type: 'select', key: 'melee', label: 'Melee weapon', value: 'hallowed chainsword', options: [
             { value: 'hallowed chainsword', label: 'Hallowed chainsword' },
             { value: 'blessed blade', label: 'Blessed blade' },
             { value: 'power weapon', label: 'Power weapon' },
           ] },
+          { type: 'select', key: 'addon', label: 'Additional wargear', value: 'none', options: [
+            { value: 'none', label: 'None' },
+            { value: 'brazier', label: 'Brazier of holy fire' },
+            { value: 'null_rod', label: 'Null rod' },
+            { value: 'rod_of_office', label: 'Rod of Office' },
+          ] },
         ],
       }],
       quantities: ctx => {
         const q = {};
         const ranged = select(ctx, 'ranged', 'bolt pistol');
+        const melee = select(ctx, 'melee', 'hallowed chainsword');
+        const addon = select(ctx, 'addon', 'none');
         if (ranged === 'plasma pistol') addPlasmaPistol(ctx, q, 1);
         else add(ctx, q, ranged, 1);
-        add(ctx, q, select(ctx, 'melee', 'hallowed chainsword'), 1);
-        ctx.derived.push('Null Rod / Rod of Office abilities active as printed on the datasheet.');
+        add(ctx, q, melee, 1);
+        if ((addon === 'brazier' || addon === 'null_rod') && melee !== 'hallowed chainsword') {
+          ctx.errors.push('Brazier of holy fire and null rod require a hallowed chainsword.');
+        }
+        if (addon === 'rod_of_office' && !(ranged === 'plasma pistol' && melee === 'power weapon')) {
+          ctx.errors.push('Rod of Office requires a plasma pistol and power weapon.');
+        }
+        if (addon === 'brazier') add(ctx, q, 'brazier of holy fire', 1);
+        if (addon === 'null_rod') ctx.derived.push('Null rod equipped.');
+        if (addon === 'rod_of_office') ctx.derived.push('Rod of Office equipped.');
         return q;
       },
     },
@@ -150,22 +167,21 @@
         title: 'Canoness with Jump Pack wargear',
         description: 'Configure the Canoness with Jump Pack loadout.',
         controls: [
-          { type: 'select', key: 'ranged', label: 'Ranged weapon', value: 'none', options: [
-            { value: 'none', label: 'No ranged weapon' },
-            { value: 'ministorum hand flamer', label: 'Ministorum hand flamer' },
-          ] },
-          { type: 'select', key: 'melee', label: 'Melee weapon', value: 'blessed halberd', options: [
+          { type: 'select', key: 'loadout', label: 'Loadout', value: 'blessed halberd', options: [
             { value: 'blessed halberd', label: 'Blessed halberd' },
             { value: 'holy eviscerator', label: 'Holy Eviscerator' },
-            { value: 'power weapon', label: 'Power weapon' },
+            { value: 'hand flamer and power weapon', label: 'Ministorum hand flamer and power weapon' },
           ] },
         ],
       }],
       quantities: ctx => {
         const q = {};
-        const ranged = select(ctx, 'ranged', 'none');
-        if (ranged !== 'none') add(ctx, q, ranged, 1);
-        add(ctx, q, select(ctx, 'melee', 'blessed halberd'), 1);
+        const loadout = select(ctx, 'loadout', 'blessed halberd');
+        if (loadout === 'holy eviscerator') add(ctx, q, 'holy eviscerator', 1);
+        else if (loadout === 'hand flamer and power weapon') {
+          add(ctx, q, 'ministorum hand flamer', 1);
+          add(ctx, q, 'power weapon', 1);
+        } else add(ctx, q, 'blessed halberd', 1);
         return q;
       },
     },
@@ -315,6 +331,7 @@
         controls: [
           { type: 'select', key: 'superior_ranged', label: 'Superior ranged weapon', value: 'boltgun', options: [
             { value: 'boltgun', label: 'Boltgun' },
+            { value: 'bolt pistol', label: 'Bolt pistol' },
             { value: 'combi-weapon', label: 'Combi-weapon' },
             { value: 'condemnor boltgun', label: 'Condemnor boltgun' },
             { value: 'inferno pistol', label: 'Inferno pistol' },
@@ -352,8 +369,9 @@
         add(ctx, q, 'condemnor boltgun', condemnorBoltguns + (superiorRanged === 'condemnor boltgun' ? 1 : 0));
         add(ctx, q, 'meltagun', meltaguns);
         add(ctx, q, 'ministorum flamer', flamers);
+        if (superiorRanged === 'bolt pistol') add(ctx, q, 'bolt pistol', 1);
         if (superiorRanged === 'plasma pistol') addPlasmaPistol(ctx, q, 1);
-        else if (superiorRanged !== 'boltgun' && superiorRanged !== 'condemnor boltgun') add(ctx, q, superiorRanged, 1);
+        else if (superiorRanged !== 'boltgun' && superiorRanged !== 'bolt pistol' && superiorRanged !== 'condemnor boltgun') add(ctx, q, superiorRanged, 1);
         if (superiorMelee !== 'close combat weapon') add(ctx, q, superiorMelee, 1);
         if (select(ctx, 'simulacrum', 'no') === 'yes') ctx.derived.push('Simulacrum Imperialis equipped.');
         return q;
@@ -470,27 +488,45 @@
     'Mortifiers': {
       sections: [{
         title: 'Ranged armament',
-        description: 'Each Mortifier can replace its heavy bolters with Mortifier flamers.',
+        description: 'Each Mortifier can keep 2 heavy bolters, swap to 1 heavy bolter and 1 Mortifier flamer, or swap to 2 Mortifier flamers.',
         controls: [
-          { key: 'flamer_model', label: '1 Mortifier with Mortifier flamers', max: models => Math.max(0, Number(models || 0)) },
+          { key: 'mixed_guns', label: '1 Mortifier with 1 heavy bolter and 1 Mortifier flamer', max: models => Math.max(0, Number(models || 0)) },
+          { key: 'double_flamer', label: '1 Mortifier with 2 Mortifier flamers', max: models => Math.max(0, Number(models || 0)) },
         ],
       }, {
         title: 'Melee armament',
-        description: 'Each Mortifier can replace its twin penitent buzz-blades with twin penitent flails.',
+        description: 'Each Mortifier can keep twin penitent buzz-blades, swap to twin penitent flails, or take 1 penitent buzz-blade and 1 penitent flail.',
         controls: [
-          { key: 'flail_model', label: '1 Mortifier with twin penitent flails', max: models => Math.max(0, Number(models || 0)) },
+          { key: 'twin_flails', label: '1 Mortifier with twin penitent flails', max: models => Math.max(0, Number(models || 0)) },
+          { key: 'mixed_melee', label: '1 Mortifier with 1 penitent buzz-blade and 1 penitent flail', max: models => Math.max(0, Number(models || 0)) },
+        ],
+      }, {
+        title: 'Anchorite sarcophagus',
+        description: 'One Mortifier can be equipped with an anchorite sarcophagus.',
+        controls: [
+          { type: 'select', key: 'anchorite', label: 'Anchorite sarcophagus', value: 'no', options: [
+            { value: 'no', label: 'No' },
+            { value: 'yes', label: 'Yes' },
+          ] },
         ],
       }],
       quantities: ctx => {
         const q = {};
-        const flamerModels = number(ctx, 'flamer_model');
-        const flailModels = number(ctx, 'flail_model');
-        if (flamerModels > ctx.modelCount) ctx.errors.push(`Mortifier flamers must total ${ctx.modelCount} or fewer; currently ${flamerModels}.`);
-        if (flailModels > ctx.modelCount) ctx.errors.push(`Twin penitent flails must total ${ctx.modelCount} or fewer; currently ${flailModels}.`);
-        add(ctx, q, 'heavy bolter', Math.max(0, (ctx.modelCount - flamerModels) * 2));
-        add(ctx, q, 'mortifier flamer', flamerModels * 2);
-        add(ctx, q, 'twin penitent buzz-blades', Math.max(0, ctx.modelCount - flailModels));
-        add(ctx, q, 'twin penitent flails', flailModels);
+        const mixedGuns = number(ctx, 'mixed_guns');
+        const doubleFlamer = number(ctx, 'double_flamer');
+        const twinFlails = number(ctx, 'twin_flails');
+        const mixedMelee = number(ctx, 'mixed_melee');
+        const rangedConfigured = mixedGuns + doubleFlamer;
+        const meleeConfigured = twinFlails + mixedMelee;
+        if (rangedConfigured > ctx.modelCount) ctx.errors.push(`Mortifier ranged swaps must total ${ctx.modelCount} or fewer; currently ${rangedConfigured}.`);
+        if (meleeConfigured > ctx.modelCount) ctx.errors.push(`Mortifier melee swaps must total ${ctx.modelCount} or fewer; currently ${meleeConfigured}.`);
+        add(ctx, q, 'heavy bolter', Math.max(0, (ctx.modelCount - rangedConfigured) * 2) + mixedGuns);
+        add(ctx, q, 'mortifier flamer', (mixedGuns + (doubleFlamer * 2)));
+        add(ctx, q, 'twin penitent buzz-blades', Math.max(0, ctx.modelCount - meleeConfigured));
+        add(ctx, q, 'twin penitent flails', twinFlails);
+        add(ctx, q, 'penitent buzz-blade', mixedMelee);
+        add(ctx, q, 'penitent flail', mixedMelee);
+        if (select(ctx, 'anchorite', 'no') === 'yes') ctx.derived.push('Anchorite sarcophagus equipped.');
         return q;
       },
     },
@@ -628,6 +664,7 @@
         controls: [
           { type: 'select', key: 'superior_ranged', label: 'Superior ranged weapon', value: 'boltgun', options: [
             { value: 'boltgun', label: 'Boltgun' },
+            { value: 'bolt pistol', label: 'Bolt pistol' },
             { value: 'combi-weapon', label: 'Combi-weapon' },
             { value: 'condemnor boltgun', label: 'Condemnor boltgun' },
             { value: 'inferno pistol', label: 'Inferno pistol' },
@@ -658,8 +695,9 @@
         add(ctx, q, 'heavy bolter', heavyBolters);
         add(ctx, q, 'ministorum heavy flamer', heavyFlamers);
         add(ctx, q, 'multi-melta', multiMeltas);
+        if (superiorRanged === 'bolt pistol') add(ctx, q, 'bolt pistol', 1);
         if (superiorRanged === 'plasma pistol') addPlasmaPistol(ctx, q, 1);
-        else if (superiorRanged !== 'boltgun') add(ctx, q, superiorRanged, 1);
+        else if (superiorRanged !== 'boltgun' && superiorRanged !== 'bolt pistol') add(ctx, q, superiorRanged, 1);
         if (superiorMelee !== 'close combat weapon') add(ctx, q, superiorMelee, 1);
         return q;
       },
@@ -717,14 +755,13 @@
         title: 'Seraphim Superior',
         description: 'Configure the Seraphim Superior.',
         controls: [
-          { type: 'select', key: 'superior_pistol', label: 'Superior special pistol', value: 'none', options: [
-            { value: 'none', label: 'None' },
-            { value: 'plasma pistol', label: 'Plasma pistol' },
-          ] },
-          { type: 'select', key: 'superior_melee', label: 'Superior melee weapon', value: 'close combat weapon', options: [
-            { value: 'close combat weapon', label: 'Close combat weapon' },
-            { value: 'chainsword', label: 'Chainsword' },
-            { value: 'power weapon', label: 'Power weapon' },
+          { type: 'select', key: 'superior_loadout', label: 'Superior loadout', value: '2 bolt pistols', options: [
+            { value: '2 bolt pistols', label: '2 bolt pistols' },
+            { value: 'bolt pistol and chainsword', label: 'Bolt pistol and chainsword' },
+            { value: 'bolt pistol and plasma pistol', label: 'Bolt pistol and plasma pistol' },
+            { value: 'bolt pistol and power weapon', label: 'Bolt pistol and power weapon' },
+            { value: 'plasma pistol and chainsword', label: 'Plasma pistol and chainsword' },
+            { value: 'plasma pistol and power weapon', label: 'Plasma pistol and power weapon' },
           ] },
         ],
       }],
@@ -734,65 +771,93 @@
         const handFlamerPairs = number(ctx, 'hand_flamer_pairs');
         const pairTotal = infernoPairs + handFlamerPairs;
         const pairMax = maxTwoPerFive(ctx.modelCount);
-        const superiorPistol = select(ctx, 'superior_pistol', 'none');
-        const superiorMelee = select(ctx, 'superior_melee', 'close combat weapon');
+        const superiorLoadout = select(ctx, 'superior_loadout', '2 bolt pistols');
         if (pairTotal > pairMax) ctx.errors.push(`Seraphim special pistol pairs must total ${pairMax} or fewer; currently ${pairTotal}.`);
 
-        add(ctx, q, 'bolt pistol', Math.max(0, (ctx.modelCount * 2) - (pairTotal * 2) - (superiorPistol === 'plasma pistol' ? 1 : 0)));
-        add(ctx, q, 'close combat weapon', ctx.modelCount - (superiorMelee !== 'close combat weapon' ? 1 : 0));
+        const nonSuperiorCount = Math.max(0, ctx.modelCount - 1);
+        let superiorBoltPistols = 2;
+        let superiorCloseCombat = 1;
+        if (superiorLoadout === 'bolt pistol and chainsword' || superiorLoadout === 'bolt pistol and power weapon') superiorBoltPistols = 1;
+        if (superiorLoadout === 'plasma pistol and chainsword' || superiorLoadout === 'plasma pistol and power weapon') superiorBoltPistols = 0;
+        if (superiorLoadout === 'bolt pistol and chainsword' || superiorLoadout === 'plasma pistol and chainsword' || superiorLoadout === 'bolt pistol and power weapon' || superiorLoadout === 'plasma pistol and power weapon') superiorCloseCombat = 0;
+
+        add(ctx, q, 'bolt pistol', Math.max(0, (nonSuperiorCount * 2) - (pairTotal * 2)) + superiorBoltPistols);
+        add(ctx, q, 'close combat weapon', nonSuperiorCount + superiorCloseCombat);
         add(ctx, q, 'inferno pistol', infernoPairs * 2);
         add(ctx, q, 'ministorum hand flamer', handFlamerPairs * 2);
-        if (superiorPistol === 'plasma pistol') addPlasmaPistol(ctx, q, 1);
-        if (superiorMelee !== 'close combat weapon') add(ctx, q, superiorMelee, 1);
+        if (superiorLoadout === 'bolt pistol and chainsword') {
+          add(ctx, q, 'chainsword', 1);
+        } else if (superiorLoadout === 'bolt pistol and plasma pistol') {
+          addPlasmaPistol(ctx, q, 1);
+        } else if (superiorLoadout === 'bolt pistol and power weapon') {
+          add(ctx, q, 'power weapon', 1);
+        } else if (superiorLoadout === 'plasma pistol and chainsword') {
+          addPlasmaPistol(ctx, q, 1);
+          add(ctx, q, 'chainsword', 1);
+        } else if (superiorLoadout === 'plasma pistol and power weapon') {
+          addPlasmaPistol(ctx, q, 1);
+          add(ctx, q, 'power weapon', 1);
+        }
         return q;
       },
     },
 
     'Sisters Novitiate Squad': {
       sections: [{
-        title: 'Sister Novitiate special weapon',
-        description: 'One Sister Novitiate can replace its autogun with 1 Ministorum flamer.',
+        title: 'Sisters Novitiate special weapons',
+        description: 'Up to 2 Sisters Novitiate can each replace their autogun with 1 Ministorum flamer.',
         controls: [
-          { type: 'select', key: 'flamer', label: 'Ministorum flamer', value: 'no', options: [
+          { key: 'flamer', label: '1 Ministorum flamer', max: 2 },
+        ],
+      }, {
+        title: 'Sisters Novitiate replacements',
+        description: 'Track banner, simulacrum, and melee-weapon replacements on Sisters Novitiate.',
+        controls: [
+          { type: 'select', key: 'banner', label: 'Sacred banner', value: 'no', options: [
             { value: 'no', label: 'No' },
             { value: 'yes', label: 'Yes' },
           ] },
+          { type: 'select', key: 'simulacrum', label: 'Simulacrum Imperialis', value: 'no', options: [
+            { value: 'no', label: 'No' },
+            { value: 'yes', label: 'Yes' },
+          ] },
+          { key: 'melee_novitiate', label: '1 Sister Novitiate with Novitiate melee weapons', max: models => Math.max(0, Number(models || 0) - 1) },
         ],
       }, {
         title: 'Novitiate Superior',
-        description: 'Configure the Novitiate Superior.',
+        description: 'Configure the Novitiate Superior package.',
         controls: [
-          { type: 'select', key: 'superior_pistol', label: 'Superior special pistol', value: 'none', options: [
-            { value: 'none', label: 'None' },
-            { value: 'plasma pistol', label: 'Plasma pistol' },
-          ] },
-          { type: 'select', key: 'superior_melee', label: 'Superior melee weapon', value: 'close combat weapon', options: [
-            { value: 'close combat weapon', label: 'Close combat weapon' },
-            { value: 'power weapon', label: 'Power weapon' },
-            { value: 'novitiate melee weapons', label: 'Novitiate melee weapons' },
-          ] },
-          { type: 'select', key: 'banner', label: 'Sacred Banner / Simulacrum package', value: 'no', options: [
-            { value: 'no', label: 'No' },
-            { value: 'yes', label: 'Yes' },
+          { type: 'select', key: 'superior_loadout', label: 'Superior loadout', value: 'bolt pistol, boltgun, close combat weapon', options: [
+            { value: 'bolt pistol, boltgun, close combat weapon', label: 'Bolt pistol, boltgun, close combat weapon' },
+            { value: 'bolt pistol and power weapon', label: 'Bolt pistol and power weapon' },
+            { value: 'plasma pistol and power weapon', label: 'Plasma pistol and power weapon' },
           ] },
         ],
       }],
       quantities: ctx => {
         const q = {};
         const nonSuperiorCount = Math.max(0, ctx.modelCount - 1);
-        const flamer = select(ctx, 'flamer', 'no') === 'yes' ? 1 : 0;
-        const superiorPistol = select(ctx, 'superior_pistol', 'none');
-        const superiorMelee = select(ctx, 'superior_melee', 'close combat weapon');
+        const flamer = number(ctx, 'flamer');
+        const banner = select(ctx, 'banner', 'no') === 'yes' ? 1 : 0;
+        const simulacrum = select(ctx, 'simulacrum', 'no') === 'yes' ? 1 : 0;
+        const meleeNovitiates = number(ctx, 'melee_novitiate');
+        const superiorLoadout = select(ctx, 'superior_loadout', 'bolt pistol, boltgun, close combat weapon');
+        const replacedAutoguns = flamer + banner + simulacrum + meleeNovitiates;
+        if (flamer > 2) ctx.errors.push('Sisters Novitiate can take at most 2 Ministorum flamers.');
+        if (replacedAutoguns > nonSuperiorCount) ctx.errors.push(`Sisters Novitiate autogun replacements must total ${nonSuperiorCount} or fewer; currently ${replacedAutoguns}.`);
 
+        const superiorHasBoltPistol = superiorLoadout !== 'plasma pistol and power weapon';
         add(ctx, q, 'autopistol', nonSuperiorCount);
-        add(ctx, q, 'autogun', Math.max(0, nonSuperiorCount - flamer));
-        add(ctx, q, 'close combat weapon', nonSuperiorCount + (superiorMelee === 'close combat weapon' ? 1 : 0));
+        add(ctx, q, 'autogun', Math.max(0, nonSuperiorCount - replacedAutoguns));
+        add(ctx, q, 'close combat weapon', Math.max(0, nonSuperiorCount - meleeNovitiates) + (superiorLoadout === 'bolt pistol, boltgun, close combat weapon' ? 1 : 0));
         add(ctx, q, 'ministorum flamer', flamer);
-        add(ctx, q, 'bolt pistol', 1);
-        add(ctx, q, 'boltgun', 1);
-        if (superiorPistol === 'plasma pistol') addPlasmaPistol(ctx, q, 1);
-        if (superiorMelee !== 'close combat weapon') add(ctx, q, superiorMelee, 1);
-        if (select(ctx, 'banner', 'no') === 'yes') ctx.derived.push('Sacred Banner / Simulacrum Imperialis equipped.');
+        add(ctx, q, 'novitiate melee weapons', meleeNovitiates);
+        add(ctx, q, 'bolt pistol', superiorHasBoltPistol ? 1 : 0);
+        if (superiorLoadout === 'plasma pistol and power weapon') addPlasmaPistol(ctx, q, 1);
+        add(ctx, q, 'boltgun', superiorLoadout === 'bolt pistol, boltgun, close combat weapon' ? 1 : 0);
+        if (superiorLoadout !== 'bolt pistol, boltgun, close combat weapon') add(ctx, q, 'power weapon', 1);
+        if (banner) ctx.derived.push('Sacred banner equipped.');
+        if (simulacrum) ctx.derived.push('Simulacrum Imperialis equipped.');
         return q;
       },
     },

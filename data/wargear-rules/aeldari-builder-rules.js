@@ -263,19 +263,26 @@
         controls: [
           { type: 'select', key: 'exarch', label: 'Exarch loadout', value: 'catapult', options: [
             { value: 'catapult', label: 'Avenger shuriken catapult' },
+            { value: 'dual_catapult', label: '2 Avenger shuriken catapults' },
             { value: 'diresword', label: 'Diresword + shuriken pistol' },
             { value: 'power_glaive', label: 'Power glaive + shuriken pistol' }
-          ] }
+          ] },
+          { key: 'shimmershield', label: 'Shimmershield', max: 1 }
         ]
       }],
       quantities: ctx => {
         const q = {};
         const exarch = select(ctx, 'exarch', 'catapult');
+        const shimmershield = number(ctx, 'shimmershield');
+        if (shimmershield && exarch !== 'diresword' && exarch !== 'power_glaive') {
+          ctx.errors.push('Dire Avenger Exarch can only take a shimmershield with a shuriken pistol loadout.');
+        }
         add(ctx, q, 'avenger shuriken catapult', Math.max(0, ctx.modelCount - 1));
         if (exarch === 'catapult') add(ctx, q, 'avenger shuriken catapult', 1);
+        else if (exarch === 'dual_catapult') add(ctx, q, 'avenger shuriken catapult', 2);
         else {
           add(ctx, q, exarch, 1);
-          add(ctx, q, 'shuriken pistol', 1);
+          if (!shimmershield) add(ctx, q, 'shuriken pistol', 1);
         }
         add(ctx, q, 'close combat weapon', ctx.modelCount);
         return q;
@@ -926,15 +933,15 @@
         description: 'Assign pistol upgrades across the Troupe.',
         controls: [
           { key: 'shuriken_pistol', label: 'Shuriken pistol', max: models => Number(models || 0) },
-          { key: 'fusion_pistol', label: 'Fusion pistol', max: models => Number(models || 0) },
-          { key: 'neuro_disruptor', label: 'Neuro disruptor', max: models => Number(models || 0) }
+          { key: 'fusion_pistol', label: 'Fusion pistol', max: models => Number(models || 0) >= 10 ? 4 : 2 },
+          { key: 'neuro_disruptor', label: 'Neuro disruptor', max: models => Number(models || 0) >= 10 ? 4 : 2 }
         ]
       }, {
         title: 'Troupe melee weapons',
         description: 'Assign melee weapons across the Troupe.',
         controls: [
           { key: 'harlequin_blade', label: 'Harlequin’s blade', max: models => Number(models || 0) },
-          { key: 'power_sword', label: 'Power sword', max: models => Number(models || 0) },
+          { key: 'power_sword', label: 'Lead Player power sword', max: 1 },
           { key: 'special_weapon', label: 'Harlequin’s special weapon', max: models => Number(models || 0) }
         ]
       }],
@@ -942,8 +949,11 @@
         const q = {};
         const pistolTotal = number(ctx, 'shuriken_pistol') + number(ctx, 'fusion_pistol') + number(ctx, 'neuro_disruptor');
         const meleeTotal = number(ctx, 'harlequin_blade') + number(ctx, 'power_sword') + number(ctx, 'special_weapon');
+        const pistolSwapCap = ctx.modelCount >= 10 ? 4 : 2;
         if (pistolTotal !== ctx.modelCount) ctx.errors.push(`Troupe pistol selections must total ${ctx.modelCount}; currently ${pistolTotal}.`);
         if (meleeTotal !== ctx.modelCount) ctx.errors.push(`Troupe melee selections must total ${ctx.modelCount}; currently ${meleeTotal}.`);
+        if (number(ctx, 'fusion_pistol') > pistolSwapCap) ctx.errors.push(`Troupe can take at most ${pistolSwapCap} fusion pistols at this unit size.`);
+        if (number(ctx, 'neuro_disruptor') > pistolSwapCap) ctx.errors.push(`Troupe can take at most ${pistolSwapCap} neuro disruptors at this unit size.`);
         add(ctx, q, 'shuriken pistol', number(ctx, 'shuriken_pistol'));
         add(ctx, q, 'fusion pistol', number(ctx, 'fusion_pistol'));
         add(ctx, q, 'neuro disruptor', number(ctx, 'neuro_disruptor'));
@@ -1050,26 +1060,35 @@
     'Ynnari Kabalite Warriors': {
       sections: [{
         title: 'Kabalite special weapons',
-        description: 'Assign the Kabalite special weapons. Remaining models keep splinter rifles.',
+        description: 'Assign the Sybarite and special weapon swaps. Remaining models keep splinter rifles and close combat weapons.',
         controls: [
+          { type: 'select', key: 'sybarite_ranged', label: 'Sybarite ranged weapon', value: 'splinter_rifle', options: [
+            { value: 'splinter_rifle', label: 'Splinter rifle' },
+            { value: 'splinter_pistol', label: 'Splinter pistol' },
+            { value: 'blast_pistol', label: 'Blast pistol' }
+          ] },
+          { key: 'sybarite_weapon', label: 'Sybarite weapon', max: 1 },
+          { key: 'phantasm_grenade_launcher', label: 'Phantasm grenade launcher', max: 1 },
           { key: 'blaster', label: 'Blaster', max: 1 },
           { key: 'shredder', label: 'Shredder', max: 1 },
           { key: 'dark_lance', label: 'Dark lance', max: 1 },
-          { key: 'splinter_cannon', label: 'Splinter cannon', max: 1 },
-          { key: 'blast_pistol', label: 'Blast pistol', max: 1 }
+          { key: 'splinter_cannon', label: 'Splinter cannon', max: 1 }
         ]
       }],
       quantities: ctx => {
         const q = {};
         const specials = number(ctx, 'blaster') + number(ctx, 'shredder') + number(ctx, 'dark_lance') + number(ctx, 'splinter_cannon');
-        add(ctx, q, 'blast pistol', number(ctx, 'blast_pistol'));
-        add(ctx, q, 'sybarite weapon', 1);
+        const sybariteRanged = select(ctx, 'sybarite_ranged', 'splinter_rifle');
+        const sybariteWeapon = number(ctx, 'sybarite_weapon');
+        if (sybariteRanged === 'blast_pistol') add(ctx, q, 'blast pistol', 1);
+        else if (sybariteRanged === 'splinter_pistol') add(ctx, q, 'splinter pistol', 1);
+        if (sybariteWeapon) add(ctx, q, 'sybarite weapon', 1);
         add(ctx, q, 'blaster', number(ctx, 'blaster'));
         add(ctx, q, 'shredder', number(ctx, 'shredder'));
         add(ctx, q, 'dark lance', number(ctx, 'dark_lance'));
         add(ctx, q, 'splinter cannon', number(ctx, 'splinter_cannon'));
-        add(ctx, q, 'splinter rifle', Math.max(0, 9 - specials));
-        add(ctx, q, 'close combat weapon', 10);
+        add(ctx, q, 'splinter rifle', Math.max(0, 10 - specials - (sybariteRanged === 'splinter_rifle' ? 0 : 1)));
+        add(ctx, q, 'close combat weapon', 10 - sybariteWeapon);
         return q;
       }
     },
@@ -1095,12 +1114,14 @@
 
     'Ynnari Reavers': {
       sections: [{
-        title: 'Special weapons',
+        title: 'Special weapons and gear',
         description: 'Assign Reaver special weapons. Remaining models keep splinter rifle and splinter pistol.',
         controls: [
-          { key: 'blaster', label: 'Blaster', max: 1 },
-          { key: 'heat_lance', label: 'Heat lance', max: 1 },
-          { key: 'agoniser', label: 'Agoniser', max: 1 }
+          { key: 'blaster', label: 'Blaster', max: models => Math.floor(Number(models || 0) / 3) },
+          { key: 'heat_lance', label: 'Heat lance', max: models => Math.floor(Number(models || 0) / 3) },
+          { key: 'agoniser', label: 'Arena Champion agoniser', max: 1 },
+          { key: 'grav_talon', label: 'Grav-talon', max: models => Math.floor(Number(models || 0) / 3) },
+          { key: 'cluster_caltrops', label: 'Cluster caltrops', max: models => Math.floor(Number(models || 0) / 3) }
         ]
       }],
       quantities: ctx => {
@@ -1108,12 +1129,16 @@
         const blaster = number(ctx, 'blaster');
         const heat = number(ctx, 'heat_lance');
         const agoniser = number(ctx, 'agoniser');
+        const gearTotal = number(ctx, 'grav_talon') + number(ctx, 'cluster_caltrops');
+        const specialCap = Math.floor(ctx.modelCount / 3);
+        if (blaster + heat > specialCap) ctx.errors.push(`Ynnari Reavers can replace at most ${specialCap} splinter rifles with blasters or heat lances.`);
+        if (gearTotal > specialCap) ctx.errors.push(`Ynnari Reavers can take at most ${specialCap} grav-talons/cluster caltrops in total.`);
         add(ctx, q, 'blaster', blaster);
         add(ctx, q, 'heat lance', heat);
         add(ctx, q, 'agoniser', agoniser);
-        add(ctx, q, 'splinter pistol', Math.max(0, ctx.modelCount - blaster - heat));
+        add(ctx, q, 'splinter pistol', ctx.modelCount);
         add(ctx, q, 'splinter rifle', Math.max(0, ctx.modelCount - blaster - heat));
-        add(ctx, q, 'bladevanes', ctx.modelCount);
+        add(ctx, q, 'bladevanes', ctx.modelCount - agoniser);
         return q;
       }
     },
@@ -1360,11 +1385,11 @@
         const fusion = number(ctx, 'fusion_gun');
         const sword = number(ctx, 'power_sword');
         if (flamer > 2 || fusion > 2 || sword > 2) ctx.errors.push('Storm Guardian special weapons exceed the datasheet limits.');
-        add(ctx, q, 'shuriken pistol', 10);
+        add(ctx, q, 'shuriken pistol', 10 - flamer - fusion);
         add(ctx, q, 'flamer', flamer);
         add(ctx, q, 'fusion gun', fusion);
         add(ctx, q, 'power sword', sword);
-        add(ctx, q, 'close combat weapon', 11 - sword);
+        add(ctx, q, 'close combat weapon', 11 - sword - flamer - fusion);
         add(ctx, q, 'serpent shield', 1);
         return q;
       }

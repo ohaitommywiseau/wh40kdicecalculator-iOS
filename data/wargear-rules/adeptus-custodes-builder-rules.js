@@ -51,16 +51,27 @@
         controls: [
           { key: 'castellan_axe', label: '1 castellan axe', max: models => Number(models || 0) }
         ]
+      }, {
+        title: 'Vexilla',
+        description: '1 model can replace its guardian spear with 1 vexilla and 1 misericordia.',
+        controls: [
+          { type: 'select', key: 'vexilla', label: 'Vexilla bearer', value: 'no', options: [
+            { value: 'no', label: 'No' },
+            { value: 'yes', label: 'Yes' }
+          ] }
+        ]
       }],
       quantities: ctx => {
         const q = {};
         const axes = number(ctx, 'castellan_axe');
+        const vexilla = select(ctx, 'vexilla', 'no') === 'yes' ? 1 : 0;
         if (axes > ctx.modelCount) ctx.errors.push(`Castellan axes must total ${ctx.modelCount} or fewer; currently ${axes}.`);
+        if (axes + vexilla > ctx.modelCount) ctx.errors.push(`Allarus weapon swaps must total ${ctx.modelCount} or fewer; currently ${axes + vexilla}.`);
         add(ctx, q, 'balistus grenade launcher', ctx.modelCount);
-        add(ctx, q, 'guardian spear (1)', Math.max(0, ctx.modelCount - axes));
+        add(ctx, q, 'guardian spear (1)', Math.max(0, ctx.modelCount - axes - vexilla));
         add(ctx, q, 'castellan axe (1)', axes);
-        add(ctx, q, 'misericordia', ctx.modelCount);
-        ctx.derived.push('Vexilla option should be resolved on the printed datasheet if needed.');
+        add(ctx, q, 'misericordia', vexilla);
+        if (vexilla) ctx.derived.push('1 vexilla equipped.');
         return q;
       }
     },
@@ -193,20 +204,32 @@
 
     'Custodian Guard': {
       sections: [{
-        title: 'Custodian Guard weapons',
-        description: 'Any number of models can replace their guardian spear with 1 sentinel blade and misericordia.',
+        title: 'Custodian Guard shield bearers',
+        description: 'Any number of models can replace their guardian spear with 1 sentinel blade and 1 praesidium shield.',
         controls: [
           { key: 'sentinel_blade', label: '1 sentinel blade bearer', max: models => Number(models || 0) }
+        ]
+      }, {
+        title: 'Vexilla',
+        description: '1 model can replace its guardian spear with 1 vexilla and 1 misericordia.',
+        controls: [
+          { type: 'select', key: 'vexilla', label: 'Vexilla bearer', value: 'no', options: [
+            { value: 'no', label: 'No' },
+            { value: 'yes', label: 'Yes' }
+          ] }
         ]
       }],
       quantities: ctx => {
         const q = {};
         const blades = number(ctx, 'sentinel_blade');
+        const vexilla = select(ctx, 'vexilla', 'no') === 'yes' ? 1 : 0;
         if (blades > ctx.modelCount) ctx.errors.push(`Sentinel blade bearers must total ${ctx.modelCount} or fewer; currently ${blades}.`);
-        add(ctx, q, 'guardian spear (1)', Math.max(0, ctx.modelCount - blades));
+        if (blades + vexilla > ctx.modelCount) ctx.errors.push(`Custodian Guard swaps must total ${ctx.modelCount} or fewer; currently ${blades + vexilla}.`);
+        add(ctx, q, 'guardian spear (1)', Math.max(0, ctx.modelCount - blades - vexilla));
         add(ctx, q, 'sentinel blade (1)', blades);
-        add(ctx, q, 'misericordia', blades);
-        ctx.derived.push('Praesidium Shield and Vexilla options should be checked on the printed datasheet if used.');
+        add(ctx, q, 'misericordia', vexilla);
+        if (blades) ctx.derived.push(`${blades} praesidium shield${blades === 1 ? '' : 's'} equipped.`);
+        if (vexilla) ctx.derived.push('1 vexilla equipped.');
         return q;
       }
     },
@@ -236,6 +259,15 @@
         controls: [
           { key: 'castellan_axe', label: '1 castellan axe', max: models => Number(models || 0) }
         ]
+      }, {
+        title: 'Vexilla',
+        description: '1 model can be equipped with 1 vexilla.',
+        controls: [
+          { type: 'select', key: 'vexilla', label: 'Vexilla', value: 'no', options: [
+            { value: 'no', label: 'No' },
+            { value: 'yes', label: 'Yes' }
+          ] }
+        ]
       }],
       quantities: ctx => {
         const q = {};
@@ -243,7 +275,7 @@
         if (axes > ctx.modelCount) ctx.errors.push(`Castellan axes must total ${ctx.modelCount} or fewer; currently ${axes}.`);
         add(ctx, q, 'guardian spear (1)', Math.max(0, ctx.modelCount - axes));
         add(ctx, q, 'castellan axe (1)', axes);
-        ctx.derived.push('Vexilla option should be resolved on the printed datasheet if needed.');
+        if (select(ctx, 'vexilla', 'no') === 'yes') ctx.derived.push('1 vexilla equipped.');
         return q;
       }
     },
@@ -311,13 +343,22 @@
             { value: 'guardian spear (1)', label: 'Guardian spear' },
             { value: 'castellan axe (1)', label: 'Castellan axe' },
             { value: 'pyrithite spear (1)', label: 'Pyrithite spear' },
-            { value: 'sentinel blade (1)', label: 'Sentinel blade' }
+            { value: 'sentinel blade (1)', label: 'Sentinel blade' },
+            { value: 'sentinel blade and shield', label: 'Sentinel blade and praesidium shield' },
+            { value: 'pyrithite spear and shield', label: 'Pyrithite spear and praesidium shield' }
           ] }
         ]
       }],
       quantities: ctx => {
         const q = {};
-        add(ctx, q, select(ctx, 'weapon', 'guardian spear (1)'), 1);
+        const weapon = select(ctx, 'weapon', 'guardian spear (1)');
+        if (weapon === 'sentinel blade and shield') {
+          add(ctx, q, 'sentinel blade (1)', 1);
+          ctx.derived.push('Praesidium shield equipped.');
+        } else if (weapon === 'pyrithite spear and shield') {
+          add(ctx, q, 'pyrithite spear (1)', 1);
+          ctx.derived.push('Praesidium shield equipped.');
+        } else add(ctx, q, weapon, 1);
         return q;
       }
     },

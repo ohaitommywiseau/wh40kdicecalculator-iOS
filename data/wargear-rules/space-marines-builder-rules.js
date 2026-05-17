@@ -3079,112 +3079,56 @@
 
     'Wolf Scouts': {
       sections: [{
-        title: 'Wolf Scout weapon swaps',
-        description: 'Any number of Wolf Scouts can each replace their boltgun with 1 Astartes shotgun or 1 combat knife. 1 Wolf Scout can replace its boltgun with 1 flamer, 1 grav-gun, 1 heavy bolter, 1 meltagun, 1 missile launcher or 1 plasma gun. 1 Wolf Scout can replace its boltgun and bolt pistol with 1 bolt pistol and 1 power weapon, or 1 boltgun and 1 plasma pistol.',
+        title: 'Wolf Scout upgrades',
+        description: '1 Wolf Scout can replace its plasma pistol with 1 plasma gun. 1 Wolf Scout can replace its combat blade and plasma pistol with 1 runic stave and 1 thunderclap. If this unit contains 12 models, 1 Wolf Scout can replace its plasma pistol with 1 instigator bolt carbine. 1 Wolf Scout equipped with a plasma pistol can be equipped with 1 haywire mine.',
         controls: [
-          { key: 'astartes_shotgun', label: '1 Astartes shotgun', max: models => Math.max(0, Number(models || 0) - 1) },
-          { key: 'combat_knife', label: '1 combat knife', max: models => Math.max(0, Number(models || 0) - 1) },
-          { type: 'select', key: 'special_weapon', label: 'Single special weapon', value: 'none', options: [
+          { type: 'select', key: 'specialist_swap', label: 'Scout weapon replacement', value: 'none', options: [
             { value: 'none', label: 'None' },
-            { value: 'flamer', label: 'Flamer' },
-            { value: 'grav-gun', label: 'Grav-gun' },
-            { value: 'heavy bolter', label: 'Heavy bolter' },
-            { value: 'meltagun', label: 'Meltagun' },
-            { value: 'missile launcher', label: 'Missile launcher' },
             { value: 'plasma gun', label: 'Plasma gun' },
+            { value: 'runic package', label: 'Runic stave and Thunderclap' },
           ] },
-          { type: 'select', key: 'special_swap', label: 'Single boltgun/bolt pistol replacement', value: 'none', options: [
-            { value: 'none', label: 'None' },
-            { value: 'power-weapon', label: 'Bolt pistol and power weapon' },
-            { value: 'plasma-pistol', label: 'Boltgun and plasma pistol' },
+          { type: 'select', key: 'instigator_carbine', label: '12-model upgrade', value: 'no', options: [
+            { value: 'no', label: 'No instigator bolt carbine' },
+            { value: 'yes', label: '1 instigator bolt carbine' },
           ] },
-        ],
-      }, {
-        title: 'Wolf Scout Pack Leader',
-        description: 'The Wolf Scout Pack Leaderâ€™s boltgun and bolt pistol can be replaced with 1 twin lightning claws, or with two different weapons from the following list: 1 Astartes chainsword; 1 bolt pistol; 1 boltgun; 1 combi-weapon; 1 grav-pistol; 1 hand flamer; 1 inferno pistol; 1 plasma pistol; 1 power fist; 1 power weapon; 1 storm bolter; 1 thunder hammer. This model can only be equipped with two ranged weapons if one of them is a Pistol (and it can only have one Pistol).',
-        controls: [
-          { type: 'select', key: 'leader_loadout', label: 'Pack Leader full replacement', value: 'two-weapons', options: [
-            { value: 'two-weapons', label: 'Choose two weapons' },
-            { value: 'twin lightning claws', label: 'Twin lightning claws' },
-          ] },
-          { type: 'select', key: 'leader_weapon_a', label: 'Pack Leader weapon A', value: 'bolt pistol', options: [
-            { value: 'astartes chainsword', label: 'Astartes chainsword' },
-            { value: 'bolt pistol', label: 'Bolt pistol' },
-            { value: 'boltgun', label: 'Boltgun' },
-            { value: 'combi-weapon', label: 'Combi-weapon' },
-            { value: 'grav-pistol', label: 'Grav-pistol' },
-            { value: 'hand flamer', label: 'Hand flamer' },
-            { value: 'inferno pistol', label: 'Inferno pistol' },
-            { value: 'plasma pistol', label: 'Plasma pistol' },
-            { value: 'power fist', label: 'Power fist' },
-            { value: 'power weapon', label: 'Power weapon' },
-            { value: 'storm bolter', label: 'Storm bolter' },
-            { value: 'thunder hammer', label: 'Thunder hammer' },
-          ] },
-          { type: 'select', key: 'leader_weapon_b', label: 'Pack Leader weapon B', value: 'boltgun', options: [
-            { value: 'astartes chainsword', label: 'Astartes chainsword' },
-            { value: 'bolt pistol', label: 'Bolt pistol' },
-            { value: 'boltgun', label: 'Boltgun' },
-            { value: 'combi-weapon', label: 'Combi-weapon' },
-            { value: 'grav-pistol', label: 'Grav-pistol' },
-            { value: 'hand flamer', label: 'Hand flamer' },
-            { value: 'inferno pistol', label: 'Inferno pistol' },
-            { value: 'plasma pistol', label: 'Plasma pistol' },
-            { value: 'power fist', label: 'Power fist' },
-            { value: 'power weapon', label: 'Power weapon' },
-            { value: 'storm bolter', label: 'Storm bolter' },
-            { value: 'thunder hammer', label: 'Thunder hammer' },
+          { type: 'select', key: 'haywire_mine', label: 'Haywire mine', value: 'no', options: [
+            { value: 'no', label: 'No' },
+            { value: 'yes', label: 'Yes' },
           ] },
         ],
       }],
       quantities: ctx => {
         const q = {};
-        const nonLeaderCount = Math.max(0, ctx.modelCount - 1);
-        const shotguns = number(ctx, 'astartes_shotgun');
-        const knives = number(ctx, 'combat_knife');
-        const specialWeapon = select(ctx, 'special_weapon', 'none');
-        const specialSwap = select(ctx, 'special_swap', 'none');
-        const leaderLoadout = select(ctx, 'leader_loadout', 'two-weapons');
-        const leaderWeaponA = select(ctx, 'leader_weapon_a', 'bolt pistol');
-        const leaderWeaponB = select(ctx, 'leader_weapon_b', 'boltgun');
-        const specialWeaponCount = specialWeapon === 'none' ? 0 : 1;
-        const specialSwapCount = specialSwap === 'none' ? 0 : 1;
-        const nonLeaderBoltgunReplacements = shotguns + knives + specialWeaponCount + specialSwapCount;
+        const wolfCount = ctx.modelCount >= 12 ? 2 : 1;
+        const scoutCount = Math.max(0, ctx.modelCount - 1 - wolfCount);
+        const specialistSwap = select(ctx, 'specialist_swap', 'none');
+        const instigator = select(ctx, 'instigator_carbine', 'no') === 'yes';
+        const haywireMine = select(ctx, 'haywire_mine', 'no') === 'yes';
+        const plasmaGunCount = specialistSwap === 'plasma gun' ? 1 : 0;
+        const runicCount = specialistSwap === 'runic package' ? 1 : 0;
+        const instigatorCount = instigator ? 1 : 0;
+        const scoutPistolReplacements = plasmaGunCount + runicCount + instigatorCount;
+        const remainingScoutPlasmaPistols = Math.max(0, scoutCount - scoutPistolReplacements);
 
-        if (nonLeaderBoltgunReplacements > nonLeaderCount) {
-          ctx.errors.push(`Wolf Scout boltgun replacements exceed the ${nonLeaderCount} non-leader models in the unit.`);
+        if (instigator && ctx.modelCount < 12) ctx.errors.push('Wolf Scouts can only take an instigator bolt carbine in a 12-model unit.');
+        if (scoutPistolReplacements > scoutCount) {
+          ctx.errors.push(`Wolf Scout plasma pistol replacements exceed the ${scoutCount} regular Wolf Scouts in the unit.`);
+        }
+        if (haywireMine && remainingScoutPlasmaPistols < 1) {
+          ctx.errors.push('A haywire mine requires a regular Wolf Scout that still has its plasma pistol.');
         }
 
-        if (leaderLoadout === 'two-weapons') {
-          if (leaderWeaponA === leaderWeaponB) ctx.errors.push('Wolf Scout Pack Leader weapons A and B must be different choices.');
-          const rangedOptions = ['bolt pistol', 'boltgun', 'combi-weapon', 'grav-pistol', 'hand flamer', 'inferno pistol', 'plasma pistol', 'storm bolter'];
-          const pistolOptions = ['bolt pistol', 'grav-pistol', 'hand flamer', 'inferno pistol', 'plasma pistol'];
-          const rangedCount = [leaderWeaponA, leaderWeaponB].filter(option => rangedOptions.includes(option)).length;
-          const pistolCount = [leaderWeaponA, leaderWeaponB].filter(option => pistolOptions.includes(option)).length;
-          if (rangedCount === 2 && pistolCount !== 1) ctx.errors.push('The Wolf Scout Pack Leader can only take two ranged weapons if exactly one of them is a Pistol.');
-          if (pistolCount > 1) ctx.errors.push('The Wolf Scout Pack Leader can only have one Pistol.');
+        add(ctx, q, 'plasma pistol', 1 + remainingScoutPlasmaPistols);
+        add(ctx, q, 'power weapon', 1);
+        add(ctx, q, 'combat blade', Math.max(0, scoutCount - runicCount));
+        add(ctx, q, 'teeth and claws', wolfCount);
+        if (plasmaGunCount) add(ctx, q, 'plasma gun', 1);
+        if (runicCount) {
+          add(ctx, q, 'runic stave', 1);
+          add(ctx, q, 'thunderclap', 1);
         }
-
-        add(ctx, q, 'bolt pistol', nonLeaderCount + (specialSwap === 'power-weapon' ? 1 : 0));
-        add(ctx, q, 'boltgun', Math.max(0, nonLeaderCount - nonLeaderBoltgunReplacements) + (specialSwap === 'plasma-pistol' ? 1 : 0));
-        add(ctx, q, 'close combat weapon', nonLeaderCount);
-        add(ctx, q, 'astartes shotgun', shotguns);
-        add(ctx, q, 'combat knife', knives);
-        if (specialWeapon === 'flamer') add(ctx, q, 'flamer', 1);
-        if (specialWeapon === 'grav-gun') add(ctx, q, 'grav-gun', 1);
-        if (specialWeapon === 'heavy bolter') add(ctx, q, 'heavy bolter', 1);
-        if (specialWeapon === 'meltagun') add(ctx, q, 'meltagun', 1);
-        if (specialWeapon === 'missile launcher') add(ctx, q, 'missile launcher', 1);
-        if (specialWeapon === 'plasma gun') add(ctx, q, 'plasma gun', 1);
-        if (specialSwap === 'power-weapon') add(ctx, q, 'power weapon', 1);
-        if (specialSwap === 'plasma-pistol') add(ctx, q, 'plasma pistol', 1);
-
-        if (leaderLoadout === 'twin lightning claws') {
-          add(ctx, q, 'twin lightning claws', 1);
-        } else {
-          add(ctx, q, leaderWeaponA, 1);
-          add(ctx, q, leaderWeaponB, 1);
-        }
+        if (instigatorCount) add(ctx, q, 'instigator bolt carbine', 1);
+        if (haywireMine) ctx.derived.push('Haywire mine equipped.');
         return q;
       },
     },

@@ -13,26 +13,29 @@
   }
 
   registry['adeptus-mechanicus'] = {
-    'Archaeopter Fusilave': fixed('This model is equipped with: cognis heavy stubber array; armoured hull.', ctx => {
+    'Archaeopter Fusilave': fixed('This model is equipped with: cognis heavy stubber array; armoured hull; command uplink.', ctx => {
       const q = {};
       add(ctx, q, 'cognis heavy stubber array', 1);
       add(ctx, q, 'armoured hull', 1);
+      add(ctx, q, 'command uplink', 1);
       return q;
     }),
 
-    'Archaeopter Stratoraptor': fixed('This model is equipped with: 2 cognis heavy stubbers; 2 heavy phosphor blasters; twin cognis lascannon; armoured hull.', ctx => {
+    'Archaeopter Stratoraptor': fixed('This model is equipped with: 2 cognis heavy stubbers; 2 heavy phosphor blasters; twin cognis lascannon; armoured hull; command uplink.', ctx => {
       const q = {};
       add(ctx, q, 'cognis heavy stubber', 2);
       add(ctx, q, 'heavy phosphor blaster', 2);
       add(ctx, q, 'twin cognis lascannon', 1);
       add(ctx, q, 'armoured hull', 1);
+      add(ctx, q, 'command uplink', 1);
       return q;
     }),
 
-    'Archaeopter Transvector': fixed('This model is equipped with: cognis heavy stubber array; armoured hull.', ctx => {
+    'Archaeopter Transvector': fixed('This model is equipped with: cognis heavy stubber array; armoured hull; command uplink.', ctx => {
       const q = {};
       add(ctx, q, 'cognis heavy stubber array', 1);
       add(ctx, q, 'armoured hull', 1);
+      add(ctx, q, 'command uplink', 1);
       return q;
     }),
 
@@ -224,21 +227,21 @@
       }
     },
 
-    'Pteraxii Skystalkers': fixed('The Alpha is equipped with: flechette blaster; taser goad. Every other model is equipped with: flechette carbine; close combat weapon.', ctx => {
+    'Pteraxii Skystalkers': fixed('The Alpha is equipped with: flechette blaster; taser goad. Every model is equipped with: flechette carbine; close combat weapon.', ctx => {
       const q = {};
       add(ctx, q, 'flechette blaster', 1);
       add(ctx, q, 'taser goad', 1);
-      add(ctx, q, 'flechette carbine', Math.max(0, ctx.modelCount - 1));
-      add(ctx, q, 'close combat weapon', Math.max(0, ctx.modelCount - 1));
+      add(ctx, q, 'flechette carbine', ctx.modelCount);
+      add(ctx, q, 'close combat weapon', ctx.modelCount);
       return q;
     }),
 
-    'Pteraxii Sterylizors': fixed('The Alpha is equipped with: flechette blaster; taser goad. Every other model is equipped with: phosphor torch; Pteraxii talons.', ctx => {
+    'Pteraxii Sterylizors': fixed('The Alpha is equipped with: flechette blaster; taser goad. Every model is equipped with: phosphor torch; Pteraxii talons.', ctx => {
       const q = {};
       add(ctx, q, 'flechette blaster', 1);
       add(ctx, q, 'taser goad', 1);
-      add(ctx, q, 'phosphor torch', Math.max(0, ctx.modelCount - 1));
-      add(ctx, q, 'pteraxii talons', Math.max(0, ctx.modelCount - 1));
+      add(ctx, q, 'phosphor torch', ctx.modelCount);
+      add(ctx, q, 'pteraxii talons', ctx.modelCount);
       return q;
     }),
 
@@ -250,13 +253,13 @@
       return q;
     }),
 
-    'Serberys Sulphurhounds': fixed('The Alpha is equipped with: Mechanicus pistol; phosphor blast carbine; cavalry arc maul; clawed limbs. Every other model is equipped with: phosphor pistol; sulphur breath; clawed limbs.', ctx => {
+    'Serberys Sulphurhounds': fixed('The Alpha is equipped with: Mechanicus pistol; phosphor blast carbine; cavalry arc maul; clawed limbs. Every model is equipped with: phosphor pistol; sulphur breath; clawed limbs.', ctx => {
       const q = {};
       add(ctx, q, 'mechanicus pistol', 1);
       add(ctx, q, 'phosphor blast carbine', 1);
       add(ctx, q, 'cavalry arc maul', 1);
-      add(ctx, q, 'phosphor pistol', Math.max(0, ctx.modelCount - 1));
-      add(ctx, q, 'sulphur breath', Math.max(0, ctx.modelCount - 1));
+      add(ctx, q, 'phosphor pistol', ctx.modelCount);
+      add(ctx, q, 'sulphur breath', ctx.modelCount);
       add(ctx, q, 'clawed limbs', ctx.modelCount);
       return q;
     }),
