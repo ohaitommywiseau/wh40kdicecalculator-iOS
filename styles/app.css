@@ -2,16 +2,22 @@
       --bg: #040807;
       --panel: #07110d;
       --panel-2: #0b1712;
-      --text: #7df8a5;
-      --muted: #3abf69;
+      --text: #97eab1;
+      --muted: #63ac79;
       --accent: #ff5e5e;
-      --accent-2: #69f29a;
-      --good: #9aff84;
+      --accent-2: #8fe3ac;
+      --good: #d8ef8d;
       --warn: #ff6262;
       --border: #12402a;
       --brass-border: #185336;
       --iron-sheen: rgba(125,248,165,0.05);
       --shadow-deep: rgba(0,0,0,0.58);
+      --amber: #dbaa4f;
+      --amber-soft: #b99a5c;
+      --amber-bright: #f0ca78;
+      --amber-glow: rgba(219,170,79,0.18);
+      --amber-line: rgba(219,170,79,0.34);
+      --green-bright: #baffcd;
     }
 
     @font-face {
@@ -218,8 +224,8 @@
       letter-spacing: 0.12em;
       font-family: "Conduit ITC Std", "Arial Narrow", "Courier New", monospace;
       text-transform: uppercase;
-      color: #97ffb9;
-      text-shadow: 0 0 10px rgba(105,242,154,0.28);
+      color: var(--green-bright);
+      text-shadow: 0 0 10px rgba(105,242,154,0.20);
     }
     .subtitle {
       display: none;
@@ -278,6 +284,16 @@
         0 16px 36px rgba(0,0,0,0.34);
       position: relative;
       overflow: hidden;
+    }
+    .banner::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(90deg, transparent 0%, rgba(243,190,95,0.05) 18%, transparent 38%),
+        linear-gradient(180deg, rgba(243,190,95,0.04), transparent 22%);
+      opacity: 0.9;
     }
     #calculatorView.battle-linked .banner {
       border-color: rgba(105,242,154,0.98);
@@ -339,13 +355,13 @@
       text-transform: uppercase;
       letter-spacing: 0.12em;
       font-family: "Conduit ITC Std", "Arial Narrow", "Courier New", monospace;
-      border-bottom: 1px solid rgba(34,120,75,0.75);
+      border-bottom: 1px solid var(--amber-line);
       padding-bottom: 6px;
-      text-shadow: 0 0 8px rgba(105,242,154,0.16);
+      text-shadow: 0 0 8px var(--amber-glow);
     }
     h2::before {
       content: "> ";
-      color: var(--accent-2);
+      color: var(--amber);
     }
     .field-grid {
       display: grid;
@@ -367,6 +383,16 @@
       padding: 10px 12px;
       font-size: 0.97rem;
       box-shadow: inset 0 0 0 1px rgba(0,0,0,0.42);
+    }
+    input:focus-visible,
+    select:focus-visible,
+    textarea:focus-visible {
+      outline: 1px solid var(--amber-line);
+      border-color: rgba(243,190,95,0.7);
+      box-shadow:
+        inset 0 0 0 1px rgba(0,0,0,0.42),
+        0 0 0 1px rgba(243,190,95,0.14),
+        0 0 12px rgba(243,190,95,0.12);
     }
     input[type="checkbox"] {
       width: auto;
@@ -427,6 +453,8 @@
       margin-bottom: 4px;
       font-family: "Conduit ITC Std", "Arial Narrow", Arial, Helvetica, sans-serif;
       text-transform: uppercase;
+      color: var(--amber);
+      text-shadow: 0 0 8px rgba(219,170,79,0.10);
     }
     .small {
       color: var(--muted);
@@ -442,8 +470,8 @@
       padding: 6px 10px;
       border-radius: 1px;
       background: linear-gradient(180deg, rgba(11,23,18,0.92) 0%, rgba(5,12,9,0.92) 100%);
-      border: 1px solid rgba(34,120,75,0.78);
-      color: #92ffb5;
+      border: 1px solid rgba(66,146,102,0.72);
+      color: var(--green-bright);
       font-size: 0.85rem;
       margin: 0;
       font-family: "Conduit ITC Std", "Arial Narrow", "Courier New", monospace;
@@ -451,7 +479,7 @@
       box-shadow: inset 0 0 0 1px rgba(0,0,0,0.35);
     }
     .note {
-      color: var(--muted);
+      color: #7fc590;
       font-size: 0.9rem;
       line-height: 1.55;
     }
@@ -469,7 +497,7 @@
     }
     button {
       background: linear-gradient(180deg, #102219 0%, #08130e 100%);
-      color: #97ffb9;
+      color: var(--green-bright);
       border: 1px solid rgba(34,120,75,0.95);
       border-radius: 1px;
       padding: 10px 14px;
@@ -484,9 +512,10 @@
     }
     button:hover,
     button:focus-visible {
-      background: linear-gradient(180deg, #133020 0%, #0a1811 100%);
-      border-color: rgba(105,242,154,0.75);
-      box-shadow: inset 0 1px 0 rgba(105,242,154,0.16), inset 0 0 0 1px rgba(0,0,0,0.34), 0 0 0 1px rgba(105,242,154,0.08), 0 6px 14px rgba(0,0,0,0.28);
+      background: linear-gradient(180deg, #1a2c1f 0%, #0d1711 100%);
+      border-color: rgba(158,226,182,0.62);
+      color: #d7f7e2;
+      box-shadow: inset 0 1px 0 rgba(158,226,182,0.10), inset 0 0 0 1px rgba(0,0,0,0.34), 0 0 0 1px rgba(158,226,182,0.06), 0 6px 14px rgba(0,0,0,0.28);
     }
     button:active {
       transform: translateY(1px);
@@ -504,7 +533,7 @@
     button.secondary,
     .preset-btn {
       background: linear-gradient(180deg, #102219 0%, #08130e 100%);
-      color: #97ffb9;
+      color: var(--green-bright);
       border-color: rgba(34,120,75,0.95);
     }
     button:disabled,
@@ -527,7 +556,7 @@
     }
     .footer-note {
       margin-top: 18px;
-      color: var(--muted);
+      color: var(--amber-soft);
       font-size: 0.85rem;
       line-height: 1.5;
     }
@@ -535,18 +564,18 @@
     .tooltip-term {
       display: inline-block;
       cursor: help;
-      color: #a2ffbf;
-      border-bottom: 1px dotted rgba(105,242,154,0.6);
+      color: #bceecf;
+      border-bottom: 1px dotted rgba(191,229,156,0.55);
       line-height: 1.35;
     }
     .tooltip-term:focus {
-      outline: 2px solid rgba(105,242,154,0.45);
+      outline: 2px solid rgba(191,229,156,0.35);
       outline-offset: 2px;
       border-radius: 4px;
     }
     .tooltip-term.active-tooltip {
-      border-bottom-color: rgba(162,255,191,0.95);
-      color: #d8ffe5;
+      border-bottom-color: rgba(240,202,120,0.88);
+      color: #f4e0a4;
     }
     .floating-tooltip {
       position: fixed;
@@ -609,11 +638,11 @@
       box-shadow: inset 0 0 6px rgba(0,0,0,0.6), inset 0 0 0 1px rgba(0,0,0,0.3);
     }
     .datasheet-name {
-      background: linear-gradient(90deg, rgba(17,74,47,0.92), rgba(10,36,24,0.9));
-      color: #d3ffdf;
+      background: linear-gradient(90deg, rgba(28,71,46,0.92), rgba(10,36,24,0.9));
+      color: #d6f6df;
       font-weight: 700;
       padding: 8px 10px;
-      border-bottom: 1px solid var(--brass-border);
+      border-bottom: 1px solid rgba(195,225,125,0.28);
       letter-spacing: 0.05em;
       font-family: "Conduit ITC Std", "Arial Narrow", "Courier New", monospace;
       text-transform: uppercase;
@@ -637,7 +666,7 @@
       letter-spacing: 0.08em;
       padding: 6px 4px 4px;
       border-bottom: 1px solid rgba(24,83,54,0.7);
-      background: rgba(105,242,154,0.03);
+      background: rgba(105,242,154,0.025);
     }
     .datasheet-val {
       display: block;
@@ -825,7 +854,7 @@
       min-height: 0;
       padding: 16px 18px;
       text-align: left;
-      color: #97ffb9;
+      color: var(--green-bright);
       font-size: 1rem;
       letter-spacing: 0.06em;
       text-transform: uppercase;
@@ -839,7 +868,7 @@
     }
     .landing-action-sub {
       font-size: 0.72rem;
-      color: var(--muted);
+      color: #81bf91;
       letter-spacing: 0.02em;
       text-transform: none;
       line-height: 1.3;
@@ -856,7 +885,7 @@
     }
     .landing-subtitle {
       margin-top: 10px;
-      color: #c8f6d6;
+      color: #d0ebd9;
       line-height: 1.5;
     }
     .landing-meta {
@@ -868,19 +897,19 @@
     }
     .landing-chip {
       padding: 4px 10px;
-      border: 1px solid rgba(66,146,102,0.6);
+      border: 1px solid rgba(154,216,173,0.36);
       border-radius: 999px;
       font-size: 0.68rem;
       letter-spacing: 0.12em;
       text-transform: uppercase;
-      color: #9dffc0;
+      color: #cdeed8;
       background: rgba(7,16,12,0.8);
     }
     .landing-divider {
       margin: 18px auto 0;
       width: min(320px, 80%);
       height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(105,242,154,0.6), transparent);
+      background: linear-gradient(90deg, transparent, rgba(180,219,103,0.42), transparent);
     }
     .list-builder-layout {
       display: grid;
@@ -912,8 +941,8 @@
     }
     .wargear-source-note {
       grid-column: 1 / -1;
-      border: 1px dashed rgba(105,242,154,0.35);
-      color: var(--muted);
+      border: 1px dashed rgba(243,190,95,0.35);
+      color: #81bf91;
       padding: 10px;
       font-size: 0.78rem;
       line-height: 1.35;
@@ -932,12 +961,12 @@
       gap: 10px;
     }
     .rules-group {
-      border: 1px solid rgba(105,242,154,0.28);
+      border: 1px solid rgba(243,190,95,0.28);
       background: rgba(5,12,9,0.55);
       padding: 10px;
     }
     .rules-group-title {
-      color: #d3ffdf;
+      color: #dce9af;
       font-weight: 700;
       margin-bottom: 8px;
       text-transform: uppercase;
@@ -965,7 +994,7 @@
       padding: 7px 8px;
     }
     .rules-derived {
-      color: var(--muted);
+      color: #80c08f;
       font-size: 0.82rem;
       line-height: 1.35;
       margin-top: 8px;
@@ -990,7 +1019,7 @@
       box-shadow: inset 0 0 0 1px rgba(0,0,0,0.34);
     }
     .detachment-reference-title {
-      color: #d3ffdf;
+      color: #dce9af;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.06em;
@@ -1013,7 +1042,7 @@
       margin-top: 0;
     }
     .detachment-reference-name {
-      color: #d3ffdf;
+      color: #cdeed8;
       font-size: 0.88rem;
       text-transform: uppercase;
       letter-spacing: 0.05em;
@@ -1025,7 +1054,7 @@
     }
     .detachment-reference-text {
       margin-top: 4px;
-      color: var(--muted);
+      color: #7db88b;
       font-size: 0.82rem;
       line-height: 1.45;
     }
@@ -1098,9 +1127,9 @@
       gap: 8px;
     }
     .battle-panel-toggle-btn.is-active {
-      border-color: rgba(105,242,154,0.92);
-      box-shadow: 0 0 0 1px rgba(105,242,154,0.12), inset 0 0 0 1px rgba(0,0,0,0.32);
-      color: #d8ffe5;
+      border-color: rgba(184,224,105,0.82);
+      box-shadow: 0 0 0 1px rgba(184,224,105,0.08), inset 0 0 0 1px rgba(0,0,0,0.32);
+      color: #e7f3b8;
     }
     .battle-panel-card {
       display: flex;
@@ -1157,7 +1186,7 @@
       gap: 10px;
     }
     .battle-panel-title {
-      color: #d3ffdf;
+      color: #dce9af;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.05em;
@@ -1243,7 +1272,7 @@
     .battle-secondary-meta {
       margin-top: 5px;
       font-size: 0.76rem;
-      color: var(--muted);
+      color: #7db88b;
       line-height: 1.35;
     }
     .battle-secondary-score-total {
@@ -1268,7 +1297,7 @@
     .battle-secondary-history {
       margin-top: 6px;
       font-size: 0.74rem;
-      color: var(--muted);
+      color: #7db88b;
       line-height: 1.3;
     }
     .stratagem-list {
@@ -1289,7 +1318,7 @@
       gap: 10px;
     }
     .stratagem-row-title {
-      color: #d3ffdf;
+      color: #dce9af;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.05em;
@@ -1302,7 +1331,7 @@
     }
     .stratagem-row-note {
       margin-top: 6px;
-      color: var(--muted);
+      color: #7db88b;
       font-size: 0.82rem;
       line-height: 1.4;
     }
@@ -1332,8 +1361,8 @@
       letter-spacing: 0.02em;
     }
     .stratagem-row.current-phase {
-      border-color: rgba(105,242,154,0.92);
-      box-shadow: 0 0 0 1px rgba(105,242,154,0.08), inset 0 0 0 1px rgba(0,0,0,0.34);
+      border-color: rgba(184,224,105,0.78);
+      box-shadow: 0 0 0 1px rgba(184,224,105,0.06), inset 0 0 0 1px rgba(0,0,0,0.34);
     }
     .rulebook-list {
       display: grid;
@@ -1387,7 +1416,7 @@
       gap: 10px;
     }
     .rulebook-entry-title {
-      color: #d3ffdf;
+      color: #dce9af;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.05em;
@@ -1408,9 +1437,9 @@
     .rulebook-tag {
       display: inline-block;
       padding: 4px 8px;
-      border: 1px solid rgba(66,146,102,0.74);
+      border: 1px solid rgba(180,219,103,0.28);
       background: rgba(8,18,14,0.82);
-      color: #9dffc0;
+      color: #dce9af;
       font-size: 0.7rem;
       font-family: "Conduit ITC Std", "Arial Narrow", "Courier New", monospace;
       text-transform: uppercase;
@@ -1424,7 +1453,7 @@
     }
     .rulebook-entry-summary {
       margin-top: 10px;
-      color: #c8f6d6;
+      color: #d8e3c0;
       line-height: 1.55;
     }
     .rulebook-entry-bullets {
@@ -1433,7 +1462,7 @@
       margin-top: 10px;
     }
     .rulebook-entry-bullet {
-      color: var(--muted);
+      color: #81bf91;
       line-height: 1.45;
       padding-left: 14px;
       position: relative;
@@ -1442,7 +1471,7 @@
       content: '>';
       position: absolute;
       left: 0;
-      color: #76ffb0;
+      color: #b8e069;
     }
     .rulebook-entry-body {
       margin-top: 12px;
@@ -1450,7 +1479,7 @@
       gap: 8px;
     }
     .rulebook-entry-paragraph {
-      color: #d9f6e3;
+      color: #dce8c8;
       line-height: 1.55;
       white-space: pre-wrap;
     }
@@ -1471,13 +1500,13 @@
       padding: 10px;
     }
     .army-unit-row.active-target-group {
-      border-color: rgba(105,242,154,0.78);
+      border-color: rgba(243,190,95,0.78);
       background: linear-gradient(180deg, rgba(11,23,18,0.96) 0%, rgba(5,12,9,0.96) 100%);
-      box-shadow: 0 0 0 1px rgba(105,242,154,0.08), inset 0 0 0 1px rgba(0,0,0,0.34);
+      box-shadow: 0 0 0 1px rgba(243,190,95,0.08), inset 0 0 0 1px rgba(0,0,0,0.34);
     }
     .army-unit-row strong {
       display: block;
-      color: #d3ffdf;
+      color: #dce9af;
       margin-bottom: 4px;
       text-transform: uppercase;
     }
@@ -1488,20 +1517,21 @@
       margin-top: 8px;
     }
     .army-empty {
-      border: 1px dashed rgba(105,242,154,0.35);
-      color: var(--muted);
+      border: 1px dashed rgba(243,190,95,0.35);
+      color: #79b688;
       padding: 12px;
     }
     .points-readout {
       margin-top: 10px;
-      color: var(--good);
+      color: #dce9af;
+      text-shadow: 0 0 8px rgba(184,224,105,0.10);
       font-size: 0.9rem;
       line-height: 1.4;
       text-transform: uppercase;
     }
     .composition-note {
       margin-top: 6px;
-      color: var(--muted);
+      color: #76b586;
       font-size: 0.78rem;
       line-height: 1.35;
     }

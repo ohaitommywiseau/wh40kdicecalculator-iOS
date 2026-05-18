@@ -168,6 +168,48 @@
       quantities: ctx => { const tank = number(ctx, 'tankstopper'); const q = {}; add(ctx, q, 'sniper rifle', Math.max(0, ctx.modelCount - tank)); add(ctx, q, 'tankstopper rifle', tank); add(ctx, q, 'close combat weapon', ctx.modelCount); add(ctx, q, 'demolition gear', number(ctx, 'demo')); add(ctx, q, 'ratling battlemutt', number(ctx, 'battlemutt')); return q; },
     },
 
+    'Cadian Recon Squad': {
+      sections: [{ title: 'Recon Trooper upgrades', description: "One Recon Trooper can replace their lasgun with 1 autostubber. One Recon Trooper can replace their lasgun with one of the following: 1 plasma gun; 1 meltagun. One Recon Trooper equipped with 1 lasgun can be equipped with 1 vox-caster and 1 vox-relay beacon (that model's lasgun cannot be replaced). You can select one of the following options: up to one Recon Trooper can replace their lasgun with 1 long-las; up to two Recon Troopers each equipped with a lasgun can form a weapons team. If they do, one model's lasgun is replaced with 1 laspistol, and one model's lasgun is replaced with 1 missile launcher and 1 laspistol.", controls: [
+        { key: 'autostubber', label: '1 autostubber', max: 1 },
+        { type: 'select', key: 'special_weapon', label: 'Special weapon', value: '', options: [
+          { value: '', label: 'None' },
+          { value: 'plasma gun', label: 'Plasma gun' },
+          { value: 'meltagun', label: 'Meltagun' },
+        ] },
+        { key: 'vox', label: '1 vox-caster and 1 vox-relay beacon', max: 1 },
+        { type: 'select', key: 'longlas_or_team', label: 'Long-las / weapons team option', value: '', options: [
+          { value: '', label: 'None' },
+          { value: 'long-las', label: '1 long-las' },
+          { value: 'weapons-team', label: '2-model missile launcher weapons team' },
+        ] },
+      ] }],
+      quantities: ctx => {
+        const autostubber = number(ctx, 'autostubber');
+        const specialWeapon = select(ctx, 'special_weapon', '');
+        const vox = number(ctx, 'vox');
+        const longlasOrTeam = select(ctx, 'longlas_or_team', '');
+        const specialCount = specialWeapon ? 1 : 0;
+        const longLasCount = longlasOrTeam === 'long-las' ? 1 : 0;
+        const teamCount = longlasOrTeam === 'weapons-team' ? 2 : 0;
+        const assigned = autostubber + specialCount + vox + longLasCount + teamCount;
+        if (assigned > 9) ctx.errors.push(`Recon Trooper assignments exceed available Recon Troopers by ${assigned - 9}.`);
+        const q = {};
+        add(ctx, q, 'lasgun', Math.max(0, 10 - assigned));
+        add(ctx, q, 'close combat weapon', 10);
+        add(ctx, q, 'autostubber', autostubber);
+        add(ctx, q, specialWeapon, specialCount);
+        add(ctx, q, 'vox-caster', vox);
+        add(ctx, q, 'vox-relay beacon', vox);
+        add(ctx, q, 'long-las', longLasCount);
+        if (longlasOrTeam === 'weapons-team') {
+          add(ctx, q, 'missile launcher', 1);
+          add(ctx, q, 'laspistol', 2);
+        }
+        ctx.derived.push(`Basic lasgun troopers remaining: ${Math.max(0, 10 - assigned)}.`);
+        return q;
+      },
+    },
+
     'Bullgryn Squad': {
       sections: [{ title: models => `Bullgryns (${models} models)`, description: 'Any number of models can each have their grenadier gauntlet replaced with 1 Bullgryn maul. Any number of models can each have their slabshield replaced with 1 brute shield.', controls: [{ key: 'maul', label: '1 Bullgryn maul', max: models => Number(models || 0) }, { key: 'brute', label: '1 brute shield', max: models => Number(models || 0) }] }],
       quantities: ctx => { const maul = number(ctx, 'maul'); const brute = number(ctx, 'brute'); const q = {}; add(ctx, q, 'grenadier gauntlet', Math.max(0, ctx.modelCount - maul)); add(ctx, q, 'bullgryn maul', maul); add(ctx, q, 'close combat weapon', ctx.modelCount); add(ctx, q, 'slabshield', Math.max(0, ctx.modelCount - brute)); add(ctx, q, 'brute shield', brute); return q; },
@@ -258,6 +300,8 @@
       quantities: ctx => ctx.base(),
     },
 
+    'Commissar Graves on Foot': fixed('Commissar Graves on Foot', { 'bolt pistol': 1, 'power sword and manus mortis': 1 }),
+    'Commissar Yarrick': fixed('Commissar Yarrick', { 'bale eye': 1, 'laspistol': 1, 'storm bolter': 1, 'power klaw': 1, 'power sword': 1 }),
     'Lord Marshal Dreir': fixed('Lord Marshal Dreir', { 'laspistol': 1, 'sabre of sacrifice': 1, 'savage claws': 1 }),
     'Lord Solar Leontus': fixed('Lord Solar Leontus', { "sol's righteous gaze": 1, 'conquest': 1, "konstantin's hooves": 1 }),  };
 }());

@@ -2,6 +2,7 @@
   const configs = window.ASTRA_MILITARUM_INFANTRY_RULE_CONFIGS = window.ASTRA_MILITARUM_INFANTRY_RULE_CONFIGS || {};
 
   const add = (ctx, q, key, amount = 1) => ctx.add(q, key, amount);
+  const number = (ctx, key) => ctx.number(key);
   const select = (ctx, key, fallback) => ctx.select(key) || fallback;
 
   const hullWeaponOptions = [
@@ -118,6 +119,45 @@
       quantities: ctx => { const q = {}; add(ctx, q, select(ctx, 'main', 'inferno cannon'), 1); add(ctx, q, select(ctx, 'hull', 'heavy flamer'), 1); add(ctx, q, 'armoured tracks', 1); add(ctx, q, select(ctx, 'hunter', ''), 1); return q; },
     },
 
+    'Hippogriff AFV': {
+      sections: [{
+        title: models => `Turret weapons (${models} models)`,
+        description: "Any number of models can each have their vigilator cannon replaced with one of the following: 1 Chiron gatling cannon; 1 lascannon; 1 melta cannon.",
+        controls: [
+          { key: 'chiron', label: '1 Chiron gatling cannon', max: models => Number(models || 0) },
+          { key: 'lascannon', label: '1 lascannon', max: models => Number(models || 0) },
+          { key: 'melta_cannon', label: '1 melta cannon', max: models => Number(models || 0) },
+        ],
+      }, {
+        title: models => `Hull special weapons (${models} models)`,
+        description: "Any number of models can each have their heavy stubber replaced with 1 meltagun.",
+        controls: [
+          { key: 'meltagun', label: '1 meltagun', max: models => Number(models || 0) },
+        ],
+      }, {
+        title: 'Chassis',
+        description: 'Fixed loadout: armoured hull. No available wargear options.',
+      }],
+      quantities: ctx => {
+        const chiron = number(ctx, 'chiron');
+        const lascannon = number(ctx, 'lascannon');
+        const meltaCannon = number(ctx, 'melta_cannon');
+        const meltagun = number(ctx, 'meltagun');
+        const mainTotal = chiron + lascannon + meltaCannon;
+        if (mainTotal > ctx.modelCount) ctx.errors.push(`Hippogriff turret replacements must total ${ctx.modelCount} or fewer; currently ${mainTotal}.`);
+        if (meltagun > ctx.modelCount) ctx.errors.push(`Hippogriff meltagun replacements must total ${ctx.modelCount} or fewer; currently ${meltagun}.`);
+        const q = {};
+        add(ctx, q, 'vigilator cannon', Math.max(0, ctx.modelCount - mainTotal));
+        add(ctx, q, 'chiron gatling cannon', chiron);
+        add(ctx, q, 'lascannon', lascannon);
+        add(ctx, q, 'melta cannon', meltaCannon);
+        add(ctx, q, 'heavy stubber', Math.max(0, ctx.modelCount - meltagun));
+        add(ctx, q, 'meltagun', meltagun);
+        add(ctx, q, 'armoured hull', ctx.modelCount);
+        return q;
+      },
+    },
+
     'Taurox': {
       sections: [{ title: 'Main weapon', description: 'Fixed loadout: twin autocannon. No available wargear options.' }, {
         title: 'Optional weapon',
@@ -149,6 +189,21 @@
         controls: [{ type: 'select', key: 'storm', label: 'Storm bolter', value: '', options: [{ value: '', label: 'None' }, { value: 'storm bolter', label: 'Storm bolter' }] }],
       }, { title: 'Chassis', description: 'Fixed loadout: armoured tracks. No available wargear options.' }],
       quantities: ctx => { const q = {}; add(ctx, q, select(ctx, 'primary', 'taurox battle cannon'), 1); add(ctx, q, select(ctx, 'secondary', 'twin taurox hot-shot volley gun'), 1); add(ctx, q, 'armoured tracks', 1); add(ctx, q, select(ctx, 'storm', ''), 1); return q; },
+    },
+
+    'Centaur RSV': {
+      sections: [{ title: 'Centaur RSV', description: 'Fixed loadout: heavy stubber and armoured tracks. No available wargear options.' }],
+      quantities: ctx => ctx.base({ 'heavy stubber': 1, 'armoured tracks': 1 }),
+    },
+
+    'Cyclops Demolition Vehicle': {
+      sections: [{ title: 'Cyclops Demolition Vehicle', description: 'Fixed loadout: demolition charge and armoured tracks. No available wargear options.' }],
+      quantities: ctx => ctx.base({ 'demolition charge': 1, 'armoured tracks': 1 }),
+    },
+
+    'Commissar Graves': {
+      sections: [{ title: 'Commissar Graves', description: 'Fixed loadout: Chiron gatling cannon, Prefectus heavy stubber, power sword and Manus Mortis, aquiline prow, and armoured hull. No available wargear options.' }],
+      quantities: ctx => ctx.base({ 'chiron gatling cannon': 1, 'prefectus heavy stubber': 1, 'power sword and manus mortis': 1, 'aquiline prow': 1, 'armoured hull': 1 }),
     },
 
     'Rogal Dorn Commander': {

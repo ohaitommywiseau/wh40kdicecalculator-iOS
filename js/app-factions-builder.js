@@ -59,11 +59,16 @@ function applyTargetUnit(unit) {
 
 function populateTargetUnits() {
   targetUnitSelect.innerHTML = '';
-  Object.keys(targetData.units || {}).forEach(name => {
-    const opt = document.createElement('option');
-    opt.value = name;
-    opt.textContent = name;
-    targetUnitSelect.appendChild(opt);
+  groupedFactionUnitOptions(targetData.units || {}).forEach(group => {
+    const optgroup = document.createElement('optgroup');
+    optgroup.label = group.label;
+    group.names.forEach(name => {
+      const opt = document.createElement('option');
+      opt.value = name;
+      opt.textContent = name;
+      optgroup.appendChild(opt);
+    });
+    targetUnitSelect.appendChild(optgroup);
   });
   if (targetUnitSelect.options.length) {
     applyTargetUnit(targetData.units[targetUnitSelect.value]);
@@ -157,11 +162,16 @@ function renderBuilderDetachmentDetails() {
 
 function populateBuilderUnits() {
   builderUnitSelect.innerHTML = '';
-  Object.keys(builderData.units || {}).filter(name => name !== 'Example Wargear').forEach(name => {
-    const opt = document.createElement('option');
-    opt.value = name;
-    opt.textContent = name;
-    builderUnitSelect.appendChild(opt);
+  groupedFactionUnitOptions(builderData.units || {}).forEach(group => {
+    const optgroup = document.createElement('optgroup');
+    optgroup.label = group.label;
+    group.names.forEach(name => {
+      const opt = document.createElement('option');
+      opt.value = name;
+      opt.textContent = name;
+      optgroup.appendChild(opt);
+    });
+    builderUnitSelect.appendChild(optgroup);
   });
   renderBuilderWeaponOptions({ resetModelCount: true });
 }

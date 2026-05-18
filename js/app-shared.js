@@ -198,6 +198,52 @@ function factionNameForSlug(slug) {
   return factionManifest.find(entry => entry.slug === slug)?.name || slug || 'Unknown';
 }
 
+function unitRoleGroupLabel(unitName, unit) {
+  if (unitName === 'Commissar Graves') return 'Epic Heroes';
+  const keywords = Array.isArray(unit?.keywords) ? unit.keywords.map(keyword => String(keyword).toLowerCase()) : [];
+  const role = String(unit?.role || '').trim().toLowerCase();
+  if (keywords.includes('epic hero')) return 'Epic Heroes';
+  if (role === 'characters' || keywords.includes('character')) return 'Characters';
+  if (role === 'battleline') return 'Battleline';
+  if (role === 'dedicated transports') return 'Dedicated Transports';
+  if (role === 'fortifications') return 'Fortifications';
+  if (role === 'allied units') return 'Allied Units';
+  if (role === 'mounted') return 'Mounted';
+  if (role === 'vehicles') return 'Vehicles';
+  if (role === 'monsters') return 'Monsters';
+  return 'Other Units';
+}
+
+function groupedFactionUnitOptions(units = {}) {
+  const roleOrder = [
+    'Epic Heroes',
+    'Characters',
+    'Battleline',
+    'Dedicated Transports',
+    'Fortifications',
+    'Mounted',
+    'Vehicles',
+    'Monsters',
+    'Allied Units',
+    'Other Units',
+  ];
+  const grouped = new Map(roleOrder.map(label => [label, []]));
+  Object.entries(units)
+    .filter(([name]) => name !== 'Example Wargear')
+    .forEach(([name, unit]) => {
+      const label = unitRoleGroupLabel(name, unit);
+      if (!grouped.has(label)) grouped.set(label, []);
+      grouped.get(label).push(name);
+    });
+
+  return Array.from(grouped.entries())
+    .map(([label, names]) => ({
+      label,
+      names: names.sort((left, right) => left.localeCompare(right)),
+    }))
+    .filter(group => group.names.length);
+}
+
 function armyListLabel(list) {
   const count = list?.units?.length || 0;
   const points = calculateArmyListPoints(list);

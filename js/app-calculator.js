@@ -415,11 +415,19 @@ function populateUnits() {
       unitSelect.appendChild(opt);
     });
   } else {
-    availableCombatUnitNames().forEach(name => {
-      const opt = document.createElement('option');
-      opt.value = name;
-      opt.textContent = name;
-      unitSelect.appendChild(opt);
+    const availableNames = new Set(availableCombatUnitNames());
+    groupedFactionUnitOptions(data.units || {}).forEach(group => {
+      const optgroup = document.createElement('optgroup');
+      optgroup.label = group.label;
+      group.names
+        .filter(name => availableNames.has(name))
+        .forEach(name => {
+          const opt = document.createElement('option');
+          opt.value = name;
+          opt.textContent = name;
+          optgroup.appendChild(opt);
+        });
+      if (optgroup.children.length) unitSelect.appendChild(optgroup);
     });
   }
   populateWeapons();
