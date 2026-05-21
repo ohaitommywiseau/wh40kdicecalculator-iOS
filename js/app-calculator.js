@@ -464,9 +464,12 @@ function render() {
     setTextIfPresent('phasePill', 'Phase: -');
     setTextIfPresent('weaponPill', 'Weapon: -');
     setTextIfPresent('attackSummary', 'Attacks: -');
-    document.getElementById('profileBox').textContent = activeCombatList
-      ? 'No matching units or weapons are configured in the loaded army list.'
-      : 'No unit or weapon selected.';
+    const calcWeaponName = document.getElementById('calcWeaponName');
+    const calcWeaponAbilities = document.getElementById('calcWeaponAbilities');
+    const calcWeaponStats = document.getElementById('calcWeaponStats');
+    if (calcWeaponName) calcWeaponName.textContent = '';
+    if (calcWeaponAbilities) calcWeaponAbilities.innerHTML = '';
+    if (calcWeaponStats) calcWeaponStats.innerHTML = '';
     return;
   }
   const torrent = hasAbility(weapon, 'Torrent');
@@ -573,19 +576,40 @@ function render() {
     if (damageCard) damageCard.classList.add('modified-result');
   }
 
-  document.getElementById('profileBox').innerHTML = `
-    <strong>${weaponSelect.value}</strong><br>
-    Phase: ${weapon.phase}<br>
-    Type: ${weapon.type}<br>
-    Range: ${weapon.range}<br>
-    Attacks: ${attacksUsed}<br>
-    ${weapon.skillType}: ${weapon.skill}+<br>
-    Strength: ${weapon.strength}<br>
-    AP: ${effectiveAP}<br>
-    Damage: ${weapon.damage}<br>
-    Abilities: ${renderTooltipList(weapon.abilities, { kind: 'weapon', datasheetLink: unit?.source?.datasheet || '' })}<br><br>
-    Estimated total attacks from ${modelsInput.value} model(s): ${/^\d+$/.test(String(attacksUsed)) ? Number(attacksUsed) * Number(modelsInput.value || 1) : attacksUsed + ' each'}${blast ? `<br>Blast bonus auto-applied from target unit size: +${blastBonus} attack(s).` : ''}${torrent ? `<br>Torrent detected: skip the Hit roll and go straight to Wound rolls.` : ''}.
-  `;
+  const calcWeaponName = document.getElementById('calcWeaponName');
+  if (calcWeaponName) {
+    calcWeaponName.textContent = weaponSelect.value;
+  }
+
+  const calcWeaponAbilities = document.getElementById('calcWeaponAbilities');
+  if (calcWeaponAbilities) {
+    calcWeaponAbilities.innerHTML = renderTooltipList(weapon.abilities, {
+      kind: 'weapon',
+      datasheetLink: unit?.source?.datasheet || ''
+    });
+    calcWeaponAbilities.querySelectorAll('.tooltip-term').forEach(el => {
+      el.classList.add('calc-weapon-ability-pill');
+    });
+  }
+
+  const calcWeaponStats = document.getElementById('calcWeaponStats');
+  if (calcWeaponStats) {
+    const stats = [
+      { val: weapon.range,                       lbl: 'Rng', cls: ''       },
+      { val: attacksUsed,                        lbl: 'Atk', cls: ''       },
+      { val: weapon.skill + '+',                 lbl: weapon.skillType === 'WS' ? 'WS' : 'BS', cls: '' },
+      { val: weapon.strength,                    lbl: 'Str', cls: 'is-str' },
+      { val: effectiveAP,                        lbl: 'AP',  cls: 'is-ap'  },
+      { val: weapon.damage,                      lbl: 'Dmg', cls: 'is-dmg' },
+    ];
+    calcWeaponStats.innerHTML = stats.map(s =>
+      `<div class="calc-stat-badge ${s.cls}">` +
+        `<div class="calc-stat-badge-val">${s.val}</div>` +
+        `<div class="calc-stat-badge-lbl">${s.lbl}</div>` +
+      `</div>`
+    ).join('');
+  }
+
   bindTooltipInteractions();
 }
 
