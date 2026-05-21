@@ -18,6 +18,8 @@
       --amber-glow: rgba(219,170,79,0.18);
       --amber-line: rgba(219,170,79,0.34);
       --green-bright: #baffcd;
+      --stat-str: #c4d8ff;
+      --stat-ap: #ff9e6a;
     }
 
     @font-face {
@@ -1870,12 +1872,12 @@
       background: rgba(196,216,255,0.07);
       border-color: rgba(196,216,255,0.2);
     }
-    .calc-stat-badge.is-str .calc-stat-badge-val { color: #c4d8ff; }
+    .calc-stat-badge.is-str .calc-stat-badge-val { color: var(--stat-str); }
     .calc-stat-badge.is-ap {
       background: rgba(255,158,106,0.1);
       border-color: rgba(255,158,106,0.4);
     }
-    .calc-stat-badge.is-ap .calc-stat-badge-val { color: #ff9e6a; }
+    .calc-stat-badge.is-ap .calc-stat-badge-val { color: var(--stat-ap); }
     .calc-stat-badge.is-dmg {
       background: rgba(216,239,141,0.07);
       border-color: rgba(216,239,141,0.2);
