@@ -1757,3 +1757,56 @@
       color: rgba(125,248,165,0.62);
       opacity: 1;
     }
+
+/* ── Battle Tracker: Always-Visible Score ── */
+.battle-score-always {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.battle-score-player-col {
+  background: linear-gradient(160deg, #06100d, #030907);
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.battle-score-you-header,
+.battle-score-opponent-header {
+  padding: 6px 12px 6px 15px;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: bold;
+  position: relative;
+}
+.battle-score-you-header::before,
+.battle-score-opponent-header::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+}
+.battle-score-you-header {
+  background: linear-gradient(90deg, rgba(143,227,172,0.1) 0%, transparent 60%);
+  border-bottom: 1px solid rgba(143,227,172,0.3);
+  color: var(--accent-2);
+}
+.battle-score-you-header::before {
+  background: var(--accent-2);
+}
+.battle-score-opponent-header {
+  background: linear-gradient(90deg, rgba(255,98,98,0.08) 0%, transparent 60%);
+  border-bottom: 1px solid rgba(255,98,98,0.28);
+  color: var(--warn);
+}
+.battle-score-opponent-header::before {
+  background: var(--warn);
+}
+.battle-score-player-body {
+  padding: 8px;
+  display: grid;
+  gap: 8px;
+}
