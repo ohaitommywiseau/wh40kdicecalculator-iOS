@@ -1760,57 +1760,93 @@
       opacity: 1;
     }
 
-    /* ── Battle Tracker: Always-Visible Score ── */
-    .battle-score-always {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-bottom: 12px;
+    /* ── Battle Tracker: Compact Score Strip ── */
+    .battle-score-strip {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
     }
-    .battle-score-player-col {
-      background: linear-gradient(160deg, #06100d, #030907);
-      border: 1px solid var(--border);
-      border-radius: 2px;
-      overflow: hidden;
+    .battle-score-strip-row {
+      display: flex;
+      align-items: stretch;
+      gap: 5px;
     }
-    .battle-score-you-header,
-    .battle-score-opponent-header {
-      padding: 6px 12px 6px 15px;
-      font-size: 0.72rem;
+    .battle-score-strip-player-label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 44px;
+      padding: 4px 6px;
+      font-size: 0.65rem;
+      font-weight: bold;
       text-transform: uppercase;
       letter-spacing: 0.08em;
-      font-weight: bold;
+      border-radius: 2px;
       position: relative;
     }
-    .battle-score-you-header::before,
-    .battle-score-opponent-header::before {
+    .battle-score-strip-player-label::before {
       content: "";
       position: absolute;
       left: 0;
       top: 0;
       bottom: 0;
       width: 3px;
+      border-radius: 2px 0 0 2px;
     }
-    .battle-score-you-header {
-      background: linear-gradient(90deg, rgba(143,227,172,0.1) 0%, transparent 60%);
-      border-bottom: 1px solid rgba(143,227,172,0.3);
+    .battle-score-strip-player-label.you {
+      background: linear-gradient(90deg, rgba(143,227,172,0.1) 0%, transparent 100%);
+      border: 1px solid rgba(143,227,172,0.25);
       color: var(--accent-2);
     }
-    .battle-score-you-header::before {
+    .battle-score-strip-player-label.you::before {
       background: var(--accent-2);
     }
-    .battle-score-opponent-header {
-      background: linear-gradient(90deg, rgba(255,98,98,0.08) 0%, transparent 60%);
-      border-bottom: 1px solid rgba(255,98,98,0.28);
+    .battle-score-strip-player-label.opponent {
+      background: linear-gradient(90deg, rgba(255,98,98,0.08) 0%, transparent 100%);
+      border: 1px solid rgba(255,98,98,0.22);
       color: var(--warn);
     }
-    .battle-score-opponent-header::before {
+    .battle-score-strip-player-label.opponent::before {
       background: var(--warn);
     }
-    .battle-score-player-body {
-      padding: 8px;
-      display: grid;
-      gap: 8px;
+    .battle-score-strip-stat {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      padding: 4px 5px;
+      background: linear-gradient(160deg, #06100d, #030907);
+      border: 1px solid var(--border);
+      border-radius: 2px;
+    }
+    .battle-score-strip-stat-label {
+      font-size: 0.56rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+      line-height: 1;
+    }
+    .battle-score-strip-stat-val {
+      font-size: 1.1rem;
+      font-weight: bold;
+      color: var(--amber);
+      line-height: 1;
+    }
+    .battle-score-strip-stat-controls {
+      display: flex;
+      gap: 3px;
+    }
+    .battle-score-strip .battle-adjust-btn,
+    .battle-score-strip .battle-adjust-custom-btn {
+      font-size: 0.58rem;
+      padding: 1px 5px;
+      min-height: 18px;
+      line-height: 1;
+    }
+    .battle-score-strip .battle-custom-adjust {
+      display: none;
     }
 
     /* ── Calculator: Weapon Profile Strip ── */
@@ -1881,5 +1917,80 @@
     .calc-stat-badge.is-dmg {
       background: rgba(216,239,141,0.07);
       border-color: rgba(216,239,141,0.2);
+    }
+    /* ── Calculator: Attacker Modifier Stepper + Chips ── */
+    .calc-mod-stepper-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+    .calc-mod-stepper-label {
+      flex: 1;
+      font-size: 0.62rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+    }
+    .calc-mod-stepper-controls {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .calc-mod-step-btn {
+      width: 22px;
+      height: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(160deg, #06100d, #030907);
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      color: var(--accent-2);
+      font-size: 0.9rem;
+      line-height: 1;
+      cursor: pointer;
+      padding: 0;
+    }
+    .calc-mod-step-btn:disabled {
+      opacity: 0.25;
+      cursor: not-allowed;
+    }
+    .calc-mod-step-val {
+      width: 28px;
+      text-align: center;
+      font-size: 0.9rem;
+      font-weight: bold;
+      color: var(--amber);
+      line-height: 1;
+    }
+    .calc-mod-step-val.is-zero {
+      color: var(--muted);
+    }
+    .calc-mod-chip-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5px;
+      margin-top: 10px;
+      padding-top: 8px;
+      border-top: 1px solid rgba(143,227,172,0.1);
+    }
+    .calc-mod-chip {
+      padding: 5px 6px;
+      text-align: center;
+      font-size: 0.58rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      background: rgba(143,227,172,0.03);
+      color: var(--muted);
+      cursor: pointer;
+      user-select: none;
+    }
+    .calc-mod-chip.is-active {
+      border-color: rgba(143,227,172,0.45);
+      background: rgba(143,227,172,0.1);
+      color: var(--accent-2);
     }
     .calc-stat-badge.is-dmg .calc-stat-badge-val { color: var(--good); }

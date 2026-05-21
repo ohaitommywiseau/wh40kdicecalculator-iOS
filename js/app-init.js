@@ -194,8 +194,68 @@ document.getElementById('resetModifiersBtn').addEventListener('click', () => {
   rapidFireBox.checked = false;
   coverBox.checked = false;
   armorContemptBox.checked = false;
+      // Reset stepper displays
+      ['hitMod', 'woundMod', 'apMod', 'saveMod'].forEach(id => {
+        const display = document.getElementById(id + 'Display');
+        if (display) {
+          display.textContent = '0';
+          display.classList.add('is-zero');
+        }
+        document.querySelectorAll(`.calc-mod-step-btn[data-target="${id}"]`).forEach(b => {
+          b.disabled = false;
+        });
+      });
+      // Reset chip states
+      document.querySelectorAll('.calc-mod-chip').forEach(chip => {
+        chip.classList.remove('is-active');
+      });
   render();
 });
+
+  // Stepper buttons for modifier inputs
+  const MOD_CLAMP = 2;
+  document.querySelectorAll('.calc-mod-step-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const targetId = btn.dataset.target;
+      const dir = parseInt(btn.dataset.dir, 10);
+      const hiddenInput = document.getElementById(targetId);
+      const displayEl = document.getElementById(targetId + 'Display');
+      if (!hiddenInput || !displayEl) return;
+
+      const current = parseInt(hiddenInput.value, 10) || 0;
+      const next = Math.max(-MOD_CLAMP, Math.min(MOD_CLAMP, current + dir));
+      hiddenInput.value = next;
+
+      // Update display span
+      displayEl.textContent = next > 0 ? '+' + next : String(next);
+      displayEl.classList.toggle('is-zero', next === 0);
+
+      // Update sibling button disabled states
+      const row = btn.closest('.calc-mod-stepper-controls');
+      if (row) {
+        row.querySelectorAll('.calc-mod-step-btn').forEach(b => {
+          const d = parseInt(b.dataset.dir, 10);
+          b.disabled = (d === -1 && next <= -MOD_CLAMP) || (d === 1 && next >= MOD_CLAMP);
+        });
+      }
+
+      hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
+    });
+  });
+
+  // Toggle chips for boolean modifiers
+  document.querySelectorAll('.calc-mod-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      const targetId = chip.dataset.target;
+      const hiddenCheckbox = document.getElementById(targetId);
+      if (!hiddenCheckbox) return;
+
+      hiddenCheckbox.checked = !hiddenCheckbox.checked;
+      chip.classList.toggle('is-active', hiddenCheckbox.checked);
+
+      hiddenCheckbox.dispatchEvent(new Event('change', { bubbles: true }));
+    });
+  });
 
 populateFactions();
 populateArmyListSelectors();
