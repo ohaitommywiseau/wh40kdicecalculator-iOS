@@ -58,7 +58,7 @@ function battleLiveEditingEnabled() {
 }
 
 function battlePanelChoice() {
-  return activeBattle?.ui?.panel || 'scoreboard';
+  return activeBattle?.ui?.panel || 'secondaries';
 }
 
 function ensureBattlePanelChoice() {
@@ -66,7 +66,7 @@ function ensureBattlePanelChoice() {
   const available = battlePanelSections.map(section => section.dataset.panel).filter(Boolean);
   let choice = battlePanelChoice();
   if (!available.includes(choice)) {
-    choice = available[0] || 'scoreboard';
+    choice = available[0] || 'secondaries';
     activeBattle.ui = activeBattle.ui || {};
     activeBattle.ui.panel = choice;
   }
