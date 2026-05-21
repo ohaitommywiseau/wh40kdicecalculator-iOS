@@ -521,6 +521,82 @@
           </div>
         </div>
 
+        <div class="card span-8">
+          <h2>Engagement Score</h2>
+          <div class="battle-score-always">
+            <div class="battle-score-player-col">
+              <div class="battle-score-you-header">You</div>
+              <div class="battle-score-player-body">
+                <div class="result">
+                  <div class="kicker">CP</div>
+                  <div class="big" id="battleYouCpBig">0</div>
+                  <div class="checks">
+                    <button type="button" class="secondary battle-adjust-btn" data-side="you" data-stat="cp" data-amount="1">+1 CP</button>
+                    <button type="button" class="secondary battle-adjust-btn" data-side="you" data-stat="cp" data-amount="-1">-1 CP</button>
+                  </div>
+                </div>
+                <div class="result">
+                  <div class="kicker">Primary VP</div>
+                  <div class="big" id="battleYouPrimaryBig">0</div>
+                  <div class="checks">
+                    <button type="button" class="secondary battle-adjust-btn" data-side="you" data-stat="primaryVp" data-amount="5">+5 VP</button>
+                    <button type="button" class="secondary battle-adjust-btn" data-side="you" data-stat="primaryVp" data-amount="-5">-5 VP</button>
+                  </div>
+                  <div class="battle-custom-adjust">
+                    <input type="number" id="battleYouPrimaryCustomInput" min="0" step="1" placeholder="Custom VP" />
+                    <button type="button" class="secondary battle-adjust-custom-btn" data-side="you" data-stat="primaryVp" data-input-id="battleYouPrimaryCustomInput">+X</button>
+                    <button type="button" class="secondary battle-adjust-custom-btn" data-side="you" data-stat="primaryVp" data-input-id="battleYouPrimaryCustomInput" data-direction="-1">-X</button>
+                  </div>
+                </div>
+                <div class="result">
+                  <div class="kicker">Secondary VP</div>
+                  <div class="big" id="battleYouSecondaryBig">0</div>
+                  <div class="small">Tracked from objectives.</div>
+                </div>
+                <div class="result">
+                  <div class="kicker">Total VP</div>
+                  <div class="big" id="battleYouTotalBig">0</div>
+                </div>
+              </div>
+            </div>
+            <div class="battle-score-player-col">
+              <div class="battle-score-opponent-header">Opponent</div>
+              <div class="battle-score-player-body">
+                <div class="result">
+                  <div class="kicker">CP</div>
+                  <div class="big" id="battleOpponentCpBig">0</div>
+                  <div class="checks">
+                    <button type="button" class="secondary battle-adjust-btn" data-side="opponent" data-stat="cp" data-amount="1">+1 CP</button>
+                    <button type="button" class="secondary battle-adjust-btn" data-side="opponent" data-stat="cp" data-amount="-1">-1 CP</button>
+                  </div>
+                </div>
+                <div class="result">
+                  <div class="kicker">Primary VP</div>
+                  <div class="big" id="battleOpponentPrimaryBig">0</div>
+                  <div class="checks">
+                    <button type="button" class="secondary battle-adjust-btn" data-side="opponent" data-stat="primaryVp" data-amount="5">+5 VP</button>
+                    <button type="button" class="secondary battle-adjust-btn" data-side="opponent" data-stat="primaryVp" data-amount="-5">-5 VP</button>
+                  </div>
+                  <div class="battle-custom-adjust">
+                    <input type="number" id="battleOpponentPrimaryCustomInput" min="0" step="1" placeholder="Custom VP" />
+                    <button type="button" class="secondary battle-adjust-custom-btn" data-side="opponent" data-stat="primaryVp" data-input-id="battleOpponentPrimaryCustomInput">+X</button>
+                    <button type="button" class="secondary battle-adjust-custom-btn" data-side="opponent" data-stat="primaryVp" data-input-id="battleOpponentPrimaryCustomInput" data-direction="-1">-X</button>
+                  </div>
+                </div>
+                <div class="result">
+                  <div class="kicker">Secondary VP</div>
+                  <div class="big" id="battleOpponentSecondaryBig">0</div>
+                  <div class="small">Tracked from objectives.</div>
+                </div>
+                <div class="result">
+                  <div class="kicker">Total VP</div>
+                  <div class="big" id="battleOpponentTotalBig">0</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div class="card span-8 battle-panel-card">
           <div class="battle-panel-card-header">
             <h2>Battle Intel</h2>
@@ -528,80 +604,13 @@
           <div class="battle-panel-toggle-row battle-panel-toggle-full">
             <div class="battle-panel-toggle-label">View</div>
             <div class="battle-panel-toggle-buttons">
-              <button type="button" class="secondary battle-panel-toggle-btn" data-panel="scoreboard" aria-pressed="true">Scoreboard</button>
-              <button type="button" class="secondary battle-panel-toggle-btn" data-panel="secondaries" aria-pressed="false">Secondaries</button>
+              <button type="button" class="secondary battle-panel-toggle-btn" data-panel="secondaries" aria-pressed="true">Secondaries</button>
               <button type="button" class="secondary battle-panel-toggle-btn" data-panel="log" aria-pressed="false">Battle Log</button>
               <button type="button" class="secondary battle-panel-toggle-btn" data-panel="units" aria-pressed="false">Unit State</button>
             </div>
           </div>
 
-          <div class="battle-panel battle-panel-block is-active" data-panel="scoreboard">
-            <div class="battle-panel-title">Scoreboard</div>
-            <div class="result-grid">
-            <div class="result">
-              <div class="kicker">You CP</div>
-              <div class="big" id="battleYouCpBig">0</div>
-              <div class="checks">
-                <button type="button" class="secondary battle-adjust-btn" data-side="you" data-stat="cp" data-amount="1">+1 CP</button>
-                <button type="button" class="secondary battle-adjust-btn" data-side="you" data-stat="cp" data-amount="-1">-1 CP</button>
-              </div>
-            </div>
-            <div class="result">
-              <div class="kicker">Opponent CP</div>
-              <div class="big" id="battleOpponentCpBig">0</div>
-              <div class="checks">
-                <button type="button" class="secondary battle-adjust-btn" data-side="opponent" data-stat="cp" data-amount="1">+1 CP</button>
-                <button type="button" class="secondary battle-adjust-btn" data-side="opponent" data-stat="cp" data-amount="-1">-1 CP</button>
-              </div>
-            </div>
-            <div class="result">
-              <div class="kicker">You Primary</div>
-              <div class="big" id="battleYouPrimaryBig">0</div>
-              <div class="checks">
-                <button type="button" class="secondary battle-adjust-btn" data-side="you" data-stat="primaryVp" data-amount="5">+5 VP</button>
-                <button type="button" class="secondary battle-adjust-btn" data-side="you" data-stat="primaryVp" data-amount="-5">-5 VP</button>
-              </div>
-              <div class="battle-custom-adjust">
-                <input type="number" id="battleYouPrimaryCustomInput" min="0" step="1" placeholder="Custom VP" />
-                <button type="button" class="secondary battle-adjust-custom-btn" data-side="you" data-stat="primaryVp" data-input-id="battleYouPrimaryCustomInput">+X</button>
-                <button type="button" class="secondary battle-adjust-custom-btn" data-side="you" data-stat="primaryVp" data-input-id="battleYouPrimaryCustomInput" data-direction="-1">-X</button>
-              </div>
-            </div>
-            <div class="result">
-              <div class="kicker">Opponent Primary</div>
-              <div class="big" id="battleOpponentPrimaryBig">0</div>
-              <div class="checks">
-                <button type="button" class="secondary battle-adjust-btn" data-side="opponent" data-stat="primaryVp" data-amount="5">+5 VP</button>
-                <button type="button" class="secondary battle-adjust-btn" data-side="opponent" data-stat="primaryVp" data-amount="-5">-5 VP</button>
-              </div>
-              <div class="battle-custom-adjust">
-                <input type="number" id="battleOpponentPrimaryCustomInput" min="0" step="1" placeholder="Custom VP" />
-                <button type="button" class="secondary battle-adjust-custom-btn" data-side="opponent" data-stat="primaryVp" data-input-id="battleOpponentPrimaryCustomInput">+X</button>
-                <button type="button" class="secondary battle-adjust-custom-btn" data-side="opponent" data-stat="primaryVp" data-input-id="battleOpponentPrimaryCustomInput" data-direction="-1">-X</button>
-              </div>
-            </div>
-            <div class="result">
-              <div class="kicker">You Secondary</div>
-              <div class="big" id="battleYouSecondaryBig">0</div>
-              <div class="small">Tracked from selected objectives.</div>
-            </div>
-            <div class="result">
-              <div class="kicker">Opponent Secondary</div>
-              <div class="big" id="battleOpponentSecondaryBig">0</div>
-              <div class="small">Tracked from selected objectives.</div>
-            </div>
-            <div class="result">
-              <div class="kicker">You Total</div>
-              <div class="big" id="battleYouTotalBig">0</div>
-            </div>
-            <div class="result">
-              <div class="kicker">Opponent Total</div>
-              <div class="big" id="battleOpponentTotalBig">0</div>
-            </div>
-          </div>
-          </div>
-
-          <div class="battle-panel battle-panel-block" data-panel="secondaries" hidden>
+          <div class="battle-panel battle-panel-block is-active" data-panel="secondaries">
             <div class="battle-panel-title">Secondary Objectives</div>
             <div class="battle-panel-scroll">
               <div class="battle-score-secondary-strip">
