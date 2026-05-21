@@ -604,7 +604,7 @@ function render() {
     ];
     calcWeaponStats.innerHTML = stats.map(s =>
       `<div class="calc-stat-badge ${s.cls}">` +
-        `<div class="calc-stat-badge-val">${s.val}</div>` +
+        `<div class="calc-stat-badge-val">${escapeHtml(String(s.val))}</div>` +
         `<div class="calc-stat-badge-lbl">${s.lbl}</div>` +
       `</div>`
     ).join('');
