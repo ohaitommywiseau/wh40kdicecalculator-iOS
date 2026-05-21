@@ -1,0 +1,280 @@
+<style>
+  :root {
+    --bg: #040807; --text: #97eab1; --muted: #63ac79; --border: #12402a;
+    --amber: #dbaa4f; --green-bright: #baffcd; --accent-2: #8fe3ac;
+    --good: #d8ef8d; --warn: #ff6262;
+    --font: "Arial Narrow", "Conduit ITC Std", monospace;
+  }
+  body { background: #020604; color: var(--text); font-family: var(--font); margin: 0; padding: 16px; }
+  h2 { color: var(--green-bright); font-size: 1.1rem; text-transform: uppercase; letter-spacing: 0.08em; margin: 0 0 4px 0; }
+  .subtitle { color: var(--muted); font-size: 0.88rem; margin: 0 0 20px 0; line-height: 1.4; }
+
+  .options { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .option { border: 2px solid transparent; border-radius: 4px; cursor: pointer; transition: border-color 0.15s; overflow: hidden; }
+  .option:hover { border-color: var(--amber); }
+  .option.selected { border-color: var(--green-bright); }
+  .option-label { background: #0a1f14; border-bottom: 1px solid var(--border); padding: 7px 12px; display: flex; align-items: center; gap: 8px; }
+  .option-label .letter { width: 22px; height: 22px; border-radius: 50%; background: var(--amber); color: #000; font-weight: bold; font-size: 0.8rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .option-label h3 { color: var(--green-bright); font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.05em; margin: 0; }
+  .mockup-wrap { padding: 8px; background: var(--bg); }
+  .desc { padding: 9px 12px; background: #0a1f14; border-top: 1px solid var(--border); font-size: 0.77rem; color: var(--muted); line-height: 1.4; }
+  .desc strong { color: var(--text); }
+
+  /* shared card */
+  .mc { background: linear-gradient(160deg,#06100d,#030907); border:1px solid var(--border); border-radius:2px; overflow:hidden; margin-bottom:5px; }
+  .mc-hdr { background:linear-gradient(90deg,rgba(219,170,79,.12) 0%,transparent 60%); border-bottom:1px solid rgba(219,170,79,.35); padding:4px 8px; display:flex; align-items:center; gap:5px; }
+  .mc-bar { width:3px; height:11px; background:var(--amber); border-radius:1px; flex-shrink:0; }
+  .mc-title { font-size:0.65rem; text-transform:uppercase; letter-spacing:.08em; color:var(--amber); font-weight:bold; }
+  .mc-body { padding:5px 8px; }
+
+  /* field */
+  .field { background:linear-gradient(160deg,#091510,#050c09); border:1px solid #235c3c; border-radius:1px; padding:4px 6px; font-size:0.68rem; color:var(--text); }
+  .field-lbl { font-size:0.58rem; color:var(--muted); text-transform:uppercase; margin-bottom:1px; }
+  .field-row { display:flex; gap:4px; margin-bottom:4px; }
+
+  /* stat strip — horizontal weapon profile */
+  .stat-strip { display:flex; gap:3px; }
+  .stat-cell { flex:1; text-align:center; background:linear-gradient(160deg,#09130f,#040907); border:1px solid var(--border); border-radius:1px; padding:5px 2px; }
+  .stat-cell-val { font-size:0.95rem; color:var(--good); font-weight:bold; line-height:1; }
+  .stat-cell-val.ap { color: #ff9e6a; }
+  .stat-cell-lbl { font-size:0.55rem; color:var(--muted); text-transform:uppercase; margin-top:2px; }
+
+  /* highlighted AP cell */
+  .stat-cell.highlight { border-color:rgba(255,158,106,0.45); background:linear-gradient(160deg,rgba(255,100,50,0.08),#040907); }
+
+  /* result boxes */
+  .rb { flex:1; text-align:center; padding:5px 3px; background:linear-gradient(160deg,#09130f,#040907); border:1px solid var(--border); border-radius:1px; }
+  .rb-num { font-size:1.05rem; color:var(--amber); font-weight:bold; line-height:1; }
+  .rb-lbl { font-size:0.55rem; color:var(--muted); text-transform:uppercase; margin-top:2px; }
+  .rb-pct { font-size:0.58rem; color:var(--good); }
+  .rb-row { display:flex; gap:3px; margin-bottom:3px; }
+
+  /* inline weapon name label */
+  .weapon-name { font-size:0.72rem; color:var(--green-bright); margin-bottom:4px; letter-spacing:0.04em; }
+  .weapon-type { font-size:0.58rem; color:var(--muted); text-transform:uppercase; }
+
+  /* AP badge for option C */
+  .ap-badge {
+    display:inline-flex; align-items:center; gap:5px;
+    background:rgba(255,158,106,0.1); border:1px solid rgba(255,158,106,0.4);
+    border-radius:2px; padding:3px 8px; margin-bottom:5px;
+  }
+  .ap-badge-lbl { font-size:0.6rem; color:var(--muted); text-transform:uppercase; }
+  .ap-badge-val { font-size:1.05rem; color:#ff9e6a; font-weight:bold; }
+</style>
+
+<h2>Weapon Profile — Where Should It Live?</h2>
+<p class="subtitle">You need weapon stats (especially AP) visible when your opponent works out their saving throw. Currently the profile card is tucked at bottom-right. Three options for moving it.</p>
+
+<div class="options">
+
+  <!-- A: Weapon profile between inputs and results -->
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="option-label">
+      <div class="letter">A</div>
+      <h3>Full Row After Inputs</h3>
+    </div>
+    <div class="mockup-wrap">
+
+      <!-- Inputs (compact 3-col) -->
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;margin-bottom:4px;">
+        <div class="mc">
+          <div class="mc-hdr"><div class="mc-bar"></div><div class="mc-title">Attacker</div></div>
+          <div class="mc-body">
+            <div class="field" style="margin-bottom:2px;"><div class="field-lbl">Unit</div>Intercessors</div>
+            <div class="field"><div class="field-lbl">Weapon</div>Bolt Rifle</div>
+          </div>
+        </div>
+        <div class="mc">
+          <div class="mc-hdr"><div class="mc-bar"></div><div class="mc-title">Modifiers</div></div>
+          <div class="mc-body">
+            <div class="field-row">
+              <div class="field"><div class="field-lbl">+Hit</div>0</div>
+              <div class="field"><div class="field-lbl">+Wnd</div>0</div>
+            </div>
+          </div>
+        </div>
+        <div class="mc">
+          <div class="mc-hdr"><div class="mc-bar"></div><div class="mc-title">Target</div></div>
+          <div class="mc-body">
+            <div class="field-row">
+              <div class="field"><div class="field-lbl">T</div>5</div>
+              <div class="field"><div class="field-lbl">Sv</div>3+</div>
+              <div class="field"><div class="field-lbl">Inv</div>—</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Weapon profile — full width row between inputs and results -->
+      <div class="mc" style="border-color:rgba(219,170,79,0.3);">
+        <div class="mc-hdr"><div class="mc-bar"></div><div class="mc-title">Weapon Profile — Bolt Rifle</div></div>
+        <div class="mc-body">
+          <div class="stat-strip">
+            <div class="stat-cell"><div class="stat-cell-val">24"</div><div class="stat-cell-lbl">Range</div></div>
+            <div class="stat-cell"><div class="stat-cell-val">2</div><div class="stat-cell-lbl">Attacks</div></div>
+            <div class="stat-cell"><div class="stat-cell-val">3+</div><div class="stat-cell-lbl">Skill</div></div>
+            <div class="stat-cell"><div class="stat-cell-val">4</div><div class="stat-cell-lbl">Str</div></div>
+            <div class="stat-cell highlight"><div class="stat-cell-val ap">-1</div><div class="stat-cell-lbl">AP</div></div>
+            <div class="stat-cell"><div class="stat-cell-val">1</div><div class="stat-cell-lbl">Dmg</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Results below -->
+      <div class="mc">
+        <div class="mc-hdr"><div class="mc-bar"></div><div class="mc-title">Engagement Analysis</div></div>
+        <div class="mc-body">
+          <div class="rb-row">
+            <div class="rb"><div class="rb-num">6</div><div class="rb-lbl">Attacks</div></div>
+            <div class="rb"><div class="rb-num">4+</div><div class="rb-lbl">To Hit</div><div class="rb-pct">50%</div></div>
+            <div class="rb"><div class="rb-num">3+</div><div class="rb-lbl">Wound</div><div class="rb-pct">67%</div></div>
+            <div class="rb"><div class="rb-num">4+</div><div class="rb-lbl">Save</div><div class="rb-pct">50%</div></div>
+            <div class="rb"><div class="rb-num" style="color:var(--good)">1.7</div><div class="rb-lbl">Avg Dmg</div></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div class="desc"><strong>Weapon profile gets its own full-width row</strong> between the inputs and the analysis. All six stats (Range, A, Skill, S, AP, D) visible at once. AP has a warm highlight so it stands out when your opponent checks saves.</div>
+  </div>
+
+  <!-- B: Weapon profile embedded in attacker card -->
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="option-label">
+      <div class="letter">B</div>
+      <h3>Embedded in Attacker Card</h3>
+    </div>
+    <div class="mockup-wrap">
+
+      <!-- Attacker card with profile inline -->
+      <div class="mc" style="margin-bottom:4px;">
+        <div class="mc-hdr"><div class="mc-bar"></div><div class="mc-title">Attacker</div></div>
+        <div class="mc-body">
+          <div class="field-row">
+            <div class="field" style="flex:2"><div class="field-lbl">Unit</div>Intercessors</div>
+            <div class="field" style="flex:2"><div class="field-lbl">Weapon</div>Bolt Rifle</div>
+            <div class="field" style="flex:1"><div class="field-lbl">Models</div>3</div>
+          </div>
+          <!-- Inline stat strip directly below weapon selector -->
+          <div class="stat-strip">
+            <div class="stat-cell"><div class="stat-cell-val">24"</div><div class="stat-cell-lbl">Rng</div></div>
+            <div class="stat-cell"><div class="stat-cell-val">2</div><div class="stat-cell-lbl">A</div></div>
+            <div class="stat-cell"><div class="stat-cell-val">3+</div><div class="stat-cell-lbl">Skill</div></div>
+            <div class="stat-cell"><div class="stat-cell-val">4</div><div class="stat-cell-lbl">S</div></div>
+            <div class="stat-cell highlight"><div class="stat-cell-val ap">-1</div><div class="stat-cell-lbl">AP</div></div>
+            <div class="stat-cell"><div class="stat-cell-val">1</div><div class="stat-cell-lbl">D</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modifiers + Target side by side -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-bottom:4px;">
+        <div class="mc">
+          <div class="mc-hdr"><div class="mc-bar"></div><div class="mc-title">Modifiers</div></div>
+          <div class="mc-body">
+            <div class="field-row">
+              <div class="field"><div class="field-lbl">+Hit</div>0</div>
+              <div class="field"><div class="field-lbl">+Wnd</div>0</div>
+            </div>
+          </div>
+        </div>
+        <div class="mc">
+          <div class="mc-hdr"><div class="mc-bar"></div><div class="mc-title">Target</div></div>
+          <div class="mc-body">
+            <div class="field-row">
+              <div class="field"><div class="field-lbl">T</div>5</div>
+              <div class="field"><div class="field-lbl">Sv</div>3+</div>
+              <div class="field"><div class="field-lbl">Inv</div>—</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Results -->
+      <div class="mc">
+        <div class="mc-hdr"><div class="mc-bar"></div><div class="mc-title">Engagement Analysis</div></div>
+        <div class="mc-body">
+          <div class="rb-row">
+            <div class="rb"><div class="rb-num">6</div><div class="rb-lbl">Attacks</div></div>
+            <div class="rb"><div class="rb-num">4+</div><div class="rb-lbl">To Hit</div><div class="rb-pct">50%</div></div>
+            <div class="rb"><div class="rb-num">3+</div><div class="rb-lbl">Wound</div><div class="rb-pct">67%</div></div>
+            <div class="rb"><div class="rb-num">4+</div><div class="rb-lbl">Save</div><div class="rb-pct">50%</div></div>
+            <div class="rb"><div class="rb-num" style="color:var(--good)">1.7</div><div class="rb-lbl">Avg Dmg</div></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div class="desc"><strong>Weapon stats appear directly below the weapon selector</strong>, inside the Attacker card — no separate card needed. Pick your weapon and immediately see its profile. Saves vertical space overall.</div>
+  </div>
+
+  <!-- C: AP badge pinned to results -->
+  <div class="option" data-choice="c" onclick="toggleSelect(this)">
+    <div class="option-label">
+      <div class="letter">C</div>
+      <h3>AP Pinned to Results</h3>
+    </div>
+    <div class="mockup-wrap">
+
+      <!-- Inputs compact 3-col -->
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;margin-bottom:4px;">
+        <div class="mc">
+          <div class="mc-hdr"><div class="mc-bar"></div><div class="mc-title">Attacker</div></div>
+          <div class="mc-body">
+            <div class="field" style="margin-bottom:2px;"><div class="field-lbl">Unit</div>Intercessors</div>
+            <div class="field"><div class="field-lbl">Weapon</div>Bolt Rifle</div>
+          </div>
+        </div>
+        <div class="mc">
+          <div class="mc-hdr"><div class="mc-bar"></div><div class="mc-title">Modifiers</div></div>
+          <div class="mc-body">
+            <div class="field-row">
+              <div class="field"><div class="field-lbl">+Hit</div>0</div>
+              <div class="field"><div class="field-lbl">+Wnd</div>0</div>
+            </div>
+          </div>
+        </div>
+        <div class="mc">
+          <div class="mc-hdr"><div class="mc-bar"></div><div class="mc-title">Target</div></div>
+          <div class="mc-body">
+            <div class="field-row">
+              <div class="field"><div class="field-lbl">T</div>5</div>
+              <div class="field"><div class="field-lbl">Sv</div>3+</div>
+              <div class="field"><div class="field-lbl">Inv</div>—</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Results with AP badge pinned inside the header -->
+      <div class="mc">
+        <div class="mc-hdr" style="justify-content:space-between;">
+          <div style="display:flex;align-items:center;gap:5px;">
+            <div class="mc-bar"></div>
+            <div class="mc-title">Engagement Analysis</div>
+          </div>
+          <!-- AP + weapon name pinned to the right of the results header -->
+          <div style="display:flex;align-items:center;gap:6px;">
+            <span style="font-size:0.6rem;color:var(--muted);">Bolt Rifle</span>
+            <span style="background:rgba(255,158,106,0.12);border:1px solid rgba(255,158,106,0.4);border-radius:1px;padding:1px 6px;font-size:0.65rem;color:#ff9e6a;font-weight:bold;">AP -1</span>
+            <span style="background:rgba(143,227,172,0.08);border:1px solid rgba(143,227,172,0.25);border-radius:1px;padding:1px 5px;font-size:0.65rem;color:var(--accent-2);">D 1</span>
+            <span style="background:rgba(216,239,141,0.08);border:1px solid rgba(216,239,141,0.25);border-radius:1px;padding:1px 5px;font-size:0.65rem;color:var(--good);">S 4</span>
+          </div>
+        </div>
+        <div class="mc-body">
+          <div class="rb-row">
+            <div class="rb"><div class="rb-num">6</div><div class="rb-lbl">Attacks</div></div>
+            <div class="rb"><div class="rb-num">4+</div><div class="rb-lbl">To Hit</div><div class="rb-pct">50%</div></div>
+            <div class="rb"><div class="rb-num">3+</div><div class="rb-lbl">Wound</div><div class="rb-pct">67%</div></div>
+            <div class="rb"><div class="rb-num">4+</div><div class="rb-lbl">Save</div><div class="rb-pct">50%</div></div>
+            <div class="rb"><div class="rb-num" style="color:var(--good)">1.7</div><div class="rb-lbl">Avg Dmg</div></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div class="desc"><strong>AP (and S, D) pinned as badges in the results header</strong> — the key weapon stats your opponent needs are right next to the result numbers, no separate card or scrolling required. Most compact option.</div>
+  </div>
+
+</div>

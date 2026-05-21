@@ -1,0 +1,338 @@
+<style>
+  :root {
+    --bg: #040807;
+    --panel: #07110d;
+    --panel-2: #0b1712;
+    --text: #97eab1;
+    --muted: #63ac79;
+    --border: #12402a;
+    --amber: #dbaa4f;
+    --green-bright: #baffcd;
+    --accent-2: #8fe3ac;
+    --warn: #ff6262;
+    --good: #d8ef8d;
+    --font: "Arial Narrow", "Conduit ITC Std", monospace;
+  }
+  body { background: #020604; color: var(--text); font-family: var(--font); margin: 0; padding: 16px; }
+  h2 { color: var(--green-bright); font-size: 1.1rem; text-transform: uppercase; letter-spacing: 0.08em; margin: 0 0 4px 0; }
+  .subtitle { color: var(--muted); font-size: 0.88rem; margin: 0 0 20px 0; line-height: 1.4; }
+
+  .options { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .option {
+    border: 2px solid transparent;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: border-color 0.15s;
+    overflow: hidden;
+  }
+  .option:hover { border-color: var(--amber); }
+  .option.selected { border-color: var(--green-bright); }
+  .option-label {
+    background: #0a1f14;
+    border-bottom: 1px solid var(--border);
+    padding: 7px 12px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .option-label .letter {
+    width: 22px; height: 22px; border-radius: 50%;
+    background: var(--amber); color: #000; font-weight: bold;
+    font-size: 0.8rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .option-label h3 { color: var(--green-bright); font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.05em; margin: 0; }
+  .mockup-wrap { padding: 8px; background: var(--bg); }
+  .desc {
+    padding: 9px 12px; background: #0a1f14; border-top: 1px solid var(--border);
+    font-size: 0.77rem; color: var(--muted); line-height: 1.4;
+  }
+  .desc strong { color: var(--text); }
+
+  /* ── Shared mini-card styles ── */
+  .mc {
+    background: linear-gradient(160deg, #06100d, #030907);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-bottom: 6px;
+  }
+  .mc-hdr {
+    background: linear-gradient(90deg, rgba(219,170,79,0.12) 0%, transparent 60%);
+    border-bottom: 1px solid rgba(219,170,79,0.35);
+    padding: 5px 8px; display: flex; align-items: center; gap: 6px;
+  }
+  .mc-bar { width: 3px; height: 12px; background: var(--amber); border-radius: 1px; flex-shrink: 0; }
+  .mc-title { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--amber); font-weight: bold; }
+  .mc-body { padding: 6px 8px; }
+
+  /* stat box */
+  .stat-box {
+    flex: 1; text-align: center; padding: 6px 4px;
+    background: linear-gradient(160deg, #09130f, #040907);
+    border: 1px solid var(--border); border-radius: 1px;
+  }
+  .stat-num { font-size: 1.15rem; color: var(--amber); font-weight: bold; line-height: 1; }
+  .stat-lbl { font-size: 0.58rem; color: var(--muted); text-transform: uppercase; margin-top: 2px; }
+  .stat-row { display: flex; gap: 4px; }
+
+  /* player strip */
+  .player-strip { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--green-bright); margin-bottom: 4px; }
+
+  /* tab button */
+  .tab-row { display: flex; gap: 3px; margin-bottom: 5px; }
+  .tab { flex: 1; background: #0b1812; border: 1px solid var(--border); border-radius: 1px; padding: 4px 2px; font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); text-align: center; }
+  .tab.active { background: linear-gradient(90deg, rgba(219,170,79,0.12), transparent); border-color: rgba(219,170,79,0.4); color: var(--amber); }
+
+  /* mini pill */
+  .pill { display: inline-block; background: rgba(219,170,79,0.12); border: 1px solid rgba(219,170,79,0.3); border-radius: 1px; padding: 2px 6px; font-size: 0.6rem; color: var(--amber); text-transform: uppercase; margin-right: 4px; }
+  .pill-green { background: rgba(143,227,172,0.1); border-color: rgba(143,227,172,0.3); color: var(--accent-2); }
+
+  /* phase indicator */
+  .phase-bar { background: #0a1a12; border: 1px solid var(--border); border-radius: 1px; padding: 4px 8px; font-size: 0.62rem; display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
+  .phase-val { color: var(--green-bright); font-size: 0.7rem; }
+
+  /* log entry */
+  .log-line { font-size: 0.62rem; color: var(--muted); padding: 3px 0; border-bottom: 1px solid #0b1e14; }
+  .log-line:last-child { border-bottom: none; }
+
+  /* ── Option A: Always-Visible Scoreboard ── */
+  .optA-score {
+    background: linear-gradient(160deg, #06100d, #030907);
+    border: 1px solid var(--border); border-radius: 2px;
+    overflow: hidden; margin-bottom: 6px;
+  }
+  .optA-score-hdr {
+    background: linear-gradient(90deg, rgba(219,170,79,0.12) 0%, transparent 60%);
+    border-bottom: 1px solid rgba(219,170,79,0.35);
+    padding: 5px 8px; display: flex; align-items: center; justify-content: space-between;
+  }
+  .optA-score-title-row { display: flex; align-items: center; gap: 6px; }
+  .optA-score-body { padding: 6px 8px; }
+  .optA-sides { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .optA-side-label { font-size: 0.63rem; text-transform: uppercase; color: var(--accent-2); margin-bottom: 4px; letter-spacing: 0.05em; }
+  .optA-side-label.enemy { color: var(--warn); }
+
+  /* ── Option B: Compact Header Banner ── */
+  .optB-banner {
+    background: linear-gradient(90deg, #0a1a12, #061009);
+    border: 1px solid var(--border); border-radius: 2px;
+    padding: 5px 8px; margin-bottom: 6px;
+    display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  }
+  .optB-banner-title { font-size: 0.68rem; text-transform: uppercase; color: var(--amber); font-weight: bold; flex: 1; }
+  .optB-score-chip {
+    background: rgba(219,170,79,0.1); border: 1px solid rgba(219,170,79,0.3);
+    border-radius: 1px; padding: 3px 8px; text-align: center;
+  }
+  .optB-score-chip-num { font-size: 0.9rem; color: var(--amber); font-weight: bold; line-height: 1; }
+  .optB-score-chip-lbl { font-size: 0.56rem; color: var(--muted); text-transform: uppercase; }
+  .optB-score-chip.enemy .optB-score-chip-num { color: var(--warn); }
+  .optB-sep { color: var(--border); font-size: 0.8rem; }
+
+  /* ── Option C: Side-by-Side Columns ── */
+  .optC-sides { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 6px; }
+  .optC-side {
+    background: linear-gradient(160deg, #06100d, #030907);
+    border: 1px solid var(--border); border-radius: 2px; overflow: hidden;
+  }
+  .optC-side-hdr {
+    border-bottom: 1px solid rgba(143,227,172,0.3);
+    background: linear-gradient(90deg, rgba(143,227,172,0.08) 0%, transparent 60%);
+    padding: 5px 8px;
+  }
+  .optC-side-hdr.enemy {
+    border-bottom-color: rgba(255,98,98,0.3);
+    background: linear-gradient(90deg, rgba(255,98,98,0.06) 0%, transparent 60%);
+  }
+  .optC-side-name { font-size: 0.68rem; text-transform: uppercase; color: var(--accent-2); font-weight: bold; letter-spacing: 0.05em; }
+  .optC-side-name.enemy { color: var(--warn); }
+  .optC-side-body { padding: 5px 6px; }
+</style>
+
+<h2>Battle Tracker — Scoreboard Layout</h2>
+<p class="subtitle">The scoreboard (CP, VP, Objectives) is the most-checked panel during a game. Currently it's inside a tab you have to switch to. How should it be arranged on iPad?</p>
+
+<div class="options">
+
+  <!-- Option A: Always-visible score above tabs -->
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="option-label">
+      <div class="letter">A</div>
+      <h3>Score Always Visible</h3>
+    </div>
+    <div class="mockup-wrap">
+
+      <!-- Phase bar -->
+      <div class="phase-bar">
+        <span>Round <span class="phase-val">2</span> — <span class="phase-val">Movement Phase</span></span>
+        <span style="color:var(--amber);font-size:0.65rem;">Player 1's Turn</span>
+      </div>
+
+      <!-- Always-visible score section -->
+      <div class="optA-score">
+        <div class="optA-score-hdr">
+          <div class="optA-score-title-row">
+            <div class="mc-bar"></div>
+            <span class="mc-title">Engagement Score</span>
+          </div>
+        </div>
+        <div class="optA-score-body">
+          <div class="optA-sides">
+            <div>
+              <div class="optA-side-label">You</div>
+              <div class="stat-row">
+                <div class="stat-box"><div class="stat-num">4</div><div class="stat-lbl">CP</div></div>
+                <div class="stat-box"><div class="stat-num">32</div><div class="stat-lbl">VP</div></div>
+                <div class="stat-box"><div class="stat-num">10</div><div class="stat-lbl">Primary</div></div>
+              </div>
+            </div>
+            <div>
+              <div class="optA-side-label enemy">Opponent</div>
+              <div class="stat-row">
+                <div class="stat-box"><div class="stat-num" style="color:var(--warn)">2</div><div class="stat-lbl">CP</div></div>
+                <div class="stat-box"><div class="stat-num" style="color:var(--warn)">28</div><div class="stat-lbl">VP</div></div>
+                <div class="stat-box"><div class="stat-num" style="color:var(--warn)">8</div><div class="stat-lbl">Primary</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tabs for details only -->
+      <div class="mc">
+        <div class="mc-hdr"><div class="mc-bar"></div><div class="mc-title">Details</div></div>
+        <div class="mc-body">
+          <div class="tab-row">
+            <div class="tab active">Secondaries</div>
+            <div class="tab">Battle Log</div>
+            <div class="tab">Unit State</div>
+          </div>
+          <div style="font-size:0.65rem;color:var(--muted);padding:2px 0;">
+            <div class="log-line">Obj A: Secured (+5 VP)</div>
+            <div class="log-line">Obj B: Contested</div>
+            <div class="log-line">Linebreaker: Active</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div class="desc"><strong>Score stays on screen at all times</strong>, tabs only handle secondary details (objectives, log, unit state). You never have to switch tabs to check CP or VP.</div>
+  </div>
+
+  <!-- Option B: Compact sticky score in header -->
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="option-label">
+      <div class="letter">B</div>
+      <h3>Sticky Score Header</h3>
+    </div>
+    <div class="mockup-wrap">
+
+      <!-- Compact score banner (sticky) -->
+      <div class="optB-banner">
+        <div class="optB-score-chip">
+          <div class="optB-score-chip-num">4 CP</div>
+          <div class="optB-score-chip-lbl">You</div>
+        </div>
+        <div class="optB-score-chip">
+          <div class="optB-score-chip-num">32 VP</div>
+          <div class="optB-score-chip-lbl">You</div>
+        </div>
+        <div class="optB-sep">vs</div>
+        <div class="optB-score-chip enemy">
+          <div class="optB-score-chip-num">2 CP</div>
+          <div class="optB-score-chip-lbl">Opp</div>
+        </div>
+        <div class="optB-score-chip enemy">
+          <div class="optB-score-chip-num">28 VP</div>
+          <div class="optB-score-chip-lbl">Opp</div>
+        </div>
+        <span style="font-size:0.62rem;color:var(--amber);margin-left:auto;">Rnd 2 · Movement</span>
+      </div>
+
+      <!-- Full-height content below -->
+      <div class="mc">
+        <div class="mc-hdr"><div class="mc-bar"></div><div class="mc-title">Battle Intel</div></div>
+        <div class="mc-body">
+          <div class="tab-row">
+            <div class="tab active">Scoreboard</div>
+            <div class="tab">Secondaries</div>
+            <div class="tab">Log</div>
+            <div class="tab">Units</div>
+          </div>
+          <div class="stat-row" style="margin-bottom:5px;">
+            <div class="stat-box"><div class="stat-num">4</div><div class="stat-lbl">Your CP</div></div>
+            <div class="stat-box"><div class="stat-num">32</div><div class="stat-lbl">Your VP</div></div>
+            <div class="stat-box"><div class="stat-num" style="color:var(--warn)">2</div><div class="stat-lbl">Opp CP</div></div>
+            <div class="stat-box"><div class="stat-num" style="color:var(--warn)">28</div><div class="stat-lbl">Opp VP</div></div>
+          </div>
+          <div style="font-size:0.65rem;color:var(--muted);">Full detail expand below...</div>
+        </div>
+      </div>
+
+    </div>
+    <div class="desc"><strong>Score summarized in a compact sticky banner</strong> at the top of the module — always in view while scrolling. The tabbed panel below uses its full height for details.</div>
+  </div>
+
+  <!-- Option C: Side-by-side player columns -->
+  <div class="option" data-choice="c" onclick="toggleSelect(this)">
+    <div class="option-label">
+      <div class="letter">C</div>
+      <h3>Player Columns</h3>
+    </div>
+    <div class="mockup-wrap">
+
+      <!-- Phase -->
+      <div class="phase-bar">
+        <span>Round <span class="phase-val">2</span> — <span class="phase-val">Movement Phase</span></span>
+        <span style="color:var(--amber);font-size:0.65rem;">Player 1</span>
+      </div>
+
+      <!-- Side-by-side player columns -->
+      <div class="optC-sides">
+        <div class="optC-side">
+          <div class="optC-side-hdr"><div class="optC-side-name">You</div></div>
+          <div class="optC-side-body">
+            <div class="stat-row" style="margin-bottom:4px;">
+              <div class="stat-box"><div class="stat-num">4</div><div class="stat-lbl">CP</div></div>
+              <div class="stat-box"><div class="stat-num">32</div><div class="stat-lbl">VP</div></div>
+            </div>
+            <div class="stat-row">
+              <div class="stat-box"><div class="stat-num">10</div><div class="stat-lbl">Primary</div></div>
+              <div class="stat-box"><div class="stat-num">22</div><div class="stat-lbl">Secondary</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="optC-side">
+          <div class="optC-side-hdr enemy"><div class="optC-side-name enemy">Opponent</div></div>
+          <div class="optC-side-body">
+            <div class="stat-row" style="margin-bottom:4px;">
+              <div class="stat-box"><div class="stat-num" style="color:var(--warn)">2</div><div class="stat-lbl">CP</div></div>
+              <div class="stat-box"><div class="stat-num" style="color:var(--warn)">28</div><div class="stat-lbl">VP</div></div>
+            </div>
+            <div class="stat-row">
+              <div class="stat-box"><div class="stat-num" style="color:var(--warn)">8</div><div class="stat-lbl">Primary</div></div>
+              <div class="stat-box"><div class="stat-num" style="color:var(--warn)">20</div><div class="stat-lbl">Secondary</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tabs below -->
+      <div class="mc">
+        <div class="mc-hdr"><div class="mc-bar"></div><div class="mc-title">Details</div></div>
+        <div class="mc-body">
+          <div class="tab-row">
+            <div class="tab active">Secondaries</div>
+            <div class="tab">Battle Log</div>
+            <div class="tab">Unit State</div>
+          </div>
+          <div style="font-size:0.65rem;color:var(--muted);">
+            <div class="log-line">Obj A: Secured (+5 VP)</div>
+            <div class="log-line">Linebreaker: Active</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div class="desc"><strong>Your stats and opponent's stats in mirrored columns</strong> — perfect side-by-side comparison. Score is always visible, and the player-vs-player contrast is immediate at a glance.</div>
+  </div>
+
+</div>

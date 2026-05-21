@@ -1,0 +1,157 @@
+<style>
+  :root {
+    --bg: #040807; --text: #97eab1; --muted: #63ac79; --border: #12402a;
+    --amber: #dbaa4f; --green-bright: #baffcd; --accent-2: #8fe3ac;
+    --good: #d8ef8d; --warn: #ff6262;
+    --font: "Arial Narrow", "Conduit ITC Std", monospace;
+  }
+  body { background: #020604; color: var(--text); font-family: var(--font); margin: 0; padding: 24px; }
+  h2 { color: var(--green-bright); font-size: 1.1rem; text-transform: uppercase; letter-spacing: 0.08em; margin: 0 0 4px 0; }
+  .subtitle { color: var(--muted); font-size: 0.88rem; margin: 0 0 24px 0; line-height: 1.4; }
+
+  /* card */
+  .mc { background: linear-gradient(160deg,#06100d,#030907); border:1px solid var(--border); border-radius:2px; overflow:hidden; margin-bottom:5px; max-width: 680px; margin: 0 auto; }
+  .mc-hdr { background:linear-gradient(90deg,rgba(219,170,79,.12) 0%,transparent 60%); border-bottom:1px solid rgba(219,170,79,.35); padding:4px 8px; display:flex; align-items:center; gap:5px; }
+  .mc-bar { width:3px; height:11px; background:var(--amber); border-radius:1px; flex-shrink:0; }
+  .mc-title { font-size:0.65rem; text-transform:uppercase; letter-spacing:.08em; color:var(--amber); font-weight:bold; }
+  .mc-body { padding:5px 8px; }
+
+  /* fields */
+  .field { background:linear-gradient(160deg,#091510,#050c09); border:1px solid #235c3c; border-radius:1px; padding:4px 6px; font-size:0.68rem; color:var(--text); }
+  .field-lbl { font-size:0.58rem; color:var(--muted); text-transform:uppercase; margin-bottom:1px; }
+  .field-row { display:flex; gap:4px; margin-bottom:4px; }
+
+  /* result boxes */
+  .rb { flex:1; text-align:center; padding:6px 3px; background:linear-gradient(160deg,#09130f,#040907); border:1px solid var(--border); border-radius:1px; }
+  .rb-num { font-size:1.05rem; color:var(--amber); font-weight:bold; line-height:1; }
+  .rb-lbl { font-size:0.55rem; color:var(--muted); text-transform:uppercase; margin-top:2px; }
+  .rb-pct { font-size:0.58rem; color:var(--good); }
+  .rb-row { display:flex; gap:3px; }
+
+  /* weapon name row */
+  .wname-row {
+    display: flex; align-items: baseline; gap: 8px;
+    padding: 4px 8px 0;
+  }
+  .wname { font-size: 0.72rem; color: var(--green-bright); font-weight: bold; letter-spacing: 0.04em; }
+
+  /* abilities row */
+  .abilities-row {
+    display: flex; align-items: center; gap: 4px; flex-wrap: wrap;
+    padding: 3px 8px 4px;
+  }
+  .ability-pill {
+    font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.04em;
+    background: rgba(143,227,172,0.07); border: 1px solid rgba(143,227,172,0.22);
+    border-radius: 2px; padding: 1px 6px; color: var(--accent-2);
+    white-space: nowrap;
+  }
+  .ability-pill.special {
+    background: rgba(219,170,79,0.08); border-color: rgba(219,170,79,0.28);
+    color: var(--amber);
+  }
+
+  /* stat badge row */
+  .badge-row {
+    display: flex; align-items: center; gap: 4px;
+    padding: 4px 8px 5px;
+    border-bottom: 1px solid rgba(219,170,79,0.35);
+    flex-wrap: nowrap;
+  }
+  .badge {
+    flex: 1; display: flex; flex-direction: column; align-items: center;
+    background: rgba(143,227,172,0.07); border: 1px solid rgba(143,227,172,0.2);
+    border-radius: 2px; padding: 3px 4px;
+  }
+  .badge.b-str { background: rgba(196,216,255,0.07); border-color: rgba(196,216,255,0.2); }
+  .badge.b-ap  { background: rgba(255,158,106,0.1);  border-color: rgba(255,158,106,0.45); }
+  .badge.b-dmg { background: rgba(216,239,141,0.07); border-color: rgba(216,239,141,0.2); }
+  .badge-val { font-size: 0.82rem; font-weight: bold; line-height: 1.1; }
+  .badge-val.neutral { color: var(--accent-2); }
+  .badge-val.ap      { color: #ff9e6a; }
+  .badge-val.dmg     { color: var(--good); }
+  .badge-val.str     { color: #c4d8ff; }
+  .badge-lbl { font-size: 0.52rem; text-transform: uppercase; color: var(--muted); margin-top: 1px; }
+
+  /* inputs above for context */
+  .inputs { display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;margin-bottom:5px;max-width:680px;margin:0 auto 5px; }
+</style>
+
+<h2>Engagement Analysis — With Weapon Abilities</h2>
+<p class="subtitle">Weapon name, abilities (as pills), then stat badges — all between the card header and the results.</p>
+
+<div class="inputs">
+  <div class="mc">
+    <div class="mc-hdr"><div class="mc-bar"></div><div class="mc-title">Attacker</div></div>
+    <div class="mc-body">
+      <div class="field" style="margin-bottom:2px;"><div class="field-lbl">Unit</div>Intercessors</div>
+      <div class="field"><div class="field-lbl">Weapon</div>Bolt Rifle</div>
+    </div>
+  </div>
+  <div class="mc">
+    <div class="mc-hdr"><div class="mc-bar"></div><div class="mc-title">Modifiers</div></div>
+    <div class="mc-body">
+      <div class="field-row">
+        <div class="field"><div class="field-lbl">+Hit</div>0</div>
+        <div class="field"><div class="field-lbl">+Wnd</div>0</div>
+      </div>
+    </div>
+  </div>
+  <div class="mc">
+    <div class="mc-hdr"><div class="mc-bar"></div><div class="mc-title">Target</div></div>
+    <div class="mc-body">
+      <div class="field-row">
+        <div class="field"><div class="field-lbl">T</div>5</div>
+        <div class="field"><div class="field-lbl">Sv</div>3+</div>
+        <div class="field"><div class="field-lbl">Inv</div>—</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Main results card -->
+<div class="mc">
+  <div class="mc-hdr">
+    <div class="mc-bar"></div>
+    <div class="mc-title">Engagement Analysis</div>
+  </div>
+
+  <!-- Weapon name -->
+  <div class="wname-row">
+    <span class="wname">Bolt Rifle</span>
+  </div>
+
+  <!-- Abilities as pills -->
+  <div class="abilities-row">
+    <span class="ability-pill">Rapid Fire 1</span>
+    <span class="ability-pill special">Lethal Hits</span>
+    <span class="ability-pill">Assault</span>
+  </div>
+
+  <!-- Stat badges -->
+  <div class="badge-row">
+    <div class="badge"><div class="badge-val neutral">24"</div><div class="badge-lbl">Rng</div></div>
+    <div class="badge"><div class="badge-val neutral">2</div><div class="badge-lbl">Atk</div></div>
+    <div class="badge"><div class="badge-val neutral">3+</div><div class="badge-lbl">BS</div></div>
+    <div class="badge b-str"><div class="badge-val str">4</div><div class="badge-lbl">Str</div></div>
+    <div class="badge b-ap"><div class="badge-val ap">-1</div><div class="badge-lbl">AP</div></div>
+    <div class="badge b-dmg"><div class="badge-val dmg">1</div><div class="badge-lbl">Dmg</div></div>
+  </div>
+
+  <!-- Results -->
+  <div class="mc-body">
+    <div class="rb-row">
+      <div class="rb"><div class="rb-num">6</div><div class="rb-lbl">Attacks</div></div>
+      <div class="rb"><div class="rb-num">4+</div><div class="rb-lbl">To Hit</div><div class="rb-pct">50%</div></div>
+      <div class="rb"><div class="rb-num">3+</div><div class="rb-lbl">Wound</div><div class="rb-pct">67%</div></div>
+      <div class="rb"><div class="rb-num">4+</div><div class="rb-lbl">Save</div><div class="rb-pct">50%</div></div>
+      <div class="rb"><div class="rb-num" style="color:var(--good)">1.7</div><div class="rb-lbl">Avg Dmg</div></div>
+    </div>
+  </div>
+</div>
+
+<p style="color:var(--muted);font-size:0.8rem;margin-top:16px;max-width:680px;">
+  Abilities like <em>Rapid Fire</em> and <em>Assault</em> appear as green pills — they're standard keywords.
+  Abilities that affect the roll calculation (like <em>Lethal Hits</em>, <em>Sustained Hits</em>, <em>Devastating Wounds</em>) appear in amber to flag that they may already be factored in.
+  Does this structure feel right, or would you prefer all abilities treated the same way?
+</p>

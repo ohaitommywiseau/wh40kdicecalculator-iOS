@@ -1,0 +1,275 @@
+<style>
+  :root {
+    --bg: #040807; --text: #97eab1; --muted: #63ac79; --border: #12402a;
+    --amber: #dbaa4f; --green-bright: #baffcd; --accent-2: #8fe3ac;
+    --good: #d8ef8d; --warn: #ff6262;
+    --font: "Arial Narrow", "Conduit ITC Std", monospace;
+  }
+  body { background: #020604; color: var(--text); font-family: var(--font); margin: 0; padding: 16px; }
+  h2 { color: var(--green-bright); font-size: 1.1rem; text-transform: uppercase; letter-spacing: 0.08em; margin: 0 0 4px 0; }
+  .subtitle { color: var(--muted); font-size: 0.88rem; margin: 0 0 20px 0; line-height: 1.4; }
+
+  .options { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .option { border: 2px solid transparent; border-radius: 4px; cursor: pointer; transition: border-color 0.15s; overflow: hidden; }
+  .option:hover { border-color: var(--amber); }
+  .option.selected { border-color: var(--green-bright); }
+  .option-label { background: #0a1f14; border-bottom: 1px solid var(--border); padding: 7px 12px; display: flex; align-items: center; gap: 8px; }
+  .option-label .letter { width: 22px; height: 22px; border-radius: 50%; background: var(--amber); color: #000; font-weight: bold; font-size: 0.8rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .option-label h3 { color: var(--green-bright); font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.05em; margin: 0; }
+  .mockup-wrap { padding: 8px; background: var(--bg); }
+  .desc { padding: 9px 12px; background: #0a1f14; border-top: 1px solid var(--border); font-size: 0.77rem; color: var(--muted); line-height: 1.4; }
+  .desc strong { color: var(--text); }
+
+  /* shared card */
+  .mc { background: linear-gradient(160deg,#06100d,#030907); border:1px solid var(--border); border-radius:2px; overflow:hidden; margin-bottom:5px; }
+  .mc-hdr { background:linear-gradient(90deg,rgba(219,170,79,.12) 0%,transparent 60%); border-bottom:1px solid rgba(219,170,79,.35); padding:4px 8px; display:flex; align-items:center; gap:5px; }
+  .mc-bar { width:3px; height:11px; background:var(--amber); border-radius:1px; flex-shrink:0; }
+  .mc-title { font-size:0.65rem; text-transform:uppercase; letter-spacing:.08em; color:var(--amber); font-weight:bold; }
+  .mc-body { padding:5px 8px; }
+
+  /* inputs */
+  .field { background:linear-gradient(160deg,#091510,#050c09); border:1px solid #235c3c; border-radius:1px; padding:4px 6px; font-size:0.68rem; color:var(--text); }
+  .field-lbl { font-size:0.58rem; color:var(--muted); text-transform:uppercase; margin-bottom:1px; }
+  .field-row { display:flex; gap:4px; margin-bottom:4px; }
+
+  /* result boxes */
+  .rb { flex:1; text-align:center; padding:6px 3px; background:linear-gradient(160deg,#09130f,#040907); border:1px solid var(--border); border-radius:1px; }
+  .rb-num { font-size:1.05rem; color:var(--amber); font-weight:bold; line-height:1; }
+  .rb-lbl { font-size:0.55rem; color:var(--muted); text-transform:uppercase; margin-top:2px; }
+  .rb-pct { font-size:0.58rem; color:var(--good); }
+  .rb-row { display:flex; gap:3px; }
+
+  /* ── weapon stat strip (shared) ── */
+  .wstat-strip {
+    display: flex; gap: 3px; padding: 5px 8px;
+    background: rgba(0,0,0,0.2);
+    border-bottom: 1px solid rgba(219,170,79,0.15);
+  }
+  .wstat { flex:1; text-align:center; }
+  .wstat-val { font-size: 0.82rem; font-weight: bold; line-height: 1; }
+  .wstat-lbl { font-size: 0.52rem; text-transform: uppercase; color: var(--muted); margin-top: 1px; }
+
+  /* color roles */
+  .wstat-val.neutral { color: var(--accent-2); }
+  .wstat-val.ap      { color: #ff9e6a; }          /* warm orange — AP stands out */
+  .wstat-val.dmg     { color: var(--good); }
+  .wstat-val.str     { color: #c4d8ff; }
+
+  /* AP cell gets a border highlight */
+  .wstat.is-ap { background: rgba(255,158,106,0.07); border-radius: 1px; }
+
+  /* weapon name sub-label */
+  .wname-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 3px 8px 0;
+  }
+  .wname { font-size: 0.65rem; color: var(--green-bright); letter-spacing: 0.04em; }
+  .wtype { font-size: 0.58rem; color: var(--muted); text-transform: uppercase; }
+</style>
+
+<h2>Weapon Profile in Results Card — Refined</h2>
+<p class="subtitle">All six weapon stats (Range, A, BS, S, AP, D) shown clearly. Three placements within the results card — same compact footprint, all stats visible. AP stays highlighted in orange.</p>
+
+<div class="options">
+
+  <!-- Option 1: Stat strip between header and results -->
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="option-label">
+      <div class="letter">1</div>
+      <h3>Sub-header Strip</h3>
+    </div>
+    <div class="mockup-wrap">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;margin-bottom:5px;">
+        <div class="mc">
+          <div class="mc-hdr"><div class="mc-bar"></div><div class="mc-title">Attacker</div></div>
+          <div class="mc-body">
+            <div class="field" style="margin-bottom:2px;"><div class="field-lbl">Unit</div>Intercessors</div>
+            <div class="field"><div class="field-lbl">Weapon</div>Bolt Rifle</div>
+          </div>
+        </div>
+        <div class="mc">
+          <div class="mc-hdr"><div class="mc-bar"></div><div class="mc-title">Modifiers</div></div>
+          <div class="mc-body">
+            <div class="field-row">
+              <div class="field"><div class="field-lbl">+Hit</div>0</div>
+              <div class="field"><div class="field-lbl">+Wnd</div>0</div>
+            </div>
+          </div>
+        </div>
+        <div class="mc">
+          <div class="mc-hdr"><div class="mc-bar"></div><div class="mc-title">Target</div></div>
+          <div class="mc-body">
+            <div class="field-row">
+              <div class="field"><div class="field-lbl">T</div>5</div>
+              <div class="field"><div class="field-lbl">Sv</div>3+</div>
+              <div class="field"><div class="field-lbl">Inv</div>—</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Results card: header → weapon strip → results -->
+      <div class="mc">
+        <div class="mc-hdr" style="justify-content:space-between;">
+          <div style="display:flex;align-items:center;gap:5px;">
+            <div class="mc-bar"></div>
+            <div class="mc-title">Engagement Analysis</div>
+          </div>
+        </div>
+        <!-- Weapon stat strip sandwiched between header and results -->
+        <div class="wname-row"><span class="wname">Bolt Rifle</span><span class="wtype">Rapid Fire 1</span></div>
+        <div class="wstat-strip">
+          <div class="wstat"><div class="wstat-val neutral">24"</div><div class="wstat-lbl">Range</div></div>
+          <div class="wstat"><div class="wstat-val neutral">2</div><div class="wstat-lbl">Attacks</div></div>
+          <div class="wstat"><div class="wstat-val neutral">3+</div><div class="wstat-lbl">BS</div></div>
+          <div class="wstat"><div class="wstat-val str">4</div><div class="wstat-lbl">Str</div></div>
+          <div class="wstat is-ap"><div class="wstat-val ap">-1</div><div class="wstat-lbl">AP</div></div>
+          <div class="wstat"><div class="wstat-val dmg">1</div><div class="wstat-lbl">Dmg</div></div>
+        </div>
+        <div class="mc-body">
+          <div class="rb-row">
+            <div class="rb"><div class="rb-num">6</div><div class="rb-lbl">Attacks</div></div>
+            <div class="rb"><div class="rb-num">4+</div><div class="rb-lbl">To Hit</div><div class="rb-pct">50%</div></div>
+            <div class="rb"><div class="rb-num">3+</div><div class="rb-lbl">Wound</div><div class="rb-pct">67%</div></div>
+            <div class="rb"><div class="rb-num">4+</div><div class="rb-lbl">Save</div><div class="rb-pct">50%</div></div>
+            <div class="rb"><div class="rb-num" style="color:var(--good)">1.7</div><div class="rb-lbl">Avg Dmg</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="desc"><strong>Thin stat strip between the card header and the result numbers.</strong> Weapon name + type on one line, all six stats on the next. Clean separation between "what the weapon is" and "what the calculator says."</div>
+  </div>
+
+  <!-- Option 2: Stats inline in results header row -->
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="option-label">
+      <div class="letter">2</div>
+      <h3>Inline in Header Row</h3>
+    </div>
+    <div class="mockup-wrap">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;margin-bottom:5px;">
+        <div class="mc">
+          <div class="mc-hdr"><div class="mc-bar"></div><div class="mc-title">Attacker</div></div>
+          <div class="mc-body">
+            <div class="field" style="margin-bottom:2px;"><div class="field-lbl">Unit</div>Intercessors</div>
+            <div class="field"><div class="field-lbl">Weapon</div>Bolt Rifle</div>
+          </div>
+        </div>
+        <div class="mc">
+          <div class="mc-hdr"><div class="mc-bar"></div><div class="mc-title">Modifiers</div></div>
+          <div class="mc-body">
+            <div class="field-row">
+              <div class="field"><div class="field-lbl">+Hit</div>0</div>
+              <div class="field"><div class="field-lbl">+Wnd</div>0</div>
+            </div>
+          </div>
+        </div>
+        <div class="mc">
+          <div class="mc-hdr"><div class="mc-bar"></div><div class="mc-title">Target</div></div>
+          <div class="mc-body">
+            <div class="field-row">
+              <div class="field"><div class="field-lbl">T</div>5</div>
+              <div class="field"><div class="field-lbl">Sv</div>3+</div>
+              <div class="field"><div class="field-lbl">Inv</div>—</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mc">
+        <!-- Header row: title left, all 6 stat badges right -->
+        <div class="mc-hdr" style="justify-content:space-between; flex-wrap:wrap; gap:4px;">
+          <div style="display:flex;align-items:center;gap:5px;">
+            <div class="mc-bar"></div>
+            <div class="mc-title">Engagement Analysis</div>
+            <span style="font-size:0.6rem;color:var(--muted);margin-left:2px;">· Bolt Rifle</span>
+          </div>
+          <div style="display:flex;gap:3px;align-items:center;flex-wrap:wrap;">
+            <span style="font-size:0.58rem;background:rgba(143,227,172,0.08);border:1px solid rgba(143,227,172,0.2);border-radius:1px;padding:1px 5px;color:var(--accent-2);">24" <span style="color:var(--muted);font-size:0.52rem;">RNG</span></span>
+            <span style="font-size:0.58rem;background:rgba(143,227,172,0.08);border:1px solid rgba(143,227,172,0.2);border-radius:1px;padding:1px 5px;color:var(--accent-2);">A2 <span style="color:var(--muted);font-size:0.52rem;">ATK</span></span>
+            <span style="font-size:0.58rem;background:rgba(143,227,172,0.08);border:1px solid rgba(143,227,172,0.2);border-radius:1px;padding:1px 5px;color:var(--accent-2);">3+ <span style="color:var(--muted);font-size:0.52rem;">BS</span></span>
+            <span style="font-size:0.58rem;background:rgba(196,216,255,0.08);border:1px solid rgba(196,216,255,0.2);border-radius:1px;padding:1px 5px;color:#c4d8ff;">S4 <span style="color:var(--muted);font-size:0.52rem;">STR</span></span>
+            <span style="font-size:0.58rem;background:rgba(255,158,106,0.1);border:1px solid rgba(255,158,106,0.4);border-radius:1px;padding:1px 5px;color:#ff9e6a;font-weight:bold;">AP-1</span>
+            <span style="font-size:0.58rem;background:rgba(216,239,141,0.08);border:1px solid rgba(216,239,141,0.2);border-radius:1px;padding:1px 5px;color:var(--good);">D1 <span style="color:var(--muted);font-size:0.52rem;">DMG</span></span>
+          </div>
+        </div>
+        <div class="mc-body">
+          <div class="rb-row">
+            <div class="rb"><div class="rb-num">6</div><div class="rb-lbl">Attacks</div></div>
+            <div class="rb"><div class="rb-num">4+</div><div class="rb-lbl">To Hit</div><div class="rb-pct">50%</div></div>
+            <div class="rb"><div class="rb-num">3+</div><div class="rb-lbl">Wound</div><div class="rb-pct">67%</div></div>
+            <div class="rb"><div class="rb-num">4+</div><div class="rb-lbl">Save</div><div class="rb-pct">50%</div></div>
+            <div class="rb"><div class="rb-num" style="color:var(--good)">1.7</div><div class="rb-lbl">Avg Dmg</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="desc"><strong>All six stats as color-coded badges in the results card header.</strong> AP stays orange and bold. Range, A, BS in green; Strength in blue; Damage in yellow. Compact — no extra vertical space used.</div>
+  </div>
+
+  <!-- Option 3: Stats as a footer below results -->
+  <div class="option" data-choice="c" onclick="toggleSelect(this)">
+    <div class="option-label">
+      <div class="letter">3</div>
+      <h3>Footer Under Results</h3>
+    </div>
+    <div class="mockup-wrap">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;margin-bottom:5px;">
+        <div class="mc">
+          <div class="mc-hdr"><div class="mc-bar"></div><div class="mc-title">Attacker</div></div>
+          <div class="mc-body">
+            <div class="field" style="margin-bottom:2px;"><div class="field-lbl">Unit</div>Intercessors</div>
+            <div class="field"><div class="field-lbl">Weapon</div>Bolt Rifle</div>
+          </div>
+        </div>
+        <div class="mc">
+          <div class="mc-hdr"><div class="mc-bar"></div><div class="mc-title">Modifiers</div></div>
+          <div class="mc-body">
+            <div class="field-row">
+              <div class="field"><div class="field-lbl">+Hit</div>0</div>
+              <div class="field"><div class="field-lbl">+Wnd</div>0</div>
+            </div>
+          </div>
+        </div>
+        <div class="mc">
+          <div class="mc-hdr"><div class="mc-bar"></div><div class="mc-title">Target</div></div>
+          <div class="mc-body">
+            <div class="field-row">
+              <div class="field"><div class="field-lbl">T</div>5</div>
+              <div class="field"><div class="field-lbl">Sv</div>3+</div>
+              <div class="field"><div class="field-lbl">Inv</div>—</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mc">
+        <div class="mc-hdr">
+          <div class="mc-bar"></div>
+          <div class="mc-title">Engagement Analysis</div>
+        </div>
+        <div class="mc-body">
+          <div class="rb-row" style="margin-bottom:5px;">
+            <div class="rb"><div class="rb-num">6</div><div class="rb-lbl">Attacks</div></div>
+            <div class="rb"><div class="rb-num">4+</div><div class="rb-lbl">To Hit</div><div class="rb-pct">50%</div></div>
+            <div class="rb"><div class="rb-num">3+</div><div class="rb-lbl">Wound</div><div class="rb-pct">67%</div></div>
+            <div class="rb"><div class="rb-num">4+</div><div class="rb-lbl">Save</div><div class="rb-pct">50%</div></div>
+            <div class="rb"><div class="rb-num" style="color:var(--good)">1.7</div><div class="rb-lbl">Avg Dmg</div></div>
+          </div>
+        </div>
+        <!-- Weapon profile as footer strip at bottom of the same card -->
+        <div class="wname-row" style="padding-bottom:2px;"><span class="wname">Bolt Rifle</span><span class="wtype">Rapid Fire 1</span></div>
+        <div class="wstat-strip" style="border-top:1px solid rgba(219,170,79,0.15);border-bottom:none;padding-bottom:7px;">
+          <div class="wstat"><div class="wstat-val neutral">24"</div><div class="wstat-lbl">Range</div></div>
+          <div class="wstat"><div class="wstat-val neutral">2</div><div class="wstat-lbl">Attacks</div></div>
+          <div class="wstat"><div class="wstat-val neutral">3+</div><div class="wstat-lbl">BS</div></div>
+          <div class="wstat"><div class="wstat-val str">4</div><div class="wstat-lbl">Str</div></div>
+          <div class="wstat is-ap"><div class="wstat-val ap">-1</div><div class="wstat-lbl">AP</div></div>
+          <div class="wstat"><div class="wstat-val dmg">1</div><div class="wstat-lbl">Dmg</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="desc"><strong>Results on top, weapon profile as a footer strip at the bottom of the same card.</strong> The calculator output is the first thing you read; the raw weapon stats are right beneath it for quick reference.</div>
+  </div>
+
+</div>

@@ -1,0 +1,223 @@
+<style>
+  :root {
+    --bg: #040807; --panel: #07110d; --panel-2: #0b1712;
+    --text: #97eab1; --muted: #63ac79; --border: #12402a;
+    --amber: #dbaa4f; --green-bright: #baffcd; --accent-2: #8fe3ac;
+    --good: #d8ef8d; --warn: #ff6262;
+    --font: "Arial Narrow", "Conduit ITC Std", monospace;
+  }
+  body { background: #020604; color: var(--text); font-family: var(--font); margin: 0; padding: 16px; }
+  h2 { color: var(--green-bright); font-size: 1.1rem; text-transform: uppercase; letter-spacing: 0.08em; margin: 0 0 4px 0; }
+  .subtitle { color: var(--muted); font-size: 0.88rem; margin: 0 0 20px 0; line-height: 1.4; }
+
+  .options { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .option { border: 2px solid transparent; border-radius: 4px; cursor: pointer; transition: border-color 0.15s; overflow: hidden; }
+  .option:hover { border-color: var(--amber); }
+  .option.selected { border-color: var(--green-bright); }
+  .option-label { background: #0a1f14; border-bottom: 1px solid var(--border); padding: 7px 12px; display: flex; align-items: center; gap: 8px; }
+  .option-label .letter { width: 22px; height: 22px; border-radius: 50%; background: var(--amber); color: #000; font-weight: bold; font-size: 0.8rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .option-label h3 { color: var(--green-bright); font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.05em; margin: 0; }
+  .mockup-wrap { padding: 8px; background: var(--bg); }
+  .desc { padding: 9px 12px; background: #0a1f14; border-top: 1px solid var(--border); font-size: 0.77rem; color: var(--muted); line-height: 1.4; }
+  .desc strong { color: var(--text); }
+
+  /* ── shared card ── */
+  .mc { background: linear-gradient(160deg,#06100d,#030907); border:1px solid var(--border); border-radius:2px; overflow:hidden; margin-bottom:5px; }
+  .mc-hdr { background:linear-gradient(90deg,rgba(219,170,79,.12) 0%,transparent 60%); border-bottom:1px solid rgba(219,170,79,.35); padding:4px 8px; display:flex; align-items:center; gap:5px; }
+  .mc-bar { width:3px; height:11px; background:var(--amber); border-radius:1px; flex-shrink:0; }
+  .mc-title { font-size:0.65rem; text-transform:uppercase; letter-spacing:.08em; color:var(--amber); font-weight:bold; }
+  .mc-body { padding:5px 8px; }
+
+  /* field */
+  .field { background:linear-gradient(160deg,#091510,#050c09); border:1px solid #235c3c; border-radius:1px; padding:4px 6px; font-size:0.68rem; color:var(--text); }
+  .field-lbl { font-size:0.58rem; color:var(--muted); text-transform:uppercase; margin-bottom:1px; }
+  .field-row { display:flex; gap:4px; margin-bottom:4px; }
+
+  /* result box */
+  .rb { flex:1; text-align:center; padding:5px 3px; background:linear-gradient(160deg,#09130f,#040907); border:1px solid var(--border); border-radius:1px; }
+  .rb-num { font-size:1.1rem; color:var(--amber); font-weight:bold; line-height:1; }
+  .rb-lbl { font-size:0.56rem; color:var(--muted); text-transform:uppercase; margin-top:2px; }
+  .rb-pct { font-size:0.6rem; color:var(--good); }
+  .rb-row { display:flex; gap:3px; }
+
+  /* big result */
+  .rb-big { flex:1; text-align:center; padding:8px 4px; background:linear-gradient(160deg,#09130f,#040907); border:1px solid rgba(219,170,79,.25); border-radius:1px; }
+  .rb-big-num { font-size:1.6rem; color:var(--amber); font-weight:bold; line-height:1; }
+  .rb-big-lbl { font-size:0.58rem; color:var(--muted); text-transform:uppercase; margin-top:2px; }
+  .rb-big-pct { font-size:0.65rem; color:var(--good); margin-top:1px; }
+</style>
+
+<h2>Combat Calculator — Results Placement</h2>
+<p class="subtitle">The Engagement Analysis (hits, wounds, saves, damage) is the output you're after. Where should it live relative to the inputs?</p>
+
+<div class="options">
+
+  <!-- A: Results on Top -->
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="option-label">
+      <div class="letter">A</div>
+      <h3>Results on Top</h3>
+    </div>
+    <div class="mockup-wrap">
+
+      <!-- Results first, prominent -->
+      <div class="mc">
+        <div class="mc-hdr"><div class="mc-bar"></div><div class="mc-title">Engagement Analysis</div></div>
+        <div class="mc-body">
+          <div class="rb-row" style="margin-bottom:3px;">
+            <div class="rb-big"><div class="rb-big-num">6</div><div class="rb-big-lbl">Attacks</div></div>
+            <div class="rb-big"><div class="rb-big-num">4+</div><div class="rb-big-lbl">To Hit</div><div class="rb-big-pct">50%</div></div>
+            <div class="rb-big"><div class="rb-big-num">3+</div><div class="rb-big-lbl">To Wound</div><div class="rb-big-pct">67%</div></div>
+          </div>
+          <div class="rb-row">
+            <div class="rb-big"><div class="rb-big-num">4+</div><div class="rb-big-lbl">Save</div><div class="rb-big-pct">50%</div></div>
+            <div class="rb-big"><div class="rb-big-num" style="color:var(--good);font-size:1.9rem;">1.7</div><div class="rb-big-lbl">Avg Dmg</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Inputs below, compact -->
+      <div class="mc">
+        <div class="mc-hdr"><div class="mc-bar"></div><div class="mc-title">Attacker</div></div>
+        <div class="mc-body">
+          <div class="field-row">
+            <div class="field" style="flex:1"><div class="field-lbl">Unit</div>Intercessors</div>
+            <div class="field" style="flex:1"><div class="field-lbl">Weapon</div>Bolt Rifle</div>
+          </div>
+        </div>
+      </div>
+      <div class="mc">
+        <div class="mc-hdr"><div class="mc-bar"></div><div class="mc-title">Target</div></div>
+        <div class="mc-body">
+          <div class="field-row">
+            <div class="field"><div class="field-lbl">Toughness</div>5</div>
+            <div class="field"><div class="field-lbl">Save</div>3+</div>
+            <div class="field"><div class="field-lbl">Invuln</div>5+</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div class="desc"><strong>Results are the first thing you see.</strong> Inputs are compact cards below. You set your attacker/target once, then the analysis is always at the top of the view.</div>
+  </div>
+
+  <!-- B: Side-by-side (inputs left, results right) -->
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="option-label">
+      <div class="letter">B</div>
+      <h3>Results Always Right</h3>
+    </div>
+    <div class="mockup-wrap">
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;">
+        <!-- Left: inputs -->
+        <div>
+          <div class="mc">
+            <div class="mc-hdr"><div class="mc-bar"></div><div class="mc-title">Attacker</div></div>
+            <div class="mc-body">
+              <div class="field" style="margin-bottom:3px;"><div class="field-lbl">Unit</div>Intercessors</div>
+              <div class="field"><div class="field-lbl">Weapon</div>Bolt Rifle</div>
+            </div>
+          </div>
+          <div class="mc">
+            <div class="mc-hdr"><div class="mc-bar"></div><div class="mc-title">Modifiers</div></div>
+            <div class="mc-body">
+              <div class="field-row">
+                <div class="field"><div class="field-lbl">+Hit</div>0</div>
+                <div class="field"><div class="field-lbl">+Wound</div>0</div>
+              </div>
+            </div>
+          </div>
+          <div class="mc">
+            <div class="mc-hdr"><div class="mc-bar"></div><div class="mc-title">Target</div></div>
+            <div class="mc-body">
+              <div class="field-row">
+                <div class="field"><div class="field-lbl">T</div>5</div>
+                <div class="field"><div class="field-lbl">Sv</div>3+</div>
+                <div class="field"><div class="field-lbl">Inv</div>5+</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Right: results -->
+        <div style="display:flex;flex-direction:column;gap:4px;">
+          <div class="mc" style="flex:1">
+            <div class="mc-hdr"><div class="mc-bar"></div><div class="mc-title">Analysis</div></div>
+            <div class="mc-body" style="display:flex;flex-direction:column;gap:3px;">
+              <div class="rb-row">
+                <div class="rb"><div class="rb-num">6</div><div class="rb-lbl">Attacks</div></div>
+                <div class="rb"><div class="rb-num">4+</div><div class="rb-lbl">Hit</div><div class="rb-pct">50%</div></div>
+              </div>
+              <div class="rb-row">
+                <div class="rb"><div class="rb-num">3+</div><div class="rb-lbl">Wound</div><div class="rb-pct">67%</div></div>
+                <div class="rb"><div class="rb-num">4+</div><div class="rb-lbl">Save</div><div class="rb-pct">50%</div></div>
+              </div>
+              <div class="rb" style="text-align:center;padding:8px 4px;">
+                <div style="font-size:1.5rem;color:var(--good);font-weight:bold;line-height:1;">1.7</div>
+                <div style="font-size:0.58rem;color:var(--muted);text-transform:uppercase;margin-top:2px;">Avg Damage</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div class="desc"><strong>Inputs left, results right — always side-by-side.</strong> As you adjust attacker/target/modifiers, the analysis updates live on the right without scrolling. Works well in iPad landscape.</div>
+  </div>
+
+  <!-- C: Current layout, results bigger -->
+  <div class="option" data-choice="c" onclick="toggleSelect(this)">
+    <div class="option-label">
+      <div class="letter">C</div>
+      <h3>Keep Order, Emphasize Results</h3>
+    </div>
+    <div class="mockup-wrap">
+
+      <!-- Inputs stay on top, compact row -->
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;margin-bottom:5px;">
+        <div class="mc">
+          <div class="mc-hdr"><div class="mc-bar"></div><div class="mc-title">Attacker</div></div>
+          <div class="mc-body">
+            <div class="field" style="margin-bottom:2px;"><div class="field-lbl">Unit</div>Intercessors</div>
+            <div class="field"><div class="field-lbl">Weapon</div>Bolt Rifle</div>
+          </div>
+        </div>
+        <div class="mc">
+          <div class="mc-hdr"><div class="mc-bar"></div><div class="mc-title">Modifiers</div></div>
+          <div class="mc-body">
+            <div class="field-row">
+              <div class="field"><div class="field-lbl">Hit</div>0</div>
+              <div class="field"><div class="field-lbl">Wnd</div>0</div>
+            </div>
+          </div>
+        </div>
+        <div class="mc">
+          <div class="mc-hdr"><div class="mc-bar"></div><div class="mc-title">Target</div></div>
+          <div class="mc-body">
+            <div class="field-row">
+              <div class="field"><div class="field-lbl">T</div>5</div>
+              <div class="field"><div class="field-lbl">Sv</div>3+</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Results below — much larger, more visual weight -->
+      <div class="mc">
+        <div class="mc-hdr"><div class="mc-bar"></div><div class="mc-title">Engagement Analysis</div></div>
+        <div class="mc-body">
+          <div class="rb-row">
+            <div class="rb-big"><div class="rb-big-num">6</div><div class="rb-big-lbl">Attacks</div></div>
+            <div class="rb-big"><div class="rb-big-num">4+</div><div class="rb-big-lbl">To Hit</div><div class="rb-big-pct">50%</div></div>
+            <div class="rb-big"><div class="rb-big-num">3+</div><div class="rb-big-lbl">To Wound</div><div class="rb-big-pct">67%</div></div>
+            <div class="rb-big"><div class="rb-big-num">4+</div><div class="rb-big-lbl">Save</div><div class="rb-big-pct">50%</div></div>
+            <div class="rb-big"><div class="rb-big-num" style="color:var(--good);font-size:1.9rem;">1.7</div><div class="rb-big-lbl">Avg Dmg</div></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div class="desc"><strong>Same top-to-bottom order, but results are visually dominant</strong> — larger numbers, more breathing room, bigger font. Inputs stay at the top but are kept compact. Least change, most familiar.</div>
+  </div>
+
+</div>

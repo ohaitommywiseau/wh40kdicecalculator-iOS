@@ -1,0 +1,812 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#0f141a" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="WH40k Dice Calculator" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <title>WH40k Dice Calculator</title>
+  <link rel="icon" href="./servo.png" />
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="./icons/icon-180.png" />
+  <link rel="apple-touch-icon" sizes="192x192" href="./icons/icon-192.png" />
+  <link rel="apple-touch-icon" sizes="512x512" href="./icons/icon-512.png" />
+  <link rel="stylesheet" href="./styles/app.css" />
+</head>
+<body>
+  <div class="boot-screen" id="bootScreen" aria-live="polite">
+    <div class="boot-panel">
+      <div class="boot-title">Tactica Imperialis Cogitator</div>
+      <div class="boot-subtitle">Rite of Activation Sequence</div>
+      <div class="boot-log" id="bootLog"></div>
+      <div class="boot-status" id="bootStatus">Initializing sacred routines...</div>
+      <div class="boot-skip">Tap or click to skip</div>
+    </div>
+  </div>
+  <div class="wrap">
+    <section class="view landing-view" id="landingView">
+      <div class="view-body">
+        <div class="card landing-panel">
+          <div class="landing-omnissiah" aria-hidden="true">
+            <img class="omnissiah-image" src="./assets/omnissiah-terminal.png" alt="" />
+            <div class="omnissiah-scanlines"></div>
+          </div>
+          <h1 class="landing-title">Codex Tactica</h1>
+          <div class="landing-kicker">Command Hub</div>
+          <div class="landing-subtitle">
+            Orchestrate rosters, calculate engagements, and track the battle state from one cogitator stack.
+          </div>
+          <div class="landing-meta">
+            <span class="landing-chip">Offline Ready</span>
+            <span class="landing-chip">iPad Optimized</span>
+            <span class="landing-chip">Local Saves</span>
+          </div>
+          <div class="landing-divider"></div>
+          <div class="landing-actions landing-grid">
+            <button type="button" class="landing-action" id="openArmyBuilderBtn">
+              <span class="landing-action-label">Army Builder</span>
+              <span class="landing-action-sub">Craft lists and detachment loadouts.</span>
+            </button>
+            <button type="button" class="landing-action" id="openCalculatorBtn">
+              <span class="landing-action-label">Combat Calculator</span>
+              <span class="landing-action-sub">Resolve hit, wound, save, and damage.</span>
+            </button>
+            <button type="button" class="landing-action" id="openBattleTrackerBtn">
+              <span class="landing-action-label">Battle Tracker</span>
+              <span class="landing-action-sub">Scoreboard, objectives, and unit states.</span>
+            </button>
+            <button type="button" class="landing-action" id="openRulebookBtn">
+              <span class="landing-action-label">Rulebook</span>
+              <span class="landing-action-sub">Search the core rules fast.</span>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bar landing-footer">
+        <div class="footer-quote">Hope is the first step on the road to disappointment.</div>
+        <div class="imperial-tagline">Tactica Imperialis v1.0</div>
+      </div>
+    </section>
+
+    <section class="view landing-view" id="rulebookEditionView" hidden>
+      <div class="view-body">
+        <div class="card landing-panel">
+          <h1 class="landing-title">Rulebook Archive</h1>
+          <div class="note">
+            Select an edition.
+          </div>
+          <div class="landing-actions">
+            <button type="button" class="landing-action" id="openRulebook10thBtn">
+              <strong>Warhammer 40,000 10th Edition</strong>
+            </button>
+          </div>
+          <div class="note" style="margin-top:16px;">
+            Additional editions can be added here later without changing the main landing page flow.
+          </div>
+          <div class="header-controls" style="justify-content:center; margin-top:18px;">
+            <button type="button" class="secondary" id="rulebookEditionBackBtn">Back</button>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bar landing-footer">
+        <div class="footer-quote">An open mind is like a fortress with its gates unbarred and unguarded.</div>
+        <div class="imperial-tagline">Tactica Imperialis v1.0</div>
+      </div>
+    </section>
+
+    <section class="view" id="armyBuilderView" hidden>
+      <div class="banner">
+        <div class="banner-top">
+          <div class="banner-title">
+            <h1>Force Disposition Registrar</h1>
+          </div>
+          <div class="header-controls">
+            <div class="summary-pills">
+              <span class="pill" id="builderFactionPill">Faction: Astra Militarum</span>
+              <span class="pill" id="builderUnitCountPill">Units: 0</span>
+              <span class="pill" id="builderPointsPill">Points: 0</span>
+              <span class="pill">Local Save</span>
+            </div>
+            <div class="header-select module-nav">
+              <label class="visually-hidden" for="builderModuleNavSelect">Module navigation</label>
+              <select id="builderModuleNavSelect" class="module-nav-select">
+                <option value="builder">Army Builder</option>
+                <option value="calculator">Combat Calculator</option>
+                <option value="battle-tracker">Battle Tracker</option>
+                <option value="rulebook">Rulebook</option>
+                <option value="landing">Landing</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="view-body">
+        <div class="list-builder-layout">
+        <div class="card">
+          <h2>Configure List</h2>
+          <div class="field-grid">
+            <div>
+              <label for="builderListName">List name</label>
+              <input id="builderListName" type="text" value="New Strike Force" />
+            </div>
+            <div>
+              <label for="builderFactionSelect">Faction</label>
+              <select id="builderFactionSelect"></select>
+            </div>
+            <div>
+              <label for="builderDetachmentSelect">Detachment</label>
+              <select id="builderDetachmentSelect"></select>
+            </div>
+          </div>
+          <div class="field-grid" style="margin-top:12px;">
+            <div>
+              <label for="builderUnitSelect">Unit</label>
+              <select id="builderUnitSelect"></select>
+            </div>
+            <div>
+              <label for="builderModelCount">Models in unit</label>
+              <select id="builderModelCount"></select>
+            </div>
+            <div>
+              <label for="builderSquadName">Squad name <span class="muted">(optional)</span></label>
+              <input id="builderSquadName" type="text" maxlength="48" placeholder="Fireteam Delta" />
+            </div>
+          </div>
+          <div class="army-unit-actions" style="margin-top:10px;">
+            <button type="button" class="secondary" id="builderDetachmentDetailsToggle">View Detachment Details</button>
+          </div>
+          <div class="detachment-reference" id="builderDetachmentDetailsPanel" hidden></div>
+          <div class="datasheet-label" style="margin-top:14px;">Available weapon profiles</div>
+          <div class="weapon-option-grid builder-weapon-frame" id="builderWeaponOptions"></div>
+          <div class="points-readout" id="builderSelectedPoints">Points: -</div>
+          <div class="composition-note" id="builderCompositionNote"></div>
+          <div class="attack-check-note">
+            Weapon quantities are seeded from unit composition and wargear rules where available.
+          </div>
+          <button type="button" id="builderAddUnitBtn">Add Unit to List</button>
+          <button type="button" class="secondary" id="builderNewListBtn">New List</button>
+        </div>
+
+        <div class="card">
+          <h2>Saved Rosters</h2>
+          <div class="field-grid">
+            <div>
+              <label for="savedArmyListSelect">Saved list</label>
+              <select id="savedArmyListSelect"></select>
+            </div>
+          </div>
+          <button type="button" class="secondary" id="builderLoadListBtn">Load List</button>
+          <button type="button" class="secondary" id="builderSaveListBtn">Save List</button>
+          <button type="button" class="secondary" id="builderDeleteListBtn">Delete List</button>
+          <div class="army-unit-list builder-results-frame" id="builderUnitsList"></div>
+        </div>
+      </div>
+      </div>
+
+      <div class="footer-bar">
+        <div class="footer-quote">An open mind is like a fortress with its gate unbarred and unguarded.</div>
+        <div class="imperial-tagline">Tactica Imperialis v1.0</div>
+      </div>
+    </section>
+
+    <section class="view" id="calculatorView" hidden>
+    <div class="banner">
+      <div class="banner-top">
+        <div class="banner-title">
+          <h1>Munitorum Tactical Cogitator</h1>
+        </div>
+        <div class="header-controls">
+          <div class="header-select">
+            <label class="visually-hidden" for="combatArmyListSelect">Army list filter</label>
+            <select id="combatArmyListSelect"></select>
+          </div>
+          <div class="header-select module-nav">
+            <label class="visually-hidden" for="calculatorModuleNavSelect">Module navigation</label>
+            <select id="calculatorModuleNavSelect" class="module-nav-select">
+              <option value="builder">Army Builder</option>
+              <option value="calculator">Combat Calculator</option>
+              <option value="battle-tracker">Battle Tracker</option>
+              <option value="rulebook">Rulebook</option>
+              <option value="landing">Landing</option>
+            </select>
+          </div>
+          <button type="button" class="secondary" id="calculatorCancelBattleAttackBtn" hidden>Cancel Attack</button>
+        </div>
+      </div>
+    <div class="subtitle">
+      In the grim darkness of the far future there is only war.
+    </div>
+    <div class="note battle-mode-note" id="calculatorBattleModeNote" hidden></div>
+  </div>
+
+    <div class="view-body">
+      <div class="grid">
+      <div class="card span-4">
+        <h2>Unit & Weapon</h2>
+        <div class="field-grid">
+          <div>
+            <label for="factionSelect">Faction</label>
+            <select id="factionSelect"></select>
+          </div>
+          <div>
+            <label for="unitSelect">Unit</label>
+            <select id="unitSelect"></select>
+          </div>
+          <div>
+            <label for="weaponSelect">Weapon</label>
+            <select id="weaponSelect"></select>
+          </div>
+        </div>
+        <div class="field-grid" style="margin-top:12px;">
+          <div>
+            <label for="modelsInput">Attacking models</label>
+            <input id="modelsInput" type="number" min="1" step="1" value="1" />
+          </div>
+          <div>
+            <label for="attacksOverride">Attack override (optional)</label>
+            <input id="attacksOverride" type="text" placeholder="Leave blank to use weapon A" />
+          </div>
+        </div>
+        <div id="statLineBox" class="datasheet-block"></div>
+        <div class="footer-note" id="unitAbilitiesNote"></div>
+        <div class="footer-note" id="unitKeywordsNote"></div>
+        <div class="footer-note" id="dataSourceNote"></div>
+      </div>
+
+      <div class="card span-4">
+        <h2>Attacker Modifiers</h2>
+        <div class="field-grid">
+          <div>
+            <label for="hitMod">Hit modifier</label>
+            <input id="hitMod" type="number" value="0" step="1" />
+          </div>
+          <div>
+            <label for="woundMod">Wound modifier</label>
+            <input id="woundMod" type="number" value="0" step="1" />
+          </div>
+          <div>
+            <label for="apMod">AP modifier</label>
+            <input id="apMod" type="number" value="0" step="1" />
+          </div>
+          <div>
+            <label for="saveMod">Save roll modifier</label>
+            <input id="saveMod" type="number" value="0" step="1" />
+          </div>
+        </div>
+        <div class="checks">
+          <label class="checkline"><input id="heavyBox" type="checkbox" /> Heavy bonus applied (+1 to hit when relevant)</label>
+          <label class="checkline"><input id="rapidFireBox" type="checkbox" /> Rapid Fire active (half range)</label>
+          <label class="checkline"><input id="coverBox" type="checkbox" /> Target has Benefit of Cover</label>
+          <label class="checkline"><input id="armorContemptBox" type="checkbox" /> Target reduces AP by 1</label>
+        </div>
+        <div class="attack-check-note">Rapid Fire only changes the attack count for weapons that already have a Rapid Fire value in their abilities.</div>
+        <button type="button" class="secondary" id="resetModifiersBtn">Reset Modifiers</button>
+      </div>
+
+      <div class="card span-4">
+        <h2>Target</h2>
+        <div class="field-grid">
+          <div>
+            <label for="targetFactionSelect">Faction</label>
+            <select id="targetFactionSelect"></select>
+          </div>
+          <div>
+            <label for="targetUnitSelect">Unit</label>
+            <select id="targetUnitSelect"></select>
+          </div>
+        </div>
+        <div class="field-grid" style="margin-top:12px;">
+          <div>
+            <label for="toughness">Target Toughness</label>
+            <input id="toughness" type="number" min="1" value="4" />
+          </div>
+          <div>
+            <label for="save">Target Save</label>
+            <input id="save" type="number" min="2" max="7" value="3" />
+          </div>
+          <div>
+            <label for="invuln">Invulnerable save</label>
+            <input id="invuln" type="number" min="2" max="7" placeholder="Optional" />
+          </div>
+          <div>
+            <label for="damageReduction">Damage reduction</label>
+            <input id="damageReduction" type="number" value="0" step="1" />
+          </div>
+          <div>
+            <label for="targetModels">Target models</label>
+            <input id="targetModels" type="number" min="1" value="1" />
+          </div>
+        </div>
+        <div class="footer-note" id="targetAbilitiesNote"></div>
+        <div class="footer-note" id="targetKeywordsNote"></div>
+      </div>
+
+      <div class="card span-8">
+        <h2>Engagement Analysis</h2>
+        <div class="result-grid">
+          <div class="result">
+            <div class="kicker">Attacks</div>
+            <div class="big" id="attacksBig">-</div>
+            <div class="small result-detail" id="attacksBigExplain"></div>
+          </div>
+          <div class="result">
+            <div class="kicker">Hit roll needed</div>
+            <div class="big" id="hitNeeded">-</div>
+            <div class="small" id="hitChance">Chance: -</div>
+            <div class="small result-detail" id="hitExplain"></div>
+          </div>
+          <div class="result">
+            <div class="kicker">Wound roll needed</div>
+            <div class="big" id="woundNeeded">-</div>
+            <div class="small" id="woundChance">Chance: -</div>
+            <div class="small result-detail" id="woundExplain"></div>
+          </div>
+          <div class="result">
+            <div class="kicker">Saving throw needed</div>
+            <div class="big" id="saveNeeded">-</div>
+            <div class="small" id="saveChance">Chance: -</div>
+            <div class="small result-detail" id="saveExplain"></div>
+          </div>
+          <div class="result">
+            <div class="kicker">Damage after reduction</div>
+            <div class="big" id="damageValue">-</div>
+            <div class="small result-detail" id="damageExplain"></div>
+          </div>
+        </div>
+        <div class="battle-custom-adjust" id="calculatorBattleResolveRow" hidden>
+          <input type="number" id="calculatorResolvedDamageInput" min="0" step="1" placeholder="Resolved damage" />
+          <button type="button" id="calculatorRecordBattleWeaponBtn">Record Weapon Damage</button>
+          <button type="button" class="secondary" id="calculatorClearBattleDamageBtn">Clear</button>
+        </div>
+        <div class="note battle-mode-note" id="calculatorBattleResolveNote" hidden></div>
+        <div class="army-unit-list" id="calculatorBattleRecordedWeapons" hidden></div>
+        <div class="checks" id="calculatorBattleFinalizeRow" hidden>
+          <button type="button" class="secondary" id="calculatorBattleNewTargetBtn">New Target</button>
+          <button type="button" id="calculatorApplyBattleAttackBtn">Apply Damage</button>
+        </div>
+      </div>
+
+      <div class="card span-4">
+        <h2>Selected Weapon Profile</h2>
+        <div class="note profile-note" id="profileBox"></div>
+      </div>
+
+      </div>
+    </div>
+
+    <div class="footer-bar">
+      <div class="footer-quote">Heresy grows from idleness.</div>
+      <div class="imperial-tagline">Tactica Imperialis v1.0</div>
+    </div>
+    </section>
+
+    <section class="view" id="battleTrackerView" hidden>
+      <div class="banner">
+        <div class="banner-top">
+          <div class="banner-title">
+            <h1>Battle Tracker</h1>
+          </div>
+          <div class="header-controls">
+            <div class="header-select module-nav">
+              <label class="visually-hidden" for="battleTrackerModuleNavSelect">Module navigation</label>
+              <select id="battleTrackerModuleNavSelect" class="module-nav-select">
+                <option value="builder">Army Builder</option>
+                <option value="calculator">Combat Calculator</option>
+                <option value="battle-tracker">Battle Tracker</option>
+                <option value="rulebook">Rulebook</option>
+                <option value="landing">Landing</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      <div class="subtitle">
+        Track battle round, command points, victory points, and game flow from a single cogitator screen.
+      </div>
+    </div>
+
+      <div class="view-body">
+        <div class="grid">
+        <div class="card span-8">
+          <h2>Battle Setup</h2>
+          <div class="field-grid">
+            <div>
+              <label for="battleNameInput">Battle name</label>
+              <input id="battleNameInput" type="text" value="New Engagement" />
+            </div>
+            <div>
+              <label for="battleYourFactionSelect">Your faction</label>
+              <select id="battleYourFactionSelect"></select>
+            </div>
+            <div>
+              <label for="battleArmyListSelect">Your army list <span class="muted">(optional)</span></label>
+              <select id="battleArmyListSelect"></select>
+            </div>
+            <div>
+              <label for="battleOpponentFactionSelect">Opponent faction</label>
+              <select id="battleOpponentFactionSelect"></select>
+            </div>
+            <div>
+              <label for="battleMissionNameInput">Mission name</label>
+              <input id="battleMissionNameInput" type="text" placeholder="Take and Hold" />
+            </div>
+            <div>
+              <label for="battleDeploymentInput">Deployment</label>
+              <input id="battleDeploymentInput" type="text" placeholder="Search and Destroy" />
+            </div>
+            <div>
+              <label for="battleMissionRuleInput">Mission rule</label>
+              <input id="battleMissionRuleInput" type="text" placeholder="Hidden Supplies" />
+            </div>
+            <div>
+              <label for="battleYourRoleSelect">Your mission role</label>
+              <select id="battleYourRoleSelect">
+                <option value="attacker">Attacker</option>
+                <option value="defender">Defender</option>
+              </select>
+            </div>
+            <div>
+              <label for="battleFirstTurnSelect">First turn</label>
+              <select id="battleFirstTurnSelect">
+                <option value="you">You</option>
+                <option value="opponent">Opponent</option>
+              </select>
+            </div>
+            <div>
+              <label for="battleYourStartingCpInput">Your starting CP</label>
+              <input id="battleYourStartingCpInput" type="number" min="0" step="1" value="0" />
+            </div>
+            <div>
+              <label for="battleOpponentStartingCpInput">Opponent starting CP</label>
+              <input id="battleOpponentStartingCpInput" type="number" min="0" step="1" value="0" />
+            </div>
+          </div>
+          <div class="note" id="battleSetupStatus" style="margin-top:14px;">
+            Configure the battle, then save it or initialize tracking.
+          </div>
+          <div class="army-unit-actions">
+            <button type="button" id="battleStartBtn">Start Battle</button>
+            <button type="button" class="secondary" id="battleEndBattleBtn" disabled>End Battle</button>
+          </div>
+          <div class="checks" id="battleEndConfirmRow" hidden>
+            <div class="note">Are you sure you want to end the battle?</div>
+            <div class="army-unit-actions" style="margin-top:0;">
+              <button type="button" id="battleEndBattleYesBtn">Yes</button>
+              <button type="button" class="secondary" id="battleEndBattleNoBtn">No</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card span-4">
+          <h2>Saved Battles</h2>
+          <div class="field-grid">
+            <div>
+              <label for="savedBattleSelect">Saved battle</label>
+              <select id="savedBattleSelect"></select>
+            </div>
+          </div>
+          <button type="button" class="secondary" id="battleLoadBtn">Load Battle</button>
+          <button type="button" class="secondary" id="battleSaveBtn">Save Battle</button>
+          <button type="button" class="secondary" id="battleDeleteBtn">Delete Battle</button>
+          <button type="button" class="secondary" id="battleNewBtn">New Battle</button>
+          <div class="note" id="battlePersistenceNote" style="margin-top:14px;"></div>
+        </div>
+
+        <div class="card span-4">
+          <h2>Battle State</h2>
+          <div class="result-grid">
+            <div class="result">
+              <div class="kicker">Battle round</div>
+              <div class="big" id="battleRoundBig">1</div>
+            </div>
+            <div class="result">
+              <div class="kicker">Current player</div>
+              <div class="big" id="battleCurrentPlayerBig">You</div>
+            </div>
+            <div class="result">
+              <div class="kicker">Current phase</div>
+              <div class="big" id="battleCurrentPhaseBig">Command</div>
+            </div>
+          </div>
+          <div class="checks" style="margin-top:14px;">
+            <button type="button" class="secondary" id="battleUndoBtn" disabled>Undo Last Action</button>
+            <button type="button" class="secondary" id="battlePrevPhaseBtn">Previous Phase</button>
+            <button type="button" class="secondary" id="battleNextPhaseBtn">Next Phase</button>
+            <button type="button" class="secondary" id="battleEndTurnBtn">End Turn</button>
+            <button type="button" class="secondary" id="battleNextRoundBtn">Next Round</button>
+            <button type="button" id="battleTrackerStratagemsBtn">Open Stratagems</button>
+          </div>
+        </div>
+
+        <div class="card span-8 battle-panel-card">
+          <div class="battle-panel-card-header">
+            <h2>Battle Intel</h2>
+          </div>
+          <div class="battle-panel-toggle-row battle-panel-toggle-full">
+            <div class="battle-panel-toggle-label">View</div>
+            <div class="battle-panel-toggle-buttons">
+              <button type="button" class="secondary battle-panel-toggle-btn" data-panel="scoreboard" aria-pressed="true">Scoreboard</button>
+              <button type="button" class="secondary battle-panel-toggle-btn" data-panel="secondaries" aria-pressed="false">Secondaries</button>
+              <button type="button" class="secondary battle-panel-toggle-btn" data-panel="log" aria-pressed="false">Battle Log</button>
+              <button type="button" class="secondary battle-panel-toggle-btn" data-panel="units" aria-pressed="false">Unit State</button>
+            </div>
+          </div>
+
+          <div class="battle-panel battle-panel-block is-active" data-panel="scoreboard">
+            <div class="battle-panel-title">Scoreboard</div>
+            <div class="result-grid">
+            <div class="result">
+              <div class="kicker">You CP</div>
+              <div class="big" id="battleYouCpBig">0</div>
+              <div class="checks">
+                <button type="button" class="secondary battle-adjust-btn" data-side="you" data-stat="cp" data-amount="1">+1 CP</button>
+                <button type="button" class="secondary battle-adjust-btn" data-side="you" data-stat="cp" data-amount="-1">-1 CP</button>
+              </div>
+            </div>
+            <div class="result">
+              <div class="kicker">Opponent CP</div>
+              <div class="big" id="battleOpponentCpBig">0</div>
+              <div class="checks">
+                <button type="button" class="secondary battle-adjust-btn" data-side="opponent" data-stat="cp" data-amount="1">+1 CP</button>
+                <button type="button" class="secondary battle-adjust-btn" data-side="opponent" data-stat="cp" data-amount="-1">-1 CP</button>
+              </div>
+            </div>
+            <div class="result">
+              <div class="kicker">You Primary</div>
+              <div class="big" id="battleYouPrimaryBig">0</div>
+              <div class="checks">
+                <button type="button" class="secondary battle-adjust-btn" data-side="you" data-stat="primaryVp" data-amount="5">+5 VP</button>
+                <button type="button" class="secondary battle-adjust-btn" data-side="you" data-stat="primaryVp" data-amount="-5">-5 VP</button>
+              </div>
+              <div class="battle-custom-adjust">
+                <input type="number" id="battleYouPrimaryCustomInput" min="0" step="1" placeholder="Custom VP" />
+                <button type="button" class="secondary battle-adjust-custom-btn" data-side="you" data-stat="primaryVp" data-input-id="battleYouPrimaryCustomInput">+X</button>
+                <button type="button" class="secondary battle-adjust-custom-btn" data-side="you" data-stat="primaryVp" data-input-id="battleYouPrimaryCustomInput" data-direction="-1">-X</button>
+              </div>
+            </div>
+            <div class="result">
+              <div class="kicker">Opponent Primary</div>
+              <div class="big" id="battleOpponentPrimaryBig">0</div>
+              <div class="checks">
+                <button type="button" class="secondary battle-adjust-btn" data-side="opponent" data-stat="primaryVp" data-amount="5">+5 VP</button>
+                <button type="button" class="secondary battle-adjust-btn" data-side="opponent" data-stat="primaryVp" data-amount="-5">-5 VP</button>
+              </div>
+              <div class="battle-custom-adjust">
+                <input type="number" id="battleOpponentPrimaryCustomInput" min="0" step="1" placeholder="Custom VP" />
+                <button type="button" class="secondary battle-adjust-custom-btn" data-side="opponent" data-stat="primaryVp" data-input-id="battleOpponentPrimaryCustomInput">+X</button>
+                <button type="button" class="secondary battle-adjust-custom-btn" data-side="opponent" data-stat="primaryVp" data-input-id="battleOpponentPrimaryCustomInput" data-direction="-1">-X</button>
+              </div>
+            </div>
+            <div class="result">
+              <div class="kicker">You Secondary</div>
+              <div class="big" id="battleYouSecondaryBig">0</div>
+              <div class="small">Tracked from selected objectives.</div>
+            </div>
+            <div class="result">
+              <div class="kicker">Opponent Secondary</div>
+              <div class="big" id="battleOpponentSecondaryBig">0</div>
+              <div class="small">Tracked from selected objectives.</div>
+            </div>
+            <div class="result">
+              <div class="kicker">You Total</div>
+              <div class="big" id="battleYouTotalBig">0</div>
+            </div>
+            <div class="result">
+              <div class="kicker">Opponent Total</div>
+              <div class="big" id="battleOpponentTotalBig">0</div>
+            </div>
+          </div>
+          </div>
+
+          <div class="battle-panel battle-panel-block" data-panel="secondaries" hidden>
+            <div class="battle-panel-title">Secondary Objectives</div>
+            <div class="battle-panel-scroll">
+              <div class="battle-score-secondary-strip">
+                <div class="battle-score-secondary-inline" id="battleSecondaryYouPanel"></div>
+                <div class="battle-score-secondary-inline" id="battleSecondaryOpponentPanel"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="battle-panel battle-panel-block" data-panel="log" hidden>
+            <div class="battle-panel-title">Battle Log</div>
+            <div class="battle-panel-scroll">
+              <div class="note" id="battleLogEmpty">No actions logged yet.</div>
+              <div class="note profile-note battle-log-scroll" id="battleLogList" hidden></div>
+            </div>
+          </div>
+
+          <div class="battle-panel battle-panel-block" data-panel="units" hidden>
+            <div class="battle-panel-title">Unit State Tracker</div>
+            <div class="battle-panel-scroll">
+              <div class="note" id="battleUnitStateSummary"></div>
+              <div class="army-unit-list scrollable-roster" id="battleUnitStateList"></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      </div>
+      <div class="footer-bar">
+        <div class="footer-quote">It is better to die for the Emperor than to live for yourself.</div>
+        <div class="imperial-tagline">Tactica Imperialis v1.0</div>
+      </div>
+    </section>
+
+    <section class="view" id="battleStratagemsView" hidden>
+      <div class="banner">
+        <div class="banner-top">
+          <div class="banner-title">
+            <h1>Battle Stratagems</h1>
+          </div>
+          <div class="header-controls">
+            <button type="button" class="secondary" id="battleStratagemsBackBtn">Back</button>
+          </div>
+        </div>
+      <div class="subtitle">
+        Review core and detachment stratagems, search by keyword, and track CP usage away from the main battle dashboard.
+      </div>
+    </div>
+
+      <div class="view-body">
+        <div class="grid">
+        <div class="card span-12">
+          <h2>Stratagems</h2>
+          <div class="note" id="battleStratagemSummary"></div>
+          <div class="field-grid" style="margin-top:12px;">
+            <div>
+              <label for="battleStratagemSearchInput">Search stratagems</label>
+              <input id="battleStratagemSearchInput" type="text" placeholder="Overwatch, grenade, order..." />
+              <div class="battle-stratagem-history" id="battleStratagemHistory"></div>
+            </div>
+          </div>
+          <div class="army-unit-list" id="battleStratagemList"></div>
+        </div>
+        </div>
+      </div>
+      <div class="footer-bar">
+        <div class="footer-quote">Knowledge is power, guard it well.</div>
+        <div class="imperial-tagline">Tactica Imperialis v1.0</div>
+      </div>
+    </section>
+
+    <section class="view" id="rulebookView" hidden>
+      <div class="banner">
+        <div class="banner-top">
+          <div class="banner-title">
+            <h1>Rulebook</h1>
+          </div>
+          <div class="header-controls">
+            <div class="header-select module-nav">
+              <label class="visually-hidden" for="rulebookModuleNavSelect">Module navigation</label>
+              <select id="rulebookModuleNavSelect" class="module-nav-select">
+                <option value="builder">Army Builder</option>
+                <option value="calculator">Combat Calculator</option>
+                <option value="battle-tracker">Battle Tracker</option>
+                <option value="rulebook">Rulebook</option>
+                <option value="landing">Landing</option>
+              </select>
+            </div>
+            <button type="button" class="secondary" id="rulebookEditionSelectBtn">Editions</button>
+          </div>
+        </div>
+        <div class="subtitle">
+          Search the current 10th Edition core rules reference by phase, topic, or keyword.
+        </div>
+      </div>
+
+      <div class="view-body">
+        <div class="grid">
+        <div class="card span-4">
+          <h2>Reference</h2>
+          <div class="note" id="rulebookSummary"></div>
+          <div class="field-grid" style="margin-top:12px;">
+            <div>
+              <label for="rulebookEditionLabel">Edition</label>
+              <input id="rulebookEditionLabel" type="text" value="Warhammer 40,000 10th Edition" readonly />
+            </div>
+            <div>
+              <label for="rulebookSearchInput">Search rules</label>
+              <input id="rulebookSearchInput" type="text" placeholder="Movement, charging, cover..." />
+            </div>
+            <div>
+              <label for="rulebookTopicSelect">Topic</label>
+              <select id="rulebookTopicSelect"></select>
+            </div>
+          </div>
+          <div class="rulebook-import-panel">
+            <div class="datasheet-label">Local Import</div>
+            <div class="note" id="rulebookImportStatus">No imported full-text rulebook is stored on this device. JSON snapshots generated from saved Wahapedia HTML are the recommended import format.</div>
+            <div style="margin-top:10px;">
+              <label for="rulebookImportInput">Rulebook file</label>
+              <input id="rulebookImportInput" type="file" accept=".html,.htm,.pdf,.txt,.md,.json,text/html,application/pdf,text/plain,application/json" />
+            </div>
+            <div class="rulebook-import-actions">
+              <button type="button" id="rulebookImportBtn">Import Rulebook</button>
+              <button type="button" class="secondary" id="rulebookClearImportBtn">Clear Imported Rules</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card span-8">
+          <h2>Results</h2>
+          <div class="army-unit-list rulebook-results-frame" id="rulebookResults"></div>
+        </div>
+
+        </div>
+      </div>
+      <div class="footer-bar">
+        <div class="footer-quote">Blessed is the mind too small for doubt.</div>
+        <div class="imperial-tagline">Tactica Imperialis v1.0</div>
+      </div>
+    </section>
+  </div>
+
+  <script src="./data/abilities/unit-abilities.js"></script>
+  <script src="./data/abilities/weapon-abilities.js"></script>
+  <script src="./data/factions/index.js"></script>
+  <script src="./data/points/points-v4.js"></script>
+  <script src="./data/points/astra-militarum-points-overrides.js"></script>
+    <script src="./data/unit-composition/unit-composition.js"></script>
+    <script src="./data/unit-composition/astra-militarum-overrides.js"></script>
+    <script src="./data/unit-composition/adepta-sororitas.js"></script>
+    <script src="./data/unit-composition/adeptus-custodes.js"></script>
+    <script src="./data/unit-composition/adeptus-mechanicus.js"></script>
+    <script src="./data/unit-composition/adeptus-titanicus.js"></script>
+    <script src="./data/unit-composition/aeldari.js"></script>
+    <script src="./data/unit-composition/chaos-space-marines.js"></script>
+    <script src="./data/unit-composition/drukhari.js"></script>
+    <script src="./data/unit-composition/necrons.js"></script>
+    <script src="./data/unit-composition/orks.js"></script>
+    <script src="./data/unit-composition/tyranids.js"></script>
+    <script src="./data/unit-composition/genestealer-cults.js"></script>
+  <script src="./data/factions/space-marines-overrides.js"></script>
+  <script src="./data/wargear/index.js"></script>
+  <script src="./data/wargear-rules/astra-militarum-infantry-rules.js"></script>
+  <script src="./data/wargear-rules/astra-militarum-vehicle-rules.js"></script>
+    <script src="./data/wargear-rules/adepta-sororitas-builder-rules.js"></script>
+    <script src="./data/wargear-rules/adeptus-custodes-builder-rules.js"></script>
+    <script src="./data/wargear-rules/adeptus-mechanicus-builder-rules.js"></script>
+    <script src="./data/wargear-rules/adeptus-titanicus-builder-rules.js"></script>
+    <script src="./data/wargear-rules/aeldari-builder-rules.js"></script>
+    <script src="./data/wargear-rules/chaos-space-marines-builder-rules.js"></script>
+    <script src="./data/wargear-rules/drukhari-builder-rules.js"></script>
+    <script src="./data/wargear-rules/necrons-builder-rules.js"></script>
+    <script src="./data/wargear-rules/orks-builder-rules.js"></script>
+    <script src="./data/wargear-rules/tyranids-builder-rules.js"></script>
+    <script src="./data/wargear-rules/genestealer-cults-builder-rules.js"></script>
+    <script src="./data/wargear-rules/space-marines-builder-rules.js"></script>
+  <script src="./data/detachments/index.js"></script>
+  <script src="./data/detachments/space-marines.js"></script>
+  <script src="./data/detachments/adepta-sororitas.js"></script>
+  <script src="./data/detachments/adeptus-custodes.js"></script>
+  <script src="./data/detachments/adeptus-mechanicus.js"></script>
+  <script src="./data/detachments/aeldari.js"></script>
+  <script src="./data/detachments/drukhari.js"></script>
+  <script src="./data/detachments/genestealer-cults.js"></script>
+  <script src="./data/detachments/necrons.js"></script>
+  <script src="./data/detachments/tyranids.js"></script>
+  <script src="./data/detachments/chaos-space-marines.js"></script>
+  <script src="./data/detachments/orks.js"></script>
+  <script src="./data/stratagems/core-stratagems.js"></script>
+  <script src="./data/secondary-objectives/chapter-approved-2025-26.js"></script>
+  <script src="./data/rulebook/core-rules-10th.js"></script>
+  <script src="./js/default-data.js"></script>
+  <script src="./js/app-shell.js"></script>
+  <script src="./js/app-shared.js"></script>
+  <script src="./js/app-astra-builder-rules.js"></script>
+  <script src="./js/app-battle.js"></script>
+  <script src="./js/app-rulebook.js"></script>
+  <script src="./js/app-factions-builder.js"></script>
+  <script src="./js/app-calculator.js"></script>
+  <script src="./js/app-init.js"></script>
+  <script src="./js/sw-register.js"></script>
+</body>
+</html>
+
+
+
+

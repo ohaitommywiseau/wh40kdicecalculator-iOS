@@ -1,0 +1,29 @@
+{
+  "id": "./astra_militarum_dice_calculator_vFinal_themed_v2.html",
+  "name": "WH40k Dice Calculator",
+  "short_name": "WH40k Dice Calc",
+  "description": "Warhammer 40,000 10th Edition dice calculator with faction datasheets and ability tooltips.",
+  "start_url": "./astra_militarum_dice_calculator_vFinal_themed_v2.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0f141a",
+  "theme_color": "#0f141a",
+  "icons": [
+    {
+      "src": "./icons/icon-180.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    },
+    {
+      "src": "./icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "./icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

@@ -1,0 +1,326 @@
+<style>
+  :root {
+    --bg: #040807;
+    --panel: #07110d;
+    --panel-2: #0b1712;
+    --text: #97eab1;
+    --muted: #63ac79;
+    --accent: #ff5e5e;
+    --accent-2: #8fe3ac;
+    --good: #d8ef8d;
+    --border: #12402a;
+    --brass-border: #185336;
+    --amber: #dbaa4f;
+    --green-bright: #baffcd;
+    --font: "Arial Narrow", "Conduit ITC Std", monospace;
+  }
+
+  body { background: var(--bg); color: var(--text); font-family: var(--font); margin: 0; padding: 16px; }
+
+  h2 { color: var(--green-bright); font-size: 1.1rem; text-transform: uppercase; letter-spacing: 0.08em; margin: 0 0 6px 0; }
+  .subtitle { color: var(--muted); font-size: 0.9rem; margin: 0 0 24px 0; }
+
+  .options { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .option {
+    border: 2px solid transparent;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: border-color 0.15s;
+    overflow: hidden;
+  }
+  .option:hover { border-color: var(--amber); }
+  .option.selected { border-color: var(--green-bright); }
+
+  .option-label {
+    background: #0a1f14;
+    border-bottom: 1px solid var(--border);
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .option-label .letter {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: var(--amber);
+    color: #000;
+    font-weight: bold;
+    font-size: 0.8rem;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .option-label h3 { color: var(--green-bright); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; margin: 0; }
+
+  .mockup-wrap {
+    padding: 10px;
+    background: var(--bg);
+  }
+
+  .desc {
+    padding: 10px 12px;
+    background: #0a1f14;
+    border-top: 1px solid var(--border);
+    font-size: 0.78rem;
+    color: var(--muted);
+    line-height: 1.4;
+  }
+  .desc strong { color: var(--text); }
+
+  /* ─── Option A: Glowing Dividers ─── */
+  .optA-card {
+    background: linear-gradient(160deg, #06100d, #030907);
+    border: 1px solid #12402a;
+    border-radius: 2px;
+    margin-bottom: 8px;
+    overflow: hidden;
+  }
+  .optA-header {
+    background: linear-gradient(90deg, rgba(219,170,79,0.12) 0%, transparent 60%);
+    border-bottom: 1px solid rgba(219,170,79,0.35);
+    padding: 7px 10px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .optA-header-bar { width: 3px; height: 14px; background: var(--amber); border-radius: 1px; flex-shrink: 0; }
+  .optA-title { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--amber); font-weight: bold; }
+  .optA-body { padding: 8px 10px; }
+  .optA-row { display: flex; gap: 8px; margin-bottom: 6px; }
+  .optA-field {
+    flex: 1; background: linear-gradient(160deg, #091510, #050c09);
+    border: 1px solid #235c3c; border-radius: 1px; padding: 5px 8px;
+    font-size: 0.72rem; color: var(--text);
+  }
+  .optA-field-label { font-size: 0.62rem; color: var(--muted); text-transform: uppercase; margin-bottom: 2px; }
+  .optA-stat {
+    flex: 1; background: linear-gradient(160deg, #09130f, #040907);
+    border: 1px solid var(--border); border-radius: 1px;
+    padding: 8px; text-align: center;
+  }
+  .optA-stat-num { font-size: 1.3rem; color: var(--amber); font-weight: bold; line-height: 1; }
+  .optA-stat-lbl { font-size: 0.6rem; color: var(--muted); text-transform: uppercase; margin-top: 2px; }
+
+  /* ─── Option B: Tiered Depth ─── */
+  .optB-card {
+    background: #0d1e17;
+    border: 1px solid #1a4f32;
+    border-radius: 3px;
+    margin-bottom: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+  }
+  .optB-header {
+    background: #102318;
+    border-bottom: 1px solid #1a4f32;
+    padding: 7px 10px;
+  }
+  .optB-title { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: #8fe3ac; font-weight: bold; }
+  .optB-body { padding: 8px 10px; background: #0a1a12; }
+  .optB-inner {
+    background: #061009;
+    border: 1px solid #0f3020;
+    border-radius: 2px;
+    padding: 8px;
+    margin-bottom: 6px;
+  }
+  .optB-row { display: flex; gap: 6px; margin-bottom: 5px; }
+  .optB-field {
+    flex: 1; background: #030806;
+    border: 1px solid #1a4530; border-radius: 1px; padding: 5px 8px;
+    font-size: 0.72rem; color: var(--text);
+  }
+  .optB-field-label { font-size: 0.62rem; color: var(--muted); text-transform: uppercase; margin-bottom: 2px; }
+  .optB-stat {
+    flex: 1; background: #030806;
+    border: 1px solid #0f3020; border-radius: 2px;
+    padding: 8px; text-align: center;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.03);
+  }
+  .optB-stat-num { font-size: 1.3rem; color: #d8ef8d; font-weight: bold; line-height: 1; }
+  .optB-stat-lbl { font-size: 0.6rem; color: var(--muted); text-transform: uppercase; margin-top: 2px; }
+
+  /* ─── Option C: Module Identity ─── */
+  .optC-card {
+    background: linear-gradient(160deg, #06100d, #030907);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    margin-bottom: 8px;
+    overflow: hidden;
+  }
+  .optC-header-calc {
+    background: linear-gradient(90deg, rgba(141,180,227,0.1) 0%, transparent 70%);
+    border-bottom: 1px solid rgba(141,180,227,0.25);
+    padding: 7px 10px; display: flex; align-items: center; gap: 8px;
+  }
+  .optC-header-army {
+    background: linear-gradient(90deg, rgba(143,227,172,0.1) 0%, transparent 70%);
+    border-bottom: 1px solid rgba(143,227,172,0.25);
+    padding: 7px 10px; display: flex; align-items: center; gap: 8px;
+  }
+  .optC-dot-calc { width: 6px; height: 6px; border-radius: 50%; background: #8db4e3; flex-shrink: 0; }
+  .optC-dot-army { width: 6px; height: 6px; border-radius: 50%; background: #8fe3ac; flex-shrink: 0; }
+  .optC-title-calc { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: #8db4e3; }
+  .optC-title-army { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: #8fe3ac; }
+  .optC-body { padding: 8px 10px; }
+  .optC-row { display: flex; gap: 8px; margin-bottom: 6px; }
+  .optC-field {
+    flex: 1; background: linear-gradient(160deg, #091510, #050c09);
+    border: 1px solid #235c3c; border-radius: 1px; padding: 5px 8px;
+    font-size: 0.72rem; color: var(--text);
+  }
+  .optC-field-label { font-size: 0.62rem; color: var(--muted); text-transform: uppercase; margin-bottom: 2px; }
+  .optC-stat-calc {
+    flex: 1; background: rgba(141,180,227,0.05);
+    border: 1px solid rgba(141,180,227,0.2); border-radius: 1px;
+    padding: 8px; text-align: center;
+  }
+  .optC-stat-army {
+    flex: 1; background: rgba(143,227,172,0.04);
+    border: 1px solid rgba(143,227,172,0.15); border-radius: 1px;
+    padding: 8px; text-align: center;
+  }
+  .optC-stat-num { font-size: 1.3rem; color: var(--amber); font-weight: bold; line-height: 1; }
+  .optC-stat-lbl { font-size: 0.6rem; color: var(--muted); text-transform: uppercase; margin-top: 2px; }
+</style>
+
+<h2>Card Separation Approach</h2>
+<p class="subtitle">All three options use the same dark military green base. The difference is <em>how</em> individual cards and sections signal their identity.</p>
+
+<div class="options">
+
+  <!-- Option A -->
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="option-label">
+      <div class="letter">A</div>
+      <h3>Amber Accent Headers</h3>
+    </div>
+    <div class="mockup-wrap">
+
+      <div class="optA-card">
+        <div class="optA-header">
+          <div class="optA-header-bar"></div>
+          <div class="optA-title">Unit &amp; Weapon</div>
+        </div>
+        <div class="optA-body">
+          <div class="optA-row">
+            <div class="optA-field"><div class="optA-field-label">Faction</div>Space Marines</div>
+            <div class="optA-field"><div class="optA-field-label">Unit</div>Intercessors</div>
+          </div>
+          <div class="optA-row">
+            <div class="optA-stat"><div class="optA-stat-num">3</div><div class="optA-stat-lbl">Models</div></div>
+            <div class="optA-stat"><div class="optA-stat-num">6</div><div class="optA-stat-lbl">Attacks</div></div>
+            <div class="optA-stat"><div class="optA-stat-num">4+</div><div class="optA-stat-lbl">Hit</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="optA-card">
+        <div class="optA-header">
+          <div class="optA-header-bar"></div>
+          <div class="optA-title">Target Profile</div>
+        </div>
+        <div class="optA-body">
+          <div class="optA-row">
+            <div class="optA-field"><div class="optA-field-label">Toughness</div>5</div>
+            <div class="optA-field"><div class="optA-field-label">Save</div>3+</div>
+            <div class="optA-field"><div class="optA-field-label">Invuln</div>5+</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div class="desc"><strong>Amber bar + glow on every card header</strong> — A thin vertical amber stripe and subtle warm gradient on each section header creates immediate separation without changing the base colors. Strong contrast, feels "official".</div>
+  </div>
+
+  <!-- Option B -->
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="option-label">
+      <div class="letter">B</div>
+      <h3>Layered Depth</h3>
+    </div>
+    <div class="mockup-wrap">
+
+      <div class="optB-card">
+        <div class="optB-header">
+          <div class="optB-title">Unit &amp; Weapon</div>
+        </div>
+        <div class="optB-body">
+          <div class="optB-inner">
+            <div class="optB-row">
+              <div class="optB-field"><div class="optB-field-label">Faction</div>Space Marines</div>
+              <div class="optB-field"><div class="optB-field-label">Unit</div>Intercessors</div>
+            </div>
+          </div>
+          <div class="optB-row">
+            <div class="optB-stat"><div class="optB-stat-num">3</div><div class="optB-stat-lbl">Models</div></div>
+            <div class="optB-stat"><div class="optB-stat-num">6</div><div class="optB-stat-lbl">Attacks</div></div>
+            <div class="optB-stat"><div class="optB-stat-num">4+</div><div class="optB-stat-lbl">Hit</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="optB-card">
+        <div class="optB-header">
+          <div class="optB-title">Target Profile</div>
+        </div>
+        <div class="optB-body">
+          <div class="optB-inner">
+            <div class="optB-row">
+              <div class="optB-field"><div class="optB-field-label">Toughness</div>5</div>
+              <div class="optB-field"><div class="optB-field-label">Save</div>3+</div>
+              <div class="optB-field"><div class="optB-field-label">Invuln</div>5+</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div class="desc"><strong>Distinct background shade per depth level</strong> — Page is darkest, cards are one shade lighter, inner content areas are another shade. Creates a clear "container" feel where each card's boundary is unmistakable.</div>
+  </div>
+
+  <!-- Option C -->
+  <div class="option" data-choice="c" onclick="toggleSelect(this)">
+    <div class="option-label">
+      <div class="letter">C</div>
+      <h3>Module Color Identity</h3>
+    </div>
+    <div class="mockup-wrap">
+
+      <div class="optC-card">
+        <div class="optC-header-calc">
+          <div class="optC-dot-calc"></div>
+          <div class="optC-title-calc">Calculator — Unit &amp; Weapon</div>
+        </div>
+        <div class="optC-body">
+          <div class="optC-row">
+            <div class="optC-field"><div class="optC-field-label">Faction</div>Space Marines</div>
+            <div class="optC-field"><div class="optC-field-label">Unit</div>Intercessors</div>
+          </div>
+          <div class="optC-row">
+            <div class="optC-stat-calc"><div class="optC-stat-num">6</div><div class="optC-stat-lbl">Attacks</div></div>
+            <div class="optC-stat-calc"><div class="optC-stat-num">4+</div><div class="optC-stat-lbl">Hit</div></div>
+            <div class="optC-stat-calc"><div class="optC-stat-num">3+</div><div class="optC-stat-lbl">Wound</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="optC-card">
+        <div class="optC-header-army">
+          <div class="optC-dot-army"></div>
+          <div class="optC-title-army">Army Builder — Roster</div>
+        </div>
+        <div class="optC-body">
+          <div class="optC-row">
+            <div class="optC-field"><div class="optC-field-label">Faction</div>Astra Militarum</div>
+            <div class="optC-field"><div class="optC-field-label">Points</div>985 / 2000</div>
+          </div>
+          <div class="optC-row">
+            <div class="optC-stat-army"><div class="optC-stat-num">7</div><div class="optC-stat-lbl">Units</div></div>
+            <div class="optC-stat-army"><div class="optC-stat-num">3</div><div class="optC-stat-lbl">Elite</div></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div class="desc"><strong>Subtle accent tint per module</strong> — Each module gets a unique color identity (blue tint for Calc, green for Army, gold for Battle, etc.) applied to headers and stat borders. Helps you orient instantly when navigating between modules.</div>
+  </div>
+
+</div>
