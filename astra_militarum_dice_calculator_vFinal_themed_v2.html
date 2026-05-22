@@ -446,88 +446,95 @@
         <div class="bt-layout">
         <div class="bt-sidebar">
         <div class="card">
-          <h2>Battle Setup</h2>
-          <div class="field-grid">
-            <div>
-              <label for="battleNameInput">Battle name</label>
-              <input id="battleNameInput" type="text" value="New Engagement" />
-            </div>
-            <div>
-              <label for="battleYourFactionSelect">Your faction</label>
-              <select id="battleYourFactionSelect"></select>
-            </div>
-            <div>
-              <label for="battleArmyListSelect">Your army list <span class="muted">(optional)</span></label>
-              <select id="battleArmyListSelect"></select>
-            </div>
-            <div>
-              <label for="battleOpponentFactionSelect">Opponent faction</label>
-              <select id="battleOpponentFactionSelect"></select>
-            </div>
-            <div>
-              <label for="battleMissionNameInput">Mission name</label>
-              <input id="battleMissionNameInput" type="text" placeholder="Take and Hold" />
-            </div>
-            <div>
-              <label for="battleDeploymentInput">Deployment</label>
-              <input id="battleDeploymentInput" type="text" placeholder="Search and Destroy" />
-            </div>
-            <div>
-              <label for="battleMissionRuleInput">Mission rule</label>
-              <input id="battleMissionRuleInput" type="text" placeholder="Hidden Supplies" />
-            </div>
-            <div>
-              <label for="battleYourRoleSelect">Your mission role</label>
-              <select id="battleYourRoleSelect">
-                <option value="attacker">Attacker</option>
-                <option value="defender">Defender</option>
-              </select>
-            </div>
-            <div>
-              <label for="battleFirstTurnSelect">First turn</label>
-              <select id="battleFirstTurnSelect">
-                <option value="you">You</option>
-                <option value="opponent">Opponent</option>
-              </select>
-            </div>
-            <div>
-              <label for="battleYourStartingCpInput">Your starting CP</label>
-              <input id="battleYourStartingCpInput" type="number" min="0" step="1" value="0" />
-            </div>
-            <div>
-              <label for="battleOpponentStartingCpInput">Opponent starting CP</label>
-              <input id="battleOpponentStartingCpInput" type="number" min="0" step="1" value="0" />
+          <div class="battle-panel-toggle-row battle-panel-toggle-full">
+            <div class="battle-panel-toggle-buttons">
+              <button type="button" class="secondary bt-setup-tab-btn is-active" data-tab="setup" aria-pressed="true">Battle Setup</button>
+              <button type="button" class="secondary bt-setup-tab-btn" data-tab="saves" aria-pressed="false">Saved Battles</button>
             </div>
           </div>
-          <div class="note" id="battleSetupStatus" style="margin-top:14px;">
-            Configure the battle, then save it or initialize tracking.
-          </div>
-          <div class="army-unit-actions">
-            <button type="button" id="battleStartBtn">Start Battle</button>
-            <button type="button" class="secondary" id="battleEndBattleBtn" disabled>End Battle</button>
-          </div>
-          <div class="checks" id="battleEndConfirmRow" hidden>
-            <div class="note">Are you sure you want to end the battle?</div>
-            <div class="army-unit-actions" style="margin-top:0;">
-              <button type="button" id="battleEndBattleYesBtn">Yes</button>
-              <button type="button" class="secondary" id="battleEndBattleNoBtn">No</button>
-            </div>
-          </div>
-        </div>
 
-        <div class="card">
-          <h2>Saved Battles</h2>
-          <div class="field-grid">
-            <div>
-              <label for="savedBattleSelect">Saved battle</label>
-              <select id="savedBattleSelect"></select>
+          <div class="bt-setup-tab-panel" data-tab="setup">
+            <div class="field-grid">
+              <div>
+                <label for="battleNameInput">Battle name</label>
+                <input id="battleNameInput" type="text" value="New Engagement" />
+              </div>
+              <div>
+                <label for="battleYourFactionSelect">Your faction</label>
+                <select id="battleYourFactionSelect"></select>
+              </div>
+              <div>
+                <label for="battleArmyListSelect">Your army list <span class="muted">(optional)</span></label>
+                <select id="battleArmyListSelect"></select>
+              </div>
+              <div>
+                <label for="battleOpponentFactionSelect">Opponent faction</label>
+                <select id="battleOpponentFactionSelect"></select>
+              </div>
+              <div>
+                <label for="battleMissionNameInput">Mission name</label>
+                <input id="battleMissionNameInput" type="text" placeholder="Take and Hold" />
+              </div>
+              <div>
+                <label for="battleDeploymentInput">Deployment</label>
+                <input id="battleDeploymentInput" type="text" placeholder="Search and Destroy" />
+              </div>
+              <div>
+                <label for="battleMissionRuleInput">Mission rule</label>
+                <input id="battleMissionRuleInput" type="text" placeholder="Hidden Supplies" />
+              </div>
+              <div>
+                <label for="battleYourRoleSelect">Your mission role</label>
+                <select id="battleYourRoleSelect">
+                  <option value="attacker">Attacker</option>
+                  <option value="defender">Defender</option>
+                </select>
+              </div>
+              <div>
+                <label for="battleFirstTurnSelect">First turn</label>
+                <select id="battleFirstTurnSelect">
+                  <option value="you">You</option>
+                  <option value="opponent">Opponent</option>
+                </select>
+              </div>
+              <div>
+                <label for="battleYourStartingCpInput">Your starting CP</label>
+                <input id="battleYourStartingCpInput" type="number" min="0" step="1" value="0" />
+              </div>
+              <div>
+                <label for="battleOpponentStartingCpInput">Opponent starting CP</label>
+                <input id="battleOpponentStartingCpInput" type="number" min="0" step="1" value="0" />
+              </div>
+            </div>
+            <div class="note" id="battleSetupStatus" style="margin-top:14px;">
+              Configure the battle, then save it or initialize tracking.
+            </div>
+            <div class="army-unit-actions">
+              <button type="button" id="battleStartBtn">Start Battle</button>
+              <button type="button" class="secondary" id="battleEndBattleBtn" disabled>End Battle</button>
+            </div>
+            <div class="checks" id="battleEndConfirmRow" hidden>
+              <div class="note">Are you sure you want to end the battle?</div>
+              <div class="army-unit-actions" style="margin-top:0;">
+                <button type="button" id="battleEndBattleYesBtn">Yes</button>
+                <button type="button" class="secondary" id="battleEndBattleNoBtn">No</button>
+              </div>
             </div>
           </div>
-          <button type="button" class="secondary" id="battleLoadBtn">Load Battle</button>
-          <button type="button" class="secondary" id="battleSaveBtn">Save Battle</button>
-          <button type="button" class="secondary" id="battleDeleteBtn">Delete Battle</button>
-          <button type="button" class="secondary" id="battleNewBtn">New Battle</button>
-          <div class="note" id="battlePersistenceNote" style="margin-top:14px;"></div>
+
+          <div class="bt-setup-tab-panel" data-tab="saves" hidden>
+            <div class="field-grid">
+              <div>
+                <label for="savedBattleSelect">Saved battle</label>
+                <select id="savedBattleSelect"></select>
+              </div>
+            </div>
+            <button type="button" class="secondary" id="battleLoadBtn">Load Battle</button>
+            <button type="button" class="secondary" id="battleSaveBtn">Save Battle</button>
+            <button type="button" class="secondary" id="battleDeleteBtn">Delete Battle</button>
+            <button type="button" class="secondary" id="battleNewBtn">New Battle</button>
+            <div class="note" id="battlePersistenceNote" style="margin-top:14px;"></div>
+          </div>
         </div>
 
         <div class="card">
