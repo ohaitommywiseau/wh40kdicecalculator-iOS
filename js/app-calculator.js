@@ -600,7 +600,7 @@ function render() {
       const datasheetLink = unit?.source?.datasheet || '';
       calcWeaponAbilitiesNote.innerHTML = `Abilities: ${renderTooltipList(abilityItems, { kind: 'weapon', datasheetLink })}`;
     } else {
-      calcWeaponAbilitiesNote.innerHTML = '';
+      calcWeaponAbilitiesNote.innerHTML = 'Abilities: None';
     }
   }
 

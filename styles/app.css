@@ -1948,3 +1948,8 @@
       flex: 1;
       min-width: 0;
     }
+
+    /* ── Calculator: Weapon card vertical alignment ── */
+    #calcWeaponStatBlock {
+      margin-top: 70px;
+    }
