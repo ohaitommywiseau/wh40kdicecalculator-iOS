@@ -226,7 +226,7 @@
     <div class="view-body">
       <div class="grid">
       <div class="card span-4">
-        <h2>Unit & Weapon</h2>
+        <h2>Attacker</h2>
         <div class="field-grid">
           <div>
             <label for="factionSelect">Faction</label>
@@ -235,10 +235,6 @@
           <div>
             <label for="unitSelect">Unit</label>
             <select id="unitSelect"></select>
-          </div>
-          <div>
-            <label for="weaponSelect">Weapon</label>
-            <select id="weaponSelect"></select>
           </div>
         </div>
         <div class="field-grid" style="margin-top:12px;">
@@ -258,61 +254,16 @@
       </div>
 
       <div class="card span-4">
-        <h2>Attacker Modifiers</h2>
+        <h2>Weapon</h2>
 
-        <!-- Hidden inputs — IDs preserved; app-calculator.js reads these -->
-        <input type="number" id="hitMod"   value="0" step="1" style="display:none" />
-        <input type="number" id="woundMod" value="0" step="1" style="display:none" />
-        <input type="number" id="apMod"    value="0" step="1" style="display:none" />
-        <input type="number" id="saveMod"  value="0" step="1" style="display:none" />
-        <input type="checkbox" id="heavyBox"         style="display:none" />
-        <input type="checkbox" id="rapidFireBox"     style="display:none" />
-        <input type="checkbox" id="coverBox"         style="display:none" />
-        <input type="checkbox" id="armorContemptBox" style="display:none" />
-
-        <!-- Stepper rows -->
-        <div class="calc-mod-stepper-row">
-          <span class="calc-mod-stepper-label">Hit</span>
-          <div class="calc-mod-stepper-controls">
-            <button type="button" class="calc-mod-step-btn" data-target="hitMod" data-dir="-1">−</button>
-            <span class="calc-mod-step-val is-zero" id="hitModDisplay">0</span>
-            <button type="button" class="calc-mod-step-btn" data-target="hitMod" data-dir="1">+</button>
-          </div>
-        </div>
-        <div class="calc-mod-stepper-row">
-          <span class="calc-mod-stepper-label">Wound</span>
-          <div class="calc-mod-stepper-controls">
-            <button type="button" class="calc-mod-step-btn" data-target="woundMod" data-dir="-1">−</button>
-            <span class="calc-mod-step-val is-zero" id="woundModDisplay">0</span>
-            <button type="button" class="calc-mod-step-btn" data-target="woundMod" data-dir="1">+</button>
-          </div>
-        </div>
-        <div class="calc-mod-stepper-row">
-          <span class="calc-mod-stepper-label">AP</span>
-          <div class="calc-mod-stepper-controls">
-            <button type="button" class="calc-mod-step-btn" data-target="apMod" data-dir="-1">−</button>
-            <span class="calc-mod-step-val is-zero" id="apModDisplay">0</span>
-            <button type="button" class="calc-mod-step-btn" data-target="apMod" data-dir="1">+</button>
-          </div>
-        </div>
-        <div class="calc-mod-stepper-row">
-          <span class="calc-mod-stepper-label">Save</span>
-          <div class="calc-mod-stepper-controls">
-            <button type="button" class="calc-mod-step-btn" data-target="saveMod" data-dir="-1">−</button>
-            <span class="calc-mod-step-val is-zero" id="saveModDisplay">0</span>
-            <button type="button" class="calc-mod-step-btn" data-target="saveMod" data-dir="1">+</button>
-          </div>
+        <div>
+          <label for="weaponSelect">Weapon</label>
+          <select id="weaponSelect"></select>
         </div>
 
-        <!-- Toggle chips -->
-        <div class="calc-mod-chip-grid">
-          <div class="calc-mod-chip" data-target="heavyBox" id="heavyChip">Heavy</div>
-          <div class="calc-mod-chip" data-target="rapidFireBox" id="rapidFireChip">Rapid Fire</div>
-          <div class="calc-mod-chip" data-target="coverBox" id="coverChip">Cover</div>
-          <div class="calc-mod-chip" data-target="armorContemptBox" id="armorContemptChip">Arm. Contempt</div>
-        </div>
-
-        <button type="button" class="secondary" id="resetModifiersBtn" style="margin-top:10px;width:100%">Reset Modifiers</button>
+        <div class="calc-weapon-name" id="calcWeaponName"></div>
+        <div class="calc-weapon-abilities" id="calcWeaponAbilities"></div>
+        <div class="calc-weapon-stats" id="calcWeaponStats"></div>
       </div>
 
       <div class="card span-4">
@@ -355,9 +306,63 @@
 
       <div class="card span-12">
         <h2>Engagement Analysis</h2>
-        <div class="calc-weapon-name" id="calcWeaponName"></div>
-        <div class="calc-weapon-abilities" id="calcWeaponAbilities"></div>
-        <div class="calc-weapon-stats" id="calcWeaponStats"></div>
+
+        <!-- Hidden inputs — IDs preserved; app-calculator.js reads these -->
+        <input type="number" id="hitMod"   value="0" step="1" style="display:none" />
+        <input type="number" id="woundMod" value="0" step="1" style="display:none" />
+        <input type="number" id="apMod"    value="0" step="1" style="display:none" />
+        <input type="number" id="saveMod"  value="0" step="1" style="display:none" />
+        <input type="checkbox" id="heavyBox"         style="display:none" />
+        <input type="checkbox" id="rapidFireBox"     style="display:none" />
+        <input type="checkbox" id="coverBox"         style="display:none" />
+        <input type="checkbox" id="armorContemptBox" style="display:none" />
+
+        <!-- Attack modifier stepper rows -->
+        <div class="calc-mod-stepper-row">
+          <span class="calc-mod-stepper-label">Hit</span>
+          <div class="calc-mod-stepper-controls">
+            <button type="button" class="calc-mod-step-btn" data-target="hitMod" data-dir="-1">−</button>
+            <span class="calc-mod-step-val is-zero" id="hitModDisplay">0</span>
+            <button type="button" class="calc-mod-step-btn" data-target="hitMod" data-dir="1">+</button>
+          </div>
+        </div>
+        <div class="calc-mod-stepper-row">
+          <span class="calc-mod-stepper-label">Wound</span>
+          <div class="calc-mod-stepper-controls">
+            <button type="button" class="calc-mod-step-btn" data-target="woundMod" data-dir="-1">−</button>
+            <span class="calc-mod-step-val is-zero" id="woundModDisplay">0</span>
+            <button type="button" class="calc-mod-step-btn" data-target="woundMod" data-dir="1">+</button>
+          </div>
+        </div>
+        <div class="calc-mod-stepper-row">
+          <span class="calc-mod-stepper-label">AP</span>
+          <div class="calc-mod-stepper-controls">
+            <button type="button" class="calc-mod-step-btn" data-target="apMod" data-dir="-1">−</button>
+            <span class="calc-mod-step-val is-zero" id="apModDisplay">0</span>
+            <button type="button" class="calc-mod-step-btn" data-target="apMod" data-dir="1">+</button>
+          </div>
+        </div>
+        <div class="calc-mod-stepper-row">
+          <span class="calc-mod-stepper-label">Save</span>
+          <div class="calc-mod-stepper-controls">
+            <button type="button" class="calc-mod-step-btn" data-target="saveMod" data-dir="-1">−</button>
+            <span class="calc-mod-step-val is-zero" id="saveModDisplay">0</span>
+            <button type="button" class="calc-mod-step-btn" data-target="saveMod" data-dir="1">+</button>
+          </div>
+        </div>
+
+        <!-- Condition chips -->
+        <div class="calc-mod-chip-grid">
+          <div class="calc-mod-chip" data-target="heavyBox" id="heavyChip">Heavy</div>
+          <div class="calc-mod-chip" data-target="rapidFireBox" id="rapidFireChip">Rapid Fire</div>
+          <div class="calc-mod-chip" data-target="coverBox" id="coverChip">Cover</div>
+          <div class="calc-mod-chip" data-target="armorContemptBox" id="armorContemptChip">Arm. Contempt</div>
+        </div>
+
+        <button type="button" class="secondary" id="resetModifiersBtn" style="margin-top:8px;width:100%">Reset Modifiers</button>
+
+        <hr class="calc-results-divider" />
+
         <div class="result-grid">
           <div class="result">
             <div class="kicker">Attacks</div>
