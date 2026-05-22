@@ -114,6 +114,22 @@ battlePanelButtons.forEach(button => {
   button.addEventListener('click', () => setBattlePanelChoice(button.dataset.panel));
 });
 
+// ── Battle Tracker: Setup / Saved Battles tab toggle ──
+const btSetupTabBtns = Array.from(document.querySelectorAll('.bt-setup-tab-btn'));
+const btSetupTabPanels = Array.from(document.querySelectorAll('.bt-setup-tab-panel'));
+btSetupTabBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    const tab = btn.dataset.tab;
+    btSetupTabBtns.forEach(b => {
+      b.classList.toggle('is-active', b.dataset.tab === tab);
+      b.setAttribute('aria-pressed', b.dataset.tab === tab ? 'true' : 'false');
+    });
+    btSetupTabPanels.forEach(p => {
+      p.hidden = p.dataset.tab !== tab;
+    });
+  });
+});
+
 builderFactionSelect.addEventListener('change', () => {
   clearBuilderUnitEditMode();
   builderSquadName.value = '';
