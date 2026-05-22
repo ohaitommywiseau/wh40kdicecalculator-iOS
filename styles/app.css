@@ -1568,6 +1568,15 @@
 
     @media (max-width: 900px) {
       .span-4, .span-6, .span-8 { grid-column: span 12; }
+      .bt-layout {
+        flex-direction: column;
+      }
+      .bt-sidebar {
+        flex: none;
+        width: 100%;
+        max-height: none;
+        overflow-y: visible;
+      }
       .wrap { padding: 14px; }
       .list-builder-layout {
         grid-template-columns: 1fr;
@@ -1958,4 +1967,43 @@
     /* ── Calculator: Weapon card vertical alignment ── */
     #calcWeaponStatBlock {
       margin-top: 70px;
+    }
+
+    /* ── Battle Tracker: Sidebar layout ── */
+    #battleTrackerView .view-body {
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .bt-layout {
+      display: flex;
+      gap: 16px;
+      flex: 1;
+      min-height: 0;
+      align-items: flex-start;
+    }
+    .bt-sidebar {
+      flex: 0 0 calc(33.333% - 8px);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      overflow-y: auto;
+      min-height: 0;
+      max-height: 100%;
+    }
+    .bt-main {
+      flex: 1;
+      min-width: 0;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      overflow: hidden;
+      align-self: stretch;
+    }
+    #battleTrackerView .battle-panel-card {
+      flex: 1;
+      min-height: 0;
+      max-height: none;
+      overflow: hidden;
     }
