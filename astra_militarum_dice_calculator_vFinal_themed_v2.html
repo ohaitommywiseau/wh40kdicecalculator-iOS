@@ -567,14 +567,14 @@
           <div class="battle-panel-toggle-row battle-panel-toggle-full">
             <div class="battle-panel-toggle-label">View</div>
             <div class="battle-panel-toggle-buttons">
-              <button type="button" class="secondary battle-panel-toggle-btn" data-panel="secondaries" aria-pressed="true">Secondaries</button>
+              <button type="button" class="secondary battle-panel-toggle-btn" data-panel="setup" aria-pressed="true">Battle Setup</button>
+              <button type="button" class="secondary battle-panel-toggle-btn" data-panel="secondaries" aria-pressed="false">Secondaries</button>
               <button type="button" class="secondary battle-panel-toggle-btn" data-panel="log" aria-pressed="false">Battle Log</button>
               <button type="button" class="secondary battle-panel-toggle-btn" data-panel="units" aria-pressed="false">Unit State</button>
-              <button type="button" class="secondary battle-panel-toggle-btn" data-panel="setup" aria-pressed="false">Battle Setup</button>
             </div>
           </div>
 
-          <div class="battle-panel battle-panel-block is-active" data-panel="secondaries">
+          <div class="battle-panel battle-panel-block" data-panel="secondaries" hidden>
             <div class="battle-panel-title">Secondary Objectives</div>
             <div class="battle-panel-scroll">
               <div class="battle-score-secondary-strip">
@@ -600,7 +600,7 @@
             </div>
           </div>
 
-          <div class="battle-panel battle-panel-block" data-panel="setup" hidden>
+          <div class="battle-panel battle-panel-block is-active" data-panel="setup">
             <div class="battle-panel-title">Battle Setup</div>
             <div class="battle-panel-scroll">
               <div class="field-grid">

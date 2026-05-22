@@ -58,7 +58,7 @@ function battleLiveEditingEnabled() {
 }
 
 function battlePanelChoice() {
-  return activeBattle?.ui?.panel || 'secondaries';
+  return activeBattle?.ui?.panel || 'setup';
 }
 
 function ensureBattlePanelChoice() {

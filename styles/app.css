@@ -2005,3 +2005,8 @@
       max-height: none;
       overflow: hidden;
     }
+
+    /* Last sidebar card (Battle State) fills remaining sidebar height */
+    .bt-sidebar .card:last-child {
+      flex: 1;
+    }
