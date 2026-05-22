@@ -1994,3 +1994,10 @@
       color: var(--accent-2);
     }
     .calc-stat-badge.is-dmg .calc-stat-badge-val { color: var(--good); }
+
+    /* ── Calculator: Modifiers / Results separator ── */
+    .calc-results-divider {
+      border: none;
+      border-top: 1px solid rgba(219,170,79,0.2);
+      margin: 10px 0 10px 0;
+    }
