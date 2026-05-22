@@ -256,9 +256,11 @@
       <div class="card span-4">
         <h2>Weapon</h2>
 
-        <div>
-          <label for="weaponSelect">Weapon</label>
-          <select id="weaponSelect"></select>
+        <div class="field-grid">
+          <div>
+            <label for="weaponSelect">Weapon</label>
+            <select id="weaponSelect"></select>
+          </div>
         </div>
 
         <div class="calc-weapon-name" id="calcWeaponName"></div>
@@ -317,92 +319,96 @@
         <input type="checkbox" id="coverBox"         style="display:none" />
         <input type="checkbox" id="armorContemptBox" style="display:none" />
 
-        <!-- Attack modifier stepper rows -->
-        <div class="calc-mod-stepper-row">
-          <span class="calc-mod-stepper-label">Hit</span>
-          <div class="calc-mod-stepper-controls">
-            <button type="button" class="calc-mod-step-btn" data-target="hitMod" data-dir="-1">−</button>
-            <span class="calc-mod-step-val is-zero" id="hitModDisplay">0</span>
-            <button type="button" class="calc-mod-step-btn" data-target="hitMod" data-dir="1">+</button>
-          </div>
-        </div>
-        <div class="calc-mod-stepper-row">
-          <span class="calc-mod-stepper-label">Wound</span>
-          <div class="calc-mod-stepper-controls">
-            <button type="button" class="calc-mod-step-btn" data-target="woundMod" data-dir="-1">−</button>
-            <span class="calc-mod-step-val is-zero" id="woundModDisplay">0</span>
-            <button type="button" class="calc-mod-step-btn" data-target="woundMod" data-dir="1">+</button>
-          </div>
-        </div>
-        <div class="calc-mod-stepper-row">
-          <span class="calc-mod-stepper-label">AP</span>
-          <div class="calc-mod-stepper-controls">
-            <button type="button" class="calc-mod-step-btn" data-target="apMod" data-dir="-1">−</button>
-            <span class="calc-mod-step-val is-zero" id="apModDisplay">0</span>
-            <button type="button" class="calc-mod-step-btn" data-target="apMod" data-dir="1">+</button>
-          </div>
-        </div>
-        <div class="calc-mod-stepper-row">
-          <span class="calc-mod-stepper-label">Save</span>
-          <div class="calc-mod-stepper-controls">
-            <button type="button" class="calc-mod-step-btn" data-target="saveMod" data-dir="-1">−</button>
-            <span class="calc-mod-step-val is-zero" id="saveModDisplay">0</span>
-            <button type="button" class="calc-mod-step-btn" data-target="saveMod" data-dir="1">+</button>
-          </div>
-        </div>
+        <div class="calc-engagement-inner">
+          <div class="calc-mod-panel">
+            <!-- Attack modifier stepper rows -->
+            <div class="calc-mod-stepper-row">
+              <span class="calc-mod-stepper-label">Hit</span>
+              <div class="calc-mod-stepper-controls">
+                <button type="button" class="calc-mod-step-btn" data-target="hitMod" data-dir="-1">−</button>
+                <span class="calc-mod-step-val is-zero" id="hitModDisplay">0</span>
+                <button type="button" class="calc-mod-step-btn" data-target="hitMod" data-dir="1">+</button>
+              </div>
+            </div>
+            <div class="calc-mod-stepper-row">
+              <span class="calc-mod-stepper-label">Wound</span>
+              <div class="calc-mod-stepper-controls">
+                <button type="button" class="calc-mod-step-btn" data-target="woundMod" data-dir="-1">−</button>
+                <span class="calc-mod-step-val is-zero" id="woundModDisplay">0</span>
+                <button type="button" class="calc-mod-step-btn" data-target="woundMod" data-dir="1">+</button>
+              </div>
+            </div>
+            <div class="calc-mod-stepper-row">
+              <span class="calc-mod-stepper-label">AP</span>
+              <div class="calc-mod-stepper-controls">
+                <button type="button" class="calc-mod-step-btn" data-target="apMod" data-dir="-1">−</button>
+                <span class="calc-mod-step-val is-zero" id="apModDisplay">0</span>
+                <button type="button" class="calc-mod-step-btn" data-target="apMod" data-dir="1">+</button>
+              </div>
+            </div>
+            <div class="calc-mod-stepper-row">
+              <span class="calc-mod-stepper-label">Save</span>
+              <div class="calc-mod-stepper-controls">
+                <button type="button" class="calc-mod-step-btn" data-target="saveMod" data-dir="-1">−</button>
+                <span class="calc-mod-step-val is-zero" id="saveModDisplay">0</span>
+                <button type="button" class="calc-mod-step-btn" data-target="saveMod" data-dir="1">+</button>
+              </div>
+            </div>
 
-        <!-- Condition chips -->
-        <div class="calc-mod-chip-grid">
-          <div class="calc-mod-chip" data-target="heavyBox" id="heavyChip">Heavy</div>
-          <div class="calc-mod-chip" data-target="rapidFireBox" id="rapidFireChip">Rapid Fire</div>
-          <div class="calc-mod-chip" data-target="coverBox" id="coverChip">Cover</div>
-          <div class="calc-mod-chip" data-target="armorContemptBox" id="armorContemptChip">Arm. Contempt</div>
-        </div>
+            <!-- Condition chips -->
+            <div class="calc-mod-chip-grid">
+              <div class="calc-mod-chip" data-target="heavyBox" id="heavyChip">Heavy</div>
+              <div class="calc-mod-chip" data-target="rapidFireBox" id="rapidFireChip">Rapid Fire</div>
+              <div class="calc-mod-chip" data-target="coverBox" id="coverChip">Cover</div>
+              <div class="calc-mod-chip" data-target="armorContemptBox" id="armorContemptChip">Arm. Contempt</div>
+            </div>
 
-        <button type="button" class="secondary" id="resetModifiersBtn" style="margin-top:8px;width:100%">Reset Modifiers</button>
+            <button type="button" class="secondary" id="resetModifiersBtn" style="margin-top:8px;width:100%">Reset Modifiers</button>
+          </div>
 
-        <hr class="calc-results-divider" />
-
-        <div class="result-grid">
-          <div class="result">
-            <div class="kicker">Attacks</div>
-            <div class="big" id="attacksBig">-</div>
-            <div class="small result-detail" id="attacksBigExplain"></div>
+          <div class="calc-results-panel">
+            <div class="result-grid">
+              <div class="result">
+                <div class="kicker">Attacks</div>
+                <div class="big" id="attacksBig">-</div>
+                <div class="small result-detail" id="attacksBigExplain"></div>
+              </div>
+              <div class="result">
+                <div class="kicker">Hit roll needed</div>
+                <div class="big" id="hitNeeded">-</div>
+                <div class="small" id="hitChance">Chance: -</div>
+                <div class="small result-detail" id="hitExplain"></div>
+              </div>
+              <div class="result">
+                <div class="kicker">Wound roll needed</div>
+                <div class="big" id="woundNeeded">-</div>
+                <div class="small" id="woundChance">Chance: -</div>
+                <div class="small result-detail" id="woundExplain"></div>
+              </div>
+              <div class="result">
+                <div class="kicker">Saving throw needed</div>
+                <div class="big" id="saveNeeded">-</div>
+                <div class="small" id="saveChance">Chance: -</div>
+                <div class="small result-detail" id="saveExplain"></div>
+              </div>
+              <div class="result">
+                <div class="kicker">Damage after reduction</div>
+                <div class="big" id="damageValue">-</div>
+                <div class="small result-detail" id="damageExplain"></div>
+              </div>
+            </div>
+            <div class="battle-custom-adjust" id="calculatorBattleResolveRow" hidden>
+              <input type="number" id="calculatorResolvedDamageInput" min="0" step="1" placeholder="Resolved damage" />
+              <button type="button" id="calculatorRecordBattleWeaponBtn">Record Weapon Damage</button>
+              <button type="button" class="secondary" id="calculatorClearBattleDamageBtn">Clear</button>
+            </div>
+            <div class="note battle-mode-note" id="calculatorBattleResolveNote" hidden></div>
+            <div class="army-unit-list" id="calculatorBattleRecordedWeapons" hidden></div>
+            <div class="checks" id="calculatorBattleFinalizeRow" hidden>
+              <button type="button" class="secondary" id="calculatorBattleNewTargetBtn">New Target</button>
+              <button type="button" id="calculatorApplyBattleAttackBtn">Apply Damage</button>
+            </div>
           </div>
-          <div class="result">
-            <div class="kicker">Hit roll needed</div>
-            <div class="big" id="hitNeeded">-</div>
-            <div class="small" id="hitChance">Chance: -</div>
-            <div class="small result-detail" id="hitExplain"></div>
-          </div>
-          <div class="result">
-            <div class="kicker">Wound roll needed</div>
-            <div class="big" id="woundNeeded">-</div>
-            <div class="small" id="woundChance">Chance: -</div>
-            <div class="small result-detail" id="woundExplain"></div>
-          </div>
-          <div class="result">
-            <div class="kicker">Saving throw needed</div>
-            <div class="big" id="saveNeeded">-</div>
-            <div class="small" id="saveChance">Chance: -</div>
-            <div class="small result-detail" id="saveExplain"></div>
-          </div>
-          <div class="result">
-            <div class="kicker">Damage after reduction</div>
-            <div class="big" id="damageValue">-</div>
-            <div class="small result-detail" id="damageExplain"></div>
-          </div>
-        </div>
-        <div class="battle-custom-adjust" id="calculatorBattleResolveRow" hidden>
-          <input type="number" id="calculatorResolvedDamageInput" min="0" step="1" placeholder="Resolved damage" />
-          <button type="button" id="calculatorRecordBattleWeaponBtn">Record Weapon Damage</button>
-          <button type="button" class="secondary" id="calculatorClearBattleDamageBtn">Clear</button>
-        </div>
-        <div class="note battle-mode-note" id="calculatorBattleResolveNote" hidden></div>
-        <div class="army-unit-list" id="calculatorBattleRecordedWeapons" hidden></div>
-        <div class="checks" id="calculatorBattleFinalizeRow" hidden>
-          <button type="button" class="secondary" id="calculatorBattleNewTargetBtn">New Target</button>
-          <button type="button" id="calculatorApplyBattleAttackBtn">Apply Damage</button>
         </div>
       </div>
 
