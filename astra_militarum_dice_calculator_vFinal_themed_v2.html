@@ -443,8 +443,9 @@
     </div>
 
       <div class="view-body">
-        <div class="grid">
-        <div class="card span-8">
+        <div class="bt-layout">
+        <div class="bt-sidebar">
+        <div class="card">
           <h2>Battle Setup</h2>
           <div class="field-grid">
             <div>
@@ -514,7 +515,7 @@
           </div>
         </div>
 
-        <div class="card span-4">
+        <div class="card">
           <h2>Saved Battles</h2>
           <div class="field-grid">
             <div>
@@ -529,7 +530,35 @@
           <div class="note" id="battlePersistenceNote" style="margin-top:14px;"></div>
         </div>
 
-        <div class="card span-12">
+        <div class="card">
+          <h2>Battle State</h2>
+          <div class="result-grid">
+            <div class="result">
+              <div class="kicker">Battle round</div>
+              <div class="big" id="battleRoundBig">1</div>
+            </div>
+            <div class="result">
+              <div class="kicker">Current player</div>
+              <div class="big" id="battleCurrentPlayerBig">You</div>
+            </div>
+            <div class="result">
+              <div class="kicker">Current phase</div>
+              <div class="big" id="battleCurrentPhaseBig">Command</div>
+            </div>
+          </div>
+          <div class="checks" style="margin-top:14px;">
+            <button type="button" class="secondary" id="battleUndoBtn" disabled>Undo Last Action</button>
+            <button type="button" class="secondary" id="battlePrevPhaseBtn">Previous Phase</button>
+            <button type="button" class="secondary" id="battleNextPhaseBtn">Next Phase</button>
+            <button type="button" class="secondary" id="battleEndTurnBtn">End Turn</button>
+            <button type="button" class="secondary" id="battleNextRoundBtn">Next Round</button>
+            <button type="button" id="battleTrackerStratagemsBtn">Open Stratagems</button>
+          </div>
+        </div>
+        </div><!-- /.bt-sidebar -->
+
+        <div class="bt-main">
+        <div class="card">
           <h2>Engagement Score</h2>
           <div class="battle-score-strip">
             <div class="battle-score-strip-row">
@@ -601,33 +630,7 @@
           </div>
         </div>
 
-        <div class="card span-4">
-          <h2>Battle State</h2>
-          <div class="result-grid">
-            <div class="result">
-              <div class="kicker">Battle round</div>
-              <div class="big" id="battleRoundBig">1</div>
-            </div>
-            <div class="result">
-              <div class="kicker">Current player</div>
-              <div class="big" id="battleCurrentPlayerBig">You</div>
-            </div>
-            <div class="result">
-              <div class="kicker">Current phase</div>
-              <div class="big" id="battleCurrentPhaseBig">Command</div>
-            </div>
-          </div>
-          <div class="checks" style="margin-top:14px;">
-            <button type="button" class="secondary" id="battleUndoBtn" disabled>Undo Last Action</button>
-            <button type="button" class="secondary" id="battlePrevPhaseBtn">Previous Phase</button>
-            <button type="button" class="secondary" id="battleNextPhaseBtn">Next Phase</button>
-            <button type="button" class="secondary" id="battleEndTurnBtn">End Turn</button>
-            <button type="button" class="secondary" id="battleNextRoundBtn">Next Round</button>
-            <button type="button" id="battleTrackerStratagemsBtn">Open Stratagems</button>
-          </div>
-        </div>
-
-        <div class="card span-8 battle-panel-card">
+        <div class="card battle-panel-card">
           <div class="battle-panel-card-header">
             <h2>Battle Intel</h2>
           </div>
@@ -666,8 +669,9 @@
             </div>
           </div>
         </div>
+        </div><!-- /.bt-main -->
+        </div><!-- /.bt-layout -->
 
-      </div>
       </div>
       <div class="footer-bar">
         <div class="footer-quote">It is better to die for the Emperor than to live for yourself.</div>
