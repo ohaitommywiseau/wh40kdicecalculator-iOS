@@ -1849,73 +1849,6 @@
       display: none;
     }
 
-    /* ── Calculator: Weapon Profile Strip ── */
-    .calc-weapon-name {
-      font-size: 0.82rem;
-      font-weight: bold;
-      color: var(--green-bright);
-      letter-spacing: 0.04em;
-      padding: 6px 0 3px 0;
-    }
-    .calc-weapon-abilities {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 5px;
-      padding-bottom: 6px;
-      min-height: 0;
-    }
-    .calc-weapon-ability-pill {
-      font-size: 0.6rem;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      background: rgba(143,227,172,0.07);
-      border: 1px solid rgba(143,227,172,0.22);
-      border-radius: 2px;
-      padding: 2px 7px;
-      color: var(--accent-2);
-      cursor: pointer;
-    }
-    .calc-weapon-stats {
-      display: flex;
-      gap: 5px;
-      padding-bottom: 4px;
-    }
-    .calc-stat-badge {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      background: rgba(143,227,172,0.07);
-      border: 1px solid rgba(143,227,172,0.2);
-      border-radius: 2px;
-      padding: 4px 3px;
-    }
-    .calc-stat-badge-val {
-      font-size: 0.82rem;
-      font-weight: bold;
-      line-height: 1.1;
-      color: var(--accent-2);
-    }
-    .calc-stat-badge-lbl {
-      font-size: 0.52rem;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-top: 1px;
-    }
-    .calc-stat-badge.is-str {
-      background: rgba(196,216,255,0.07);
-      border-color: rgba(196,216,255,0.2);
-    }
-    .calc-stat-badge.is-str .calc-stat-badge-val { color: var(--stat-str); }
-    .calc-stat-badge.is-ap {
-      background: rgba(255,158,106,0.1);
-      border-color: rgba(255,158,106,0.4);
-    }
-    .calc-stat-badge.is-ap .calc-stat-badge-val { color: var(--stat-ap); }
-    .calc-stat-badge.is-dmg {
-      background: rgba(216,239,141,0.07);
-      border-color: rgba(216,239,141,0.2);
-    }
     /* ── Calculator: Attacker Modifier Stepper + Chips ── */
     .calc-mod-stepper-row {
       display: flex;
@@ -1991,8 +1924,6 @@
       background: rgba(143,227,172,0.1);
       color: var(--accent-2);
     }
-    .calc-stat-badge.is-dmg .calc-stat-badge-val { color: var(--good); }
-
     /* ── Calculator: Modifiers / Results separator ── */
     .calc-results-divider {
       border: none;

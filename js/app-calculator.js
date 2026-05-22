@@ -464,12 +464,10 @@ function render() {
     setTextIfPresent('phasePill', 'Phase: -');
     setTextIfPresent('weaponPill', 'Weapon: -');
     setTextIfPresent('attackSummary', 'Attacks: -');
-    const calcWeaponName = document.getElementById('calcWeaponName');
-    const calcWeaponAbilities = document.getElementById('calcWeaponAbilities');
-    const calcWeaponStats = document.getElementById('calcWeaponStats');
-    if (calcWeaponName) calcWeaponName.textContent = '';
-    if (calcWeaponAbilities) calcWeaponAbilities.innerHTML = '';
-    if (calcWeaponStats) calcWeaponStats.innerHTML = '';
+    const calcWeaponStatBlock = document.getElementById('calcWeaponStatBlock');
+    const calcWeaponAbilitiesNote = document.getElementById('calcWeaponAbilitiesNote');
+    if (calcWeaponStatBlock) calcWeaponStatBlock.innerHTML = '';
+    if (calcWeaponAbilitiesNote) calcWeaponAbilitiesNote.innerHTML = '';
     return;
   }
   const torrent = hasAbility(weapon, 'Torrent');
@@ -576,38 +574,34 @@ function render() {
     if (damageCard) damageCard.classList.add('modified-result');
   }
 
-  const calcWeaponName = document.getElementById('calcWeaponName');
-  if (calcWeaponName) {
-    calcWeaponName.textContent = weaponSelect.value;
+  const calcWeaponStatBlock = document.getElementById('calcWeaponStatBlock');
+  if (calcWeaponStatBlock) {
+    const skillLabel = weapon.skillType === 'WS' ? 'WS' : 'BS';
+    calcWeaponStatBlock.innerHTML = `
+      <div class="datasheet-label">Stat Line</div>
+      <div class="datasheet-bar">
+        <div class="datasheet-name">${escapeHtml(weaponSelect.value)}</div>
+        <div class="datasheet-grid">
+          ${statCell('Rng', weapon.range)}
+          ${statCell('A', attacksUsed)}
+          ${statCell(skillLabel, weapon.skill + '+')}
+          ${statCell('S', weapon.strength)}
+          ${statCell('AP', effectiveAP)}
+          ${statCell('D', weapon.damage)}
+        </div>
+      </div>
+    `;
   }
 
-  const calcWeaponAbilities = document.getElementById('calcWeaponAbilities');
-  if (calcWeaponAbilities) {
-    calcWeaponAbilities.innerHTML = renderTooltipList(weapon.abilities, {
-      kind: 'weapon',
-      datasheetLink: unit?.source?.datasheet || ''
-    });
-    calcWeaponAbilities.querySelectorAll('.tooltip-term').forEach(el => {
-      el.classList.add('calc-weapon-ability-pill');
-    });
-  }
-
-  const calcWeaponStats = document.getElementById('calcWeaponStats');
-  if (calcWeaponStats) {
-    const stats = [
-      { val: weapon.range,                       lbl: 'Rng', cls: ''       },
-      { val: attacksUsed,                        lbl: 'Atk', cls: ''       },
-      { val: weapon.skill + '+',                 lbl: weapon.skillType === 'WS' ? 'WS' : 'BS', cls: '' },
-      { val: weapon.strength,                    lbl: 'Str', cls: 'is-str' },
-      { val: effectiveAP,                        lbl: 'AP',  cls: 'is-ap'  },
-      { val: weapon.damage,                      lbl: 'Dmg', cls: 'is-dmg' },
-    ];
-    calcWeaponStats.innerHTML = stats.map(s =>
-      `<div class="calc-stat-badge ${s.cls}">` +
-        `<div class="calc-stat-badge-val">${escapeHtml(String(s.val))}</div>` +
-        `<div class="calc-stat-badge-lbl">${s.lbl}</div>` +
-      `</div>`
-    ).join('');
+  const calcWeaponAbilitiesNote = document.getElementById('calcWeaponAbilitiesNote');
+  if (calcWeaponAbilitiesNote) {
+    const abilityItems = Array.isArray(weapon.abilities) ? weapon.abilities.filter(Boolean) : [];
+    if (abilityItems.length) {
+      const datasheetLink = unit?.source?.datasheet || '';
+      calcWeaponAbilitiesNote.innerHTML = `Abilities: ${renderTooltipList(abilityItems, { kind: 'weapon', datasheetLink })}`;
+    } else {
+      calcWeaponAbilitiesNote.innerHTML = '';
+    }
   }
 
   bindTooltipInteractions();
