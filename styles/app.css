@@ -1878,9 +1878,7 @@
     .calc-weapon-stats {
       display: flex;
       gap: 5px;
-      padding-bottom: 10px;
-      border-bottom: 1px solid rgba(219,170,79,0.2);
-      margin-bottom: 10px;
+      padding-bottom: 4px;
     }
     .calc-stat-badge {
       flex: 1;
@@ -2000,4 +1998,22 @@
       border: none;
       border-top: 1px solid rgba(219,170,79,0.2);
       margin: 10px 0 10px 0;
+    }
+
+    /* ── Calculator: Engagement Analysis two-column layout ── */
+    .calc-engagement-inner {
+      display: flex;
+      gap: 0;
+      align-items: flex-start;
+    }
+    .calc-mod-panel {
+      width: 240px;
+      flex-shrink: 0;
+      padding-right: 18px;
+      border-right: 1px solid rgba(219,170,79,0.18);
+      margin-right: 18px;
+    }
+    .calc-results-panel {
+      flex: 1;
+      min-width: 0;
     }
