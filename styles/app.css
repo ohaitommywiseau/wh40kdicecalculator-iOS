@@ -2000,7 +2000,14 @@
       gap: 16px;
     }
     #battleTrackerView .battle-panel-card {
+      flex: 1;
       min-height: 0;
       max-height: none;
       overflow: hidden;
+    }
+    #battleTrackerView .battle-panel-block {
+      flex: 1 1 auto;
+    }
+    #battleTrackerView .battle-panel-scroll {
+      max-height: 500px;
     }
