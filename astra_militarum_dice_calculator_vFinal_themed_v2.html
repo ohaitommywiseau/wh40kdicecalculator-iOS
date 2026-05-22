@@ -320,46 +320,56 @@
 
         <div class="calc-engagement-inner">
           <div class="calc-mod-panel">
-            <!-- Attack modifier stepper rows -->
-            <div class="calc-mod-stepper-row">
-              <span class="calc-mod-stepper-label">Hit</span>
-              <div class="calc-mod-stepper-controls">
-                <button type="button" class="calc-mod-step-btn" data-target="hitMod" data-dir="-1">−</button>
-                <span class="calc-mod-step-val is-zero" id="hitModDisplay">0</span>
-                <button type="button" class="calc-mod-step-btn" data-target="hitMod" data-dir="1">+</button>
+            <div class="calc-mod-grid">
+              <div class="calc-mod-col">
+                <!-- Hit stepper row -->
+                <div class="calc-mod-stepper-row">
+                  <span class="calc-mod-stepper-label">Hit</span>
+                  <div class="calc-mod-stepper-controls">
+                    <button type="button" class="calc-mod-step-btn" data-target="hitMod" data-dir="-1">−</button>
+                    <span class="calc-mod-step-val is-zero" id="hitModDisplay">0</span>
+                    <button type="button" class="calc-mod-step-btn" data-target="hitMod" data-dir="1">+</button>
+                  </div>
+                </div>
+                <!-- Wound stepper row -->
+                <div class="calc-mod-stepper-row">
+                  <span class="calc-mod-stepper-label">Wound</span>
+                  <div class="calc-mod-stepper-controls">
+                    <button type="button" class="calc-mod-step-btn" data-target="woundMod" data-dir="-1">−</button>
+                    <span class="calc-mod-step-val is-zero" id="woundModDisplay">0</span>
+                    <button type="button" class="calc-mod-step-btn" data-target="woundMod" data-dir="1">+</button>
+                  </div>
+                </div>
               </div>
-            </div>
-            <div class="calc-mod-stepper-row">
-              <span class="calc-mod-stepper-label">Wound</span>
-              <div class="calc-mod-stepper-controls">
-                <button type="button" class="calc-mod-step-btn" data-target="woundMod" data-dir="-1">−</button>
-                <span class="calc-mod-step-val is-zero" id="woundModDisplay">0</span>
-                <button type="button" class="calc-mod-step-btn" data-target="woundMod" data-dir="1">+</button>
+              <div class="calc-mod-col">
+                <!-- AP stepper row -->
+                <div class="calc-mod-stepper-row">
+                  <span class="calc-mod-stepper-label">AP</span>
+                  <div class="calc-mod-stepper-controls">
+                    <button type="button" class="calc-mod-step-btn" data-target="apMod" data-dir="-1">−</button>
+                    <span class="calc-mod-step-val is-zero" id="apModDisplay">0</span>
+                    <button type="button" class="calc-mod-step-btn" data-target="apMod" data-dir="1">+</button>
+                  </div>
+                </div>
+                <!-- Save stepper row -->
+                <div class="calc-mod-stepper-row">
+                  <span class="calc-mod-stepper-label">Save</span>
+                  <div class="calc-mod-stepper-controls">
+                    <button type="button" class="calc-mod-step-btn" data-target="saveMod" data-dir="-1">−</button>
+                    <span class="calc-mod-step-val is-zero" id="saveModDisplay">0</span>
+                    <button type="button" class="calc-mod-step-btn" data-target="saveMod" data-dir="1">+</button>
+                  </div>
+                </div>
               </div>
-            </div>
-            <div class="calc-mod-stepper-row">
-              <span class="calc-mod-stepper-label">AP</span>
-              <div class="calc-mod-stepper-controls">
-                <button type="button" class="calc-mod-step-btn" data-target="apMod" data-dir="-1">−</button>
-                <span class="calc-mod-step-val is-zero" id="apModDisplay">0</span>
-                <button type="button" class="calc-mod-step-btn" data-target="apMod" data-dir="1">+</button>
+              <div class="calc-mod-col">
+                <!-- Condition chips -->
+                <div class="calc-mod-chip-grid">
+                  <div class="calc-mod-chip" data-target="heavyBox" id="heavyChip">Heavy</div>
+                  <div class="calc-mod-chip" data-target="rapidFireBox" id="rapidFireChip">Rapid Fire</div>
+                  <div class="calc-mod-chip" data-target="coverBox" id="coverChip">Cover</div>
+                  <div class="calc-mod-chip" data-target="armorContemptBox" id="armorContemptChip">Arm. Contempt</div>
+                </div>
               </div>
-            </div>
-            <div class="calc-mod-stepper-row">
-              <span class="calc-mod-stepper-label">Save</span>
-              <div class="calc-mod-stepper-controls">
-                <button type="button" class="calc-mod-step-btn" data-target="saveMod" data-dir="-1">−</button>
-                <span class="calc-mod-step-val is-zero" id="saveModDisplay">0</span>
-                <button type="button" class="calc-mod-step-btn" data-target="saveMod" data-dir="1">+</button>
-              </div>
-            </div>
-
-            <!-- Condition chips -->
-            <div class="calc-mod-chip-grid">
-              <div class="calc-mod-chip" data-target="heavyBox" id="heavyChip">Heavy</div>
-              <div class="calc-mod-chip" data-target="rapidFireBox" id="rapidFireChip">Rapid Fire</div>
-              <div class="calc-mod-chip" data-target="coverBox" id="coverChip">Cover</div>
-              <div class="calc-mod-chip" data-target="armorContemptBox" id="armorContemptChip">Arm. Contempt</div>
             </div>
 
             <button type="button" class="secondary" id="resetModifiersBtn" style="margin-top:8px;width:100%">Reset Modifiers</button>
