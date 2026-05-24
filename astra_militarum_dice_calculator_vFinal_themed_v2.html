@@ -226,7 +226,7 @@
     <div class="view-body">
       <div class="grid">
       <div class="card span-4">
-        <h2>Unit & Weapon</h2>
+        <h2>Attacker</h2>
         <div class="field-grid">
           <div>
             <label for="factionSelect">Faction</label>
@@ -235,10 +235,6 @@
           <div>
             <label for="unitSelect">Unit</label>
             <select id="unitSelect"></select>
-          </div>
-          <div>
-            <label for="weaponSelect">Weapon</label>
-            <select id="weaponSelect"></select>
           </div>
         </div>
         <div class="field-grid" style="margin-top:12px;">
@@ -258,33 +254,15 @@
       </div>
 
       <div class="card span-4">
-        <h2>Attacker Modifiers</h2>
+        <h2>Weapon</h2>
         <div class="field-grid">
           <div>
-            <label for="hitMod">Hit modifier</label>
-            <input id="hitMod" type="number" value="0" step="1" />
-          </div>
-          <div>
-            <label for="woundMod">Wound modifier</label>
-            <input id="woundMod" type="number" value="0" step="1" />
-          </div>
-          <div>
-            <label for="apMod">AP modifier</label>
-            <input id="apMod" type="number" value="0" step="1" />
-          </div>
-          <div>
-            <label for="saveMod">Save roll modifier</label>
-            <input id="saveMod" type="number" value="0" step="1" />
+            <label for="weaponSelect">Weapon</label>
+            <select id="weaponSelect"></select>
           </div>
         </div>
-        <div class="checks">
-          <label class="checkline"><input id="heavyBox" type="checkbox" /> Heavy bonus applied (+1 to hit when relevant)</label>
-          <label class="checkline"><input id="rapidFireBox" type="checkbox" /> Rapid Fire active (half range)</label>
-          <label class="checkline"><input id="coverBox" type="checkbox" /> Target has Benefit of Cover</label>
-          <label class="checkline"><input id="armorContemptBox" type="checkbox" /> Target reduces AP by 1</label>
-        </div>
-        <div class="attack-check-note">Rapid Fire only changes the attack count for weapons that already have a Rapid Fire value in their abilities.</div>
-        <button type="button" class="secondary" id="resetModifiersBtn">Reset Modifiers</button>
+        <div id="calcWeaponStatBlock" class="datasheet-block"></div>
+        <div class="footer-note" id="calcWeaponAbilitiesNote"></div>
       </div>
 
       <div class="card span-4">
@@ -325,54 +303,106 @@
         <div class="footer-note" id="targetKeywordsNote"></div>
       </div>
 
-      <div class="card span-8">
+      <div class="card span-12">
         <h2>Engagement Analysis</h2>
-        <div class="result-grid">
-          <div class="result">
-            <div class="kicker">Attacks</div>
-            <div class="big" id="attacksBig">-</div>
-            <div class="small result-detail" id="attacksBigExplain"></div>
-          </div>
-          <div class="result">
-            <div class="kicker">Hit roll needed</div>
-            <div class="big" id="hitNeeded">-</div>
-            <div class="small" id="hitChance">Chance: -</div>
-            <div class="small result-detail" id="hitExplain"></div>
-          </div>
-          <div class="result">
-            <div class="kicker">Wound roll needed</div>
-            <div class="big" id="woundNeeded">-</div>
-            <div class="small" id="woundChance">Chance: -</div>
-            <div class="small result-detail" id="woundExplain"></div>
-          </div>
-          <div class="result">
-            <div class="kicker">Saving throw needed</div>
-            <div class="big" id="saveNeeded">-</div>
-            <div class="small" id="saveChance">Chance: -</div>
-            <div class="small result-detail" id="saveExplain"></div>
-          </div>
-          <div class="result">
-            <div class="kicker">Damage after reduction</div>
-            <div class="big" id="damageValue">-</div>
-            <div class="small result-detail" id="damageExplain"></div>
-          </div>
-        </div>
-        <div class="battle-custom-adjust" id="calculatorBattleResolveRow" hidden>
-          <input type="number" id="calculatorResolvedDamageInput" min="0" step="1" placeholder="Resolved damage" />
-          <button type="button" id="calculatorRecordBattleWeaponBtn">Record Weapon Damage</button>
-          <button type="button" class="secondary" id="calculatorClearBattleDamageBtn">Clear</button>
-        </div>
-        <div class="note battle-mode-note" id="calculatorBattleResolveNote" hidden></div>
-        <div class="army-unit-list" id="calculatorBattleRecordedWeapons" hidden></div>
-        <div class="checks" id="calculatorBattleFinalizeRow" hidden>
-          <button type="button" class="secondary" id="calculatorBattleNewTargetBtn">New Target</button>
-          <button type="button" id="calculatorApplyBattleAttackBtn">Apply Damage</button>
-        </div>
-      </div>
+        <input type="number" id="hitMod" value="0" step="1" style="display:none" />
+        <input type="number" id="woundMod" value="0" step="1" style="display:none" />
+        <input type="number" id="apMod" value="0" step="1" style="display:none" />
+        <input type="number" id="saveMod" value="0" step="1" style="display:none" />
+        <input type="checkbox" id="heavyBox" style="display:none" />
+        <input type="checkbox" id="rapidFireBox" style="display:none" />
+        <input type="checkbox" id="coverBox" style="display:none" />
+        <input type="checkbox" id="armorContemptBox" style="display:none" />
 
-      <div class="card span-4">
-        <h2>Selected Weapon Profile</h2>
-        <div class="note profile-note" id="profileBox"></div>
+        <div class="calc-engagement-inner">
+          <div class="calc-mod-panel">
+            <div class="calc-mod-stepper-row">
+              <span class="calc-mod-stepper-label">Hit</span>
+              <div class="calc-mod-stepper-controls">
+                <button type="button" class="calc-mod-step-btn" data-target="hitMod" data-dir="-1">-</button>
+                <span class="calc-mod-step-val is-zero" id="hitModDisplay">0</span>
+                <button type="button" class="calc-mod-step-btn" data-target="hitMod" data-dir="1">+</button>
+              </div>
+            </div>
+            <div class="calc-mod-stepper-row">
+              <span class="calc-mod-stepper-label">Wound</span>
+              <div class="calc-mod-stepper-controls">
+                <button type="button" class="calc-mod-step-btn" data-target="woundMod" data-dir="-1">-</button>
+                <span class="calc-mod-step-val is-zero" id="woundModDisplay">0</span>
+                <button type="button" class="calc-mod-step-btn" data-target="woundMod" data-dir="1">+</button>
+              </div>
+            </div>
+            <div class="calc-mod-stepper-row">
+              <span class="calc-mod-stepper-label">AP</span>
+              <div class="calc-mod-stepper-controls">
+                <button type="button" class="calc-mod-step-btn" data-target="apMod" data-dir="-1">-</button>
+                <span class="calc-mod-step-val is-zero" id="apModDisplay">0</span>
+                <button type="button" class="calc-mod-step-btn" data-target="apMod" data-dir="1">+</button>
+              </div>
+            </div>
+            <div class="calc-mod-stepper-row">
+              <span class="calc-mod-stepper-label">Save</span>
+              <div class="calc-mod-stepper-controls">
+                <button type="button" class="calc-mod-step-btn" data-target="saveMod" data-dir="-1">-</button>
+                <span class="calc-mod-step-val is-zero" id="saveModDisplay">0</span>
+                <button type="button" class="calc-mod-step-btn" data-target="saveMod" data-dir="1">+</button>
+              </div>
+            </div>
+            <div class="calc-mod-right">
+              <div class="calc-mod-chip-grid">
+                <div class="calc-mod-chip" data-target="heavyBox" id="heavyChip">Heavy</div>
+                <div class="calc-mod-chip" data-target="rapidFireBox" id="rapidFireChip">Rapid Fire</div>
+                <div class="calc-mod-chip" data-target="coverBox" id="coverChip">Cover</div>
+                <div class="calc-mod-chip" data-target="armorContemptBox" id="armorContemptChip">Arm. Contempt</div>
+              </div>
+              <button type="button" class="secondary" id="resetModifiersBtn">Reset</button>
+            </div>
+          </div>
+
+          <div class="calc-results-panel">
+            <div class="result-grid">
+              <div class="result">
+                <div class="kicker">Attacks</div>
+                <div class="big" id="attacksBig">-</div>
+                <div class="small result-detail" id="attacksBigExplain"></div>
+              </div>
+              <div class="result">
+                <div class="kicker">Hit roll needed</div>
+                <div class="big" id="hitNeeded">-</div>
+                <div class="small" id="hitChance">Chance: -</div>
+                <div class="small result-detail" id="hitExplain"></div>
+              </div>
+              <div class="result">
+                <div class="kicker">Wound roll needed</div>
+                <div class="big" id="woundNeeded">-</div>
+                <div class="small" id="woundChance">Chance: -</div>
+                <div class="small result-detail" id="woundExplain"></div>
+              </div>
+              <div class="result">
+                <div class="kicker">Saving throw needed</div>
+                <div class="big" id="saveNeeded">-</div>
+                <div class="small" id="saveChance">Chance: -</div>
+                <div class="small result-detail" id="saveExplain"></div>
+              </div>
+              <div class="result">
+                <div class="kicker">Damage after reduction</div>
+                <div class="big" id="damageValue">-</div>
+                <div class="small result-detail" id="damageExplain"></div>
+              </div>
+            </div>
+            <div class="battle-custom-adjust" id="calculatorBattleResolveRow" hidden>
+              <input type="number" id="calculatorResolvedDamageInput" min="0" step="1" placeholder="Resolved damage" />
+              <button type="button" id="calculatorRecordBattleWeaponBtn">Record Weapon Damage</button>
+              <button type="button" class="secondary" id="calculatorClearBattleDamageBtn">Clear</button>
+            </div>
+            <div class="note battle-mode-note" id="calculatorBattleResolveNote" hidden></div>
+            <div class="army-unit-list" id="calculatorBattleRecordedWeapons" hidden></div>
+            <div class="checks" id="calculatorBattleFinalizeRow" hidden>
+              <button type="button" class="secondary" id="calculatorBattleNewTargetBtn">New Target</button>
+              <button type="button" id="calculatorApplyBattleAttackBtn">Apply Damage</button>
+            </div>
+          </div>
+        </div>
       </div>
 
       </div>
@@ -409,227 +439,241 @@
     </div>
 
       <div class="view-body">
-        <div class="grid">
-        <div class="card span-8">
-          <h2>Battle Setup</h2>
-          <div class="field-grid">
-            <div>
-              <label for="battleNameInput">Battle name</label>
-              <input id="battleNameInput" type="text" value="New Engagement" />
+        <div class="bt-layout">
+          <div class="bt-sidebar">
+            <div class="card">
+              <h2>Saved Battles</h2>
+              <div class="field-grid">
+                <div>
+                  <label for="savedBattleSelect">Saved battle</label>
+                  <select id="savedBattleSelect"></select>
+                </div>
+              </div>
+              <button type="button" class="secondary" id="battleLoadBtn">Load Battle</button>
+              <button type="button" class="secondary" id="battleSaveBtn">Save Battle</button>
+              <button type="button" class="secondary" id="battleDeleteBtn">Delete Battle</button>
+              <button type="button" class="secondary" id="battleNewBtn">New Battle</button>
+              <div class="note" id="battlePersistenceNote" style="margin-top:14px;"></div>
             </div>
-            <div>
-              <label for="battleYourFactionSelect">Your faction</label>
-              <select id="battleYourFactionSelect"></select>
-            </div>
-            <div>
-              <label for="battleArmyListSelect">Your army list <span class="muted">(optional)</span></label>
-              <select id="battleArmyListSelect"></select>
-            </div>
-            <div>
-              <label for="battleOpponentFactionSelect">Opponent faction</label>
-              <select id="battleOpponentFactionSelect"></select>
-            </div>
-            <div>
-              <label for="battleMissionNameInput">Mission name</label>
-              <input id="battleMissionNameInput" type="text" placeholder="Take and Hold" />
-            </div>
-            <div>
-              <label for="battleDeploymentInput">Deployment</label>
-              <input id="battleDeploymentInput" type="text" placeholder="Search and Destroy" />
-            </div>
-            <div>
-              <label for="battleMissionRuleInput">Mission rule</label>
-              <input id="battleMissionRuleInput" type="text" placeholder="Hidden Supplies" />
-            </div>
-            <div>
-              <label for="battleYourRoleSelect">Your mission role</label>
-              <select id="battleYourRoleSelect">
-                <option value="attacker">Attacker</option>
-                <option value="defender">Defender</option>
-              </select>
-            </div>
-            <div>
-              <label for="battleFirstTurnSelect">First turn</label>
-              <select id="battleFirstTurnSelect">
-                <option value="you">You</option>
-                <option value="opponent">Opponent</option>
-              </select>
-            </div>
-            <div>
-              <label for="battleYourStartingCpInput">Your starting CP</label>
-              <input id="battleYourStartingCpInput" type="number" min="0" step="1" value="0" />
-            </div>
-            <div>
-              <label for="battleOpponentStartingCpInput">Opponent starting CP</label>
-              <input id="battleOpponentStartingCpInput" type="number" min="0" step="1" value="0" />
+
+            <div class="card">
+              <h2>Battle State</h2>
+              <div class="result-grid">
+                <div class="result">
+                  <div class="kicker">Battle round</div>
+                  <div class="big" id="battleRoundBig">1</div>
+                </div>
+                <div class="result">
+                  <div class="kicker">Current player</div>
+                  <div class="big" id="battleCurrentPlayerBig">You</div>
+                </div>
+                <div class="result">
+                  <div class="kicker">Current phase</div>
+                  <div class="big" id="battleCurrentPhaseBig">Command</div>
+                </div>
+              </div>
+              <div class="checks" style="margin-top:14px;">
+                <button type="button" class="secondary" id="battleUndoBtn" disabled>Undo Last Action</button>
+                <button type="button" class="secondary" id="battlePrevPhaseBtn">Previous Phase</button>
+                <button type="button" class="secondary" id="battleNextPhaseBtn">Next Phase</button>
+                <button type="button" class="secondary" id="battleEndTurnBtn">End Turn</button>
+                <button type="button" class="secondary" id="battleNextRoundBtn">Next Round</button>
+                <button type="button" id="battleTrackerStratagemsBtn">Open Stratagems</button>
+              </div>
             </div>
           </div>
-          <div class="note" id="battleSetupStatus" style="margin-top:14px;">
-            Configure the battle, then save it or initialize tracking.
-          </div>
-          <div class="army-unit-actions">
-            <button type="button" id="battleStartBtn">Start Battle</button>
-            <button type="button" class="secondary" id="battleEndBattleBtn" disabled>End Battle</button>
-          </div>
-          <div class="checks" id="battleEndConfirmRow" hidden>
-            <div class="note">Are you sure you want to end the battle?</div>
-            <div class="army-unit-actions" style="margin-top:0;">
-              <button type="button" id="battleEndBattleYesBtn">Yes</button>
-              <button type="button" class="secondary" id="battleEndBattleNoBtn">No</button>
+
+          <div class="bt-main">
+            <div class="card">
+              <h2>Engagement Score</h2>
+              <div class="battle-score-strip">
+                <div class="battle-score-strip-row">
+                  <div class="battle-score-strip-player-label you">You</div>
+                  <div class="battle-score-strip-stat">
+                    <div class="battle-score-strip-stat-label">CP</div>
+                    <div class="battle-score-strip-stat-val" id="battleYouCpBig">0</div>
+                    <div class="battle-score-strip-stat-controls">
+                      <button type="button" class="secondary battle-adjust-btn" data-side="you" data-stat="cp" data-amount="1">+1</button>
+                      <button type="button" class="secondary battle-adjust-btn" data-side="you" data-stat="cp" data-amount="-1">-1</button>
+                    </div>
+                  </div>
+                  <div class="battle-score-strip-stat">
+                    <div class="battle-score-strip-stat-label">Primary VP</div>
+                    <div class="battle-score-strip-stat-val" id="battleYouPrimaryBig">0</div>
+                    <div class="battle-score-strip-stat-controls">
+                      <button type="button" class="secondary battle-adjust-btn" data-side="you" data-stat="primaryVp" data-amount="1">+1</button>
+                      <button type="button" class="secondary battle-adjust-btn" data-side="you" data-stat="primaryVp" data-amount="-1">-1</button>
+                      <button type="button" class="secondary battle-adjust-btn" data-side="you" data-stat="primaryVp" data-amount="5">+5</button>
+                      <button type="button" class="secondary battle-adjust-btn" data-side="you" data-stat="primaryVp" data-amount="-5">-5</button>
+                    </div>
+                    <div class="battle-custom-adjust">
+                      <input type="number" id="battleYouPrimaryCustomInput" min="0" step="1" placeholder="+/-" />
+                      <button type="button" class="secondary battle-adjust-custom-btn" data-side="you" data-stat="primaryVp" data-input-id="battleYouPrimaryCustomInput">+X</button>
+                      <button type="button" class="secondary battle-adjust-custom-btn" data-side="you" data-stat="primaryVp" data-input-id="battleYouPrimaryCustomInput" data-direction="-1">-X</button>
+                    </div>
+                  </div>
+                  <div class="battle-score-strip-stat">
+                    <div class="battle-score-strip-stat-label">Secondary VP</div>
+                    <div class="battle-score-strip-stat-val" id="battleYouSecondaryBig">0</div>
+                    <div class="battle-score-strip-stat-label" style="font-size:0.5rem;margin-top:1px;">from objectives</div>
+                  </div>
+                  <div class="battle-score-strip-stat">
+                    <div class="battle-score-strip-stat-label">Total VP</div>
+                    <div class="battle-score-strip-stat-val" id="battleYouTotalBig">0</div>
+                  </div>
+                </div>
+                <div class="battle-score-strip-row">
+                  <div class="battle-score-strip-player-label opponent">Opp</div>
+                  <div class="battle-score-strip-stat">
+                    <div class="battle-score-strip-stat-label">CP</div>
+                    <div class="battle-score-strip-stat-val" id="battleOpponentCpBig">0</div>
+                    <div class="battle-score-strip-stat-controls">
+                      <button type="button" class="secondary battle-adjust-btn" data-side="opponent" data-stat="cp" data-amount="1">+1</button>
+                      <button type="button" class="secondary battle-adjust-btn" data-side="opponent" data-stat="cp" data-amount="-1">-1</button>
+                    </div>
+                  </div>
+                  <div class="battle-score-strip-stat">
+                    <div class="battle-score-strip-stat-label">Primary VP</div>
+                    <div class="battle-score-strip-stat-val" id="battleOpponentPrimaryBig">0</div>
+                    <div class="battle-score-strip-stat-controls">
+                      <button type="button" class="secondary battle-adjust-btn" data-side="opponent" data-stat="primaryVp" data-amount="1">+1</button>
+                      <button type="button" class="secondary battle-adjust-btn" data-side="opponent" data-stat="primaryVp" data-amount="-1">-1</button>
+                      <button type="button" class="secondary battle-adjust-btn" data-side="opponent" data-stat="primaryVp" data-amount="5">+5</button>
+                      <button type="button" class="secondary battle-adjust-btn" data-side="opponent" data-stat="primaryVp" data-amount="-5">-5</button>
+                    </div>
+                    <div class="battle-custom-adjust">
+                      <input type="number" id="battleOpponentPrimaryCustomInput" min="0" step="1" placeholder="+/-" />
+                      <button type="button" class="secondary battle-adjust-custom-btn" data-side="opponent" data-stat="primaryVp" data-input-id="battleOpponentPrimaryCustomInput">+X</button>
+                      <button type="button" class="secondary battle-adjust-custom-btn" data-side="opponent" data-stat="primaryVp" data-input-id="battleOpponentPrimaryCustomInput" data-direction="-1">-X</button>
+                    </div>
+                  </div>
+                  <div class="battle-score-strip-stat">
+                    <div class="battle-score-strip-stat-label">Secondary VP</div>
+                    <div class="battle-score-strip-stat-val" id="battleOpponentSecondaryBig">0</div>
+                    <div class="battle-score-strip-stat-label" style="font-size:0.5rem;margin-top:1px;">from objectives</div>
+                  </div>
+                  <div class="battle-score-strip-stat">
+                    <div class="battle-score-strip-stat-label">Total VP</div>
+                    <div class="battle-score-strip-stat-val" id="battleOpponentTotalBig">0</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card battle-panel-card">
+              <div class="battle-panel-card-header">
+                <h2>Battle Intel</h2>
+              </div>
+              <div class="battle-panel-toggle-row battle-panel-toggle-full">
+                <div class="battle-panel-toggle-label">View</div>
+                <div class="battle-panel-toggle-buttons">
+                  <button type="button" class="secondary battle-panel-toggle-btn" data-panel="setup" aria-pressed="true">Battle Setup</button>
+                  <button type="button" class="secondary battle-panel-toggle-btn" data-panel="secondaries" aria-pressed="false">Secondaries</button>
+                  <button type="button" class="secondary battle-panel-toggle-btn" data-panel="log" aria-pressed="false">Battle Log</button>
+                  <button type="button" class="secondary battle-panel-toggle-btn" data-panel="units" aria-pressed="false">Unit State</button>
+                </div>
+              </div>
+
+              <div class="battle-panel battle-panel-block" data-panel="secondaries" hidden>
+                <div class="battle-panel-title">Secondary Objectives</div>
+                <div class="battle-panel-scroll">
+                  <div class="battle-score-secondary-strip">
+                    <div class="battle-score-secondary-inline" id="battleSecondaryYouPanel"></div>
+                    <div class="battle-score-secondary-inline" id="battleSecondaryOpponentPanel"></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="battle-panel battle-panel-block" data-panel="log" hidden>
+                <div class="battle-panel-title">Battle Log</div>
+                <div class="battle-panel-scroll">
+                  <div class="note" id="battleLogEmpty">No actions logged yet.</div>
+                  <div class="note profile-note battle-log-scroll" id="battleLogList" hidden></div>
+                </div>
+              </div>
+
+              <div class="battle-panel battle-panel-block" data-panel="units" hidden>
+                <div class="battle-panel-title">Unit State Tracker</div>
+                <div class="battle-panel-scroll">
+                  <div class="note" id="battleUnitStateSummary"></div>
+                  <div class="army-unit-list scrollable-roster" id="battleUnitStateList"></div>
+                </div>
+              </div>
+
+              <div class="battle-panel battle-panel-block is-active" data-panel="setup">
+                <div class="battle-panel-title">Battle Setup</div>
+                <div class="battle-panel-scroll">
+                  <div class="field-grid">
+                    <div>
+                      <label for="battleNameInput">Battle name</label>
+                      <input id="battleNameInput" type="text" value="New Engagement" />
+                    </div>
+                    <div>
+                      <label for="battleYourFactionSelect">Your faction</label>
+                      <select id="battleYourFactionSelect"></select>
+                    </div>
+                    <div>
+                      <label for="battleArmyListSelect">Your army list <span class="muted">(optional)</span></label>
+                      <select id="battleArmyListSelect"></select>
+                    </div>
+                    <div>
+                      <label for="battleOpponentFactionSelect">Opponent faction</label>
+                      <select id="battleOpponentFactionSelect"></select>
+                    </div>
+                    <div>
+                      <label for="battleMissionNameInput">Mission name</label>
+                      <input id="battleMissionNameInput" type="text" placeholder="Take and Hold" />
+                    </div>
+                    <div>
+                      <label for="battleDeploymentInput">Deployment</label>
+                      <input id="battleDeploymentInput" type="text" placeholder="Search and Destroy" />
+                    </div>
+                    <div>
+                      <label for="battleMissionRuleInput">Mission rule</label>
+                      <input id="battleMissionRuleInput" type="text" placeholder="Hidden Supplies" />
+                    </div>
+                    <div>
+                      <label for="battleYourRoleSelect">Your mission role</label>
+                      <select id="battleYourRoleSelect">
+                        <option value="attacker">Attacker</option>
+                        <option value="defender">Defender</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label for="battleFirstTurnSelect">First turn</label>
+                      <select id="battleFirstTurnSelect">
+                        <option value="you">You</option>
+                        <option value="opponent">Opponent</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label for="battleYourStartingCpInput">Your starting CP</label>
+                      <input id="battleYourStartingCpInput" type="number" min="0" step="1" value="0" />
+                    </div>
+                    <div>
+                      <label for="battleOpponentStartingCpInput">Opponent starting CP</label>
+                      <input id="battleOpponentStartingCpInput" type="number" min="0" step="1" value="0" />
+                    </div>
+                  </div>
+                  <div class="note" id="battleSetupStatus" style="margin-top:14px;">
+                    Configure the battle, then save it or initialize tracking.
+                  </div>
+                  <div class="army-unit-actions">
+                    <button type="button" id="battleStartBtn">Start Battle</button>
+                    <button type="button" class="secondary" id="battleEndBattleBtn" disabled>End Battle</button>
+                  </div>
+                  <div class="checks" id="battleEndConfirmRow" hidden>
+                    <div class="note">Are you sure you want to end the battle?</div>
+                    <div class="army-unit-actions" style="margin-top:0;">
+                      <button type="button" id="battleEndBattleYesBtn">Yes</button>
+                      <button type="button" class="secondary" id="battleEndBattleNoBtn">No</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-
-        <div class="card span-4">
-          <h2>Saved Battles</h2>
-          <div class="field-grid">
-            <div>
-              <label for="savedBattleSelect">Saved battle</label>
-              <select id="savedBattleSelect"></select>
-            </div>
-          </div>
-          <button type="button" class="secondary" id="battleLoadBtn">Load Battle</button>
-          <button type="button" class="secondary" id="battleSaveBtn">Save Battle</button>
-          <button type="button" class="secondary" id="battleDeleteBtn">Delete Battle</button>
-          <button type="button" class="secondary" id="battleNewBtn">New Battle</button>
-          <div class="note" id="battlePersistenceNote" style="margin-top:14px;"></div>
-        </div>
-
-        <div class="card span-4">
-          <h2>Battle State</h2>
-          <div class="result-grid">
-            <div class="result">
-              <div class="kicker">Battle round</div>
-              <div class="big" id="battleRoundBig">1</div>
-            </div>
-            <div class="result">
-              <div class="kicker">Current player</div>
-              <div class="big" id="battleCurrentPlayerBig">You</div>
-            </div>
-            <div class="result">
-              <div class="kicker">Current phase</div>
-              <div class="big" id="battleCurrentPhaseBig">Command</div>
-            </div>
-          </div>
-          <div class="checks" style="margin-top:14px;">
-            <button type="button" class="secondary" id="battleUndoBtn" disabled>Undo Last Action</button>
-            <button type="button" class="secondary" id="battlePrevPhaseBtn">Previous Phase</button>
-            <button type="button" class="secondary" id="battleNextPhaseBtn">Next Phase</button>
-            <button type="button" class="secondary" id="battleEndTurnBtn">End Turn</button>
-            <button type="button" class="secondary" id="battleNextRoundBtn">Next Round</button>
-            <button type="button" id="battleTrackerStratagemsBtn">Open Stratagems</button>
-          </div>
-        </div>
-
-        <div class="card span-8 battle-panel-card">
-          <div class="battle-panel-card-header">
-            <h2>Battle Intel</h2>
-          </div>
-          <div class="battle-panel-toggle-row battle-panel-toggle-full">
-            <div class="battle-panel-toggle-label">View</div>
-            <div class="battle-panel-toggle-buttons">
-              <button type="button" class="secondary battle-panel-toggle-btn" data-panel="scoreboard" aria-pressed="true">Scoreboard</button>
-              <button type="button" class="secondary battle-panel-toggle-btn" data-panel="secondaries" aria-pressed="false">Secondaries</button>
-              <button type="button" class="secondary battle-panel-toggle-btn" data-panel="log" aria-pressed="false">Battle Log</button>
-              <button type="button" class="secondary battle-panel-toggle-btn" data-panel="units" aria-pressed="false">Unit State</button>
-            </div>
-          </div>
-
-          <div class="battle-panel battle-panel-block is-active" data-panel="scoreboard">
-            <div class="battle-panel-title">Scoreboard</div>
-            <div class="result-grid">
-            <div class="result">
-              <div class="kicker">You CP</div>
-              <div class="big" id="battleYouCpBig">0</div>
-              <div class="checks">
-                <button type="button" class="secondary battle-adjust-btn" data-side="you" data-stat="cp" data-amount="1">+1 CP</button>
-                <button type="button" class="secondary battle-adjust-btn" data-side="you" data-stat="cp" data-amount="-1">-1 CP</button>
-              </div>
-            </div>
-            <div class="result">
-              <div class="kicker">Opponent CP</div>
-              <div class="big" id="battleOpponentCpBig">0</div>
-              <div class="checks">
-                <button type="button" class="secondary battle-adjust-btn" data-side="opponent" data-stat="cp" data-amount="1">+1 CP</button>
-                <button type="button" class="secondary battle-adjust-btn" data-side="opponent" data-stat="cp" data-amount="-1">-1 CP</button>
-              </div>
-            </div>
-            <div class="result">
-              <div class="kicker">You Primary</div>
-              <div class="big" id="battleYouPrimaryBig">0</div>
-              <div class="checks">
-                <button type="button" class="secondary battle-adjust-btn" data-side="you" data-stat="primaryVp" data-amount="5">+5 VP</button>
-                <button type="button" class="secondary battle-adjust-btn" data-side="you" data-stat="primaryVp" data-amount="-5">-5 VP</button>
-              </div>
-              <div class="battle-custom-adjust">
-                <input type="number" id="battleYouPrimaryCustomInput" min="0" step="1" placeholder="Custom VP" />
-                <button type="button" class="secondary battle-adjust-custom-btn" data-side="you" data-stat="primaryVp" data-input-id="battleYouPrimaryCustomInput">+X</button>
-                <button type="button" class="secondary battle-adjust-custom-btn" data-side="you" data-stat="primaryVp" data-input-id="battleYouPrimaryCustomInput" data-direction="-1">-X</button>
-              </div>
-            </div>
-            <div class="result">
-              <div class="kicker">Opponent Primary</div>
-              <div class="big" id="battleOpponentPrimaryBig">0</div>
-              <div class="checks">
-                <button type="button" class="secondary battle-adjust-btn" data-side="opponent" data-stat="primaryVp" data-amount="5">+5 VP</button>
-                <button type="button" class="secondary battle-adjust-btn" data-side="opponent" data-stat="primaryVp" data-amount="-5">-5 VP</button>
-              </div>
-              <div class="battle-custom-adjust">
-                <input type="number" id="battleOpponentPrimaryCustomInput" min="0" step="1" placeholder="Custom VP" />
-                <button type="button" class="secondary battle-adjust-custom-btn" data-side="opponent" data-stat="primaryVp" data-input-id="battleOpponentPrimaryCustomInput">+X</button>
-                <button type="button" class="secondary battle-adjust-custom-btn" data-side="opponent" data-stat="primaryVp" data-input-id="battleOpponentPrimaryCustomInput" data-direction="-1">-X</button>
-              </div>
-            </div>
-            <div class="result">
-              <div class="kicker">You Secondary</div>
-              <div class="big" id="battleYouSecondaryBig">0</div>
-              <div class="small">Tracked from selected objectives.</div>
-            </div>
-            <div class="result">
-              <div class="kicker">Opponent Secondary</div>
-              <div class="big" id="battleOpponentSecondaryBig">0</div>
-              <div class="small">Tracked from selected objectives.</div>
-            </div>
-            <div class="result">
-              <div class="kicker">You Total</div>
-              <div class="big" id="battleYouTotalBig">0</div>
-            </div>
-            <div class="result">
-              <div class="kicker">Opponent Total</div>
-              <div class="big" id="battleOpponentTotalBig">0</div>
-            </div>
-          </div>
-          </div>
-
-          <div class="battle-panel battle-panel-block" data-panel="secondaries" hidden>
-            <div class="battle-panel-title">Secondary Objectives</div>
-            <div class="battle-panel-scroll">
-              <div class="battle-score-secondary-strip">
-                <div class="battle-score-secondary-inline" id="battleSecondaryYouPanel"></div>
-                <div class="battle-score-secondary-inline" id="battleSecondaryOpponentPanel"></div>
-              </div>
-            </div>
-          </div>
-
-          <div class="battle-panel battle-panel-block" data-panel="log" hidden>
-            <div class="battle-panel-title">Battle Log</div>
-            <div class="battle-panel-scroll">
-              <div class="note" id="battleLogEmpty">No actions logged yet.</div>
-              <div class="note profile-note battle-log-scroll" id="battleLogList" hidden></div>
-            </div>
-          </div>
-
-          <div class="battle-panel battle-panel-block" data-panel="units" hidden>
-            <div class="battle-panel-title">Unit State Tracker</div>
-            <div class="battle-panel-scroll">
-              <div class="note" id="battleUnitStateSummary"></div>
-              <div class="army-unit-list scrollable-roster" id="battleUnitStateList"></div>
-            </div>
-          </div>
-        </div>
-
-      </div>
-      </div>
       <div class="footer-bar">
         <div class="footer-quote">It is better to die for the Emperor than to live for yourself.</div>
         <div class="imperial-tagline">Tactica Imperialis v1.0</div>

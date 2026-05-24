@@ -18,6 +18,8 @@
       --amber-glow: rgba(219,170,79,0.18);
       --amber-line: rgba(219,170,79,0.34);
       --green-bright: #baffcd;
+      --stat-str: #c4d8ff;
+      --stat-ap: #ff9e6a;
     }
 
     @font-face {
@@ -360,8 +362,26 @@
       text-shadow: 0 0 8px var(--amber-glow);
     }
     h2::before {
-      content: "> ";
+      content: "";
+    }
+    .card > h2 {
+      margin: -16px -16px 12px -16px;
+      padding: 7px 16px 7px 19px;
+      font-size: 0.75rem;
       color: var(--amber);
+      background: linear-gradient(90deg, rgba(219,170,79,0.12) 0%, transparent 55%);
+      border-bottom: 1px solid var(--amber-line);
+      text-shadow: 0 0 8px var(--amber-glow);
+      position: relative;
+    }
+    .card > h2::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      background: var(--amber);
     }
     .field-grid {
       display: grid;
@@ -370,7 +390,7 @@
     }
     label {
       display: block;
-      font-size: 0.86rem;
+      font-size: 0.72rem;
       color: var(--muted);
       margin-bottom: 6px;
     }
@@ -430,14 +450,14 @@
     .result-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
-      gap: 14px;
+      gap: 12px;
     }
     .result {
       background:
         linear-gradient(180deg, #09130f 0%, #040907 100%);
       border: 1px solid var(--border);
       border-radius: 1px;
-      padding: 14px;
+      padding: 12px;
       box-shadow: inset 0 0 0 1px rgba(0,0,0,0.42);
     }
     .kicker {
@@ -1179,7 +1199,7 @@
       margin-top: -4px;
     }
     .battle-panel-card-header h2 {
-      margin-bottom: 0;
+      margin: 0;
     }
     .battle-panel-block {
       display: grid;
@@ -1219,7 +1239,7 @@
       font-size: 0.82rem;
     }
     .battle-secondary-toolbar label {
-      font-size: 0.76rem;
+      font-size: 0.68rem;
       margin-bottom: 4px;
     }
     .battle-secondary-toolbar select {
@@ -1548,6 +1568,15 @@
 
     @media (max-width: 900px) {
       .span-4, .span-6, .span-8 { grid-column: span 12; }
+      .bt-layout {
+        flex-direction: column;
+      }
+      .bt-sidebar {
+        flex: none;
+        width: 100%;
+        max-height: none;
+        overflow-y: visible;
+      }
       .wrap { padding: 14px; }
       .list-builder-layout {
         grid-template-columns: 1fr;
@@ -1626,6 +1655,9 @@
       .card {
         padding: 12px;
       }
+      .card > h2 {
+        margin: -12px -12px 12px -12px;
+      }
       h2 {
         margin-bottom: 10px;
         font-size: 0.96rem;
@@ -1634,7 +1666,7 @@
         gap: 8px;
       }
       label {
-        font-size: 0.76rem;
+        font-size: 0.70rem;
         margin-bottom: 4px;
       }
       input, select {
@@ -1735,4 +1767,245 @@
       border-color: rgba(105,242,154,0.22);
       color: rgba(125,248,165,0.62);
       opacity: 1;
+    }
+
+    .battle-score-strip {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .battle-score-strip-row {
+      display: flex;
+      align-items: stretch;
+      gap: 5px;
+    }
+    .battle-score-strip-player-label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 44px;
+      padding: 4px 6px;
+      font-size: 0.65rem;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      border-radius: 2px;
+      position: relative;
+    }
+    .battle-score-strip-player-label::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      border-radius: 2px 0 0 2px;
+    }
+    .battle-score-strip-player-label.you {
+      background: linear-gradient(90deg, rgba(143,227,172,0.1) 0%, transparent 100%);
+      border: 1px solid rgba(143,227,172,0.25);
+      color: var(--accent-2);
+    }
+    .battle-score-strip-player-label.you::before {
+      background: var(--accent-2);
+    }
+    .battle-score-strip-player-label.opponent {
+      background: linear-gradient(90deg, rgba(255,98,98,0.08) 0%, transparent 100%);
+      border: 1px solid rgba(255,98,98,0.22);
+      color: var(--warn);
+    }
+    .battle-score-strip-player-label.opponent::before {
+      background: var(--warn);
+    }
+    .battle-score-strip-stat {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      padding: 4px 5px;
+      background: linear-gradient(160deg, #06100d, #030907);
+      border: 1px solid var(--border);
+      border-radius: 2px;
+    }
+    .battle-score-strip-stat-label {
+      font-size: 0.56rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+      line-height: 1;
+    }
+    .battle-score-strip-stat-val {
+      font-size: 1.1rem;
+      font-weight: bold;
+      color: var(--amber);
+      line-height: 1;
+    }
+    .battle-score-strip-stat-controls {
+      display: flex;
+      gap: 3px;
+    }
+    .battle-score-strip .battle-adjust-btn,
+    .battle-score-strip .battle-adjust-custom-btn {
+      font-size: 0.58rem;
+      padding: 1px 5px;
+      min-height: 18px;
+      line-height: 1;
+    }
+    .battle-score-strip .battle-custom-adjust {
+      display: none;
+    }
+
+    .calc-mod-stepper-row {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      flex-shrink: 0;
+    }
+    .calc-mod-stepper-label {
+      flex: none;
+      font-size: 0.62rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+    }
+    .calc-mod-stepper-controls {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .calc-mod-step-btn {
+      width: 22px;
+      height: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(160deg, #06100d, #030907);
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      color: var(--accent-2);
+      font-size: 0.9rem;
+      line-height: 1;
+      cursor: pointer;
+      padding: 0;
+    }
+    .calc-mod-step-btn:disabled {
+      opacity: 0.25;
+      cursor: not-allowed;
+    }
+    .calc-mod-step-val {
+      width: 28px;
+      text-align: center;
+      font-size: 0.9rem;
+      font-weight: bold;
+      color: var(--amber);
+      line-height: 1;
+    }
+    .calc-mod-step-val.is-zero {
+      color: var(--muted);
+    }
+    .calc-mod-chip-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5px;
+    }
+    .calc-mod-chip {
+      padding: 5px 6px;
+      text-align: center;
+      font-size: 0.58rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      background: rgba(143,227,172,0.03);
+      color: var(--muted);
+      cursor: pointer;
+      user-select: none;
+    }
+    .calc-mod-chip.is-active {
+      border-color: rgba(143,227,172,0.45);
+      background: rgba(143,227,172,0.1);
+      color: var(--accent-2);
+    }
+    .calc-engagement-inner {
+      display: block;
+    }
+    .calc-mod-panel {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px 20px;
+      width: 100%;
+      padding-bottom: 14px;
+      margin-bottom: 14px;
+      border-bottom: 1px solid rgba(219,170,79,0.18);
+    }
+    .calc-mod-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-left: auto;
+      padding-left: 16px;
+      border-left: 1px solid rgba(219,170,79,0.15);
+    }
+    .calc-results-panel {
+      min-width: 0;
+    }
+    #calcWeaponStatBlock {
+      margin-top: 70px;
+    }
+
+    #battleTrackerView .view-body {
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .bt-layout {
+      display: flex;
+      gap: 16px;
+      flex: 1;
+      min-height: 0;
+      height: 100%;
+      align-items: stretch;
+    }
+    .bt-sidebar {
+      flex: 0 0 calc(33.333% - 8px);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      overflow-y: auto;
+      min-height: 0;
+      align-self: stretch;
+    }
+    .bt-main {
+      flex: 1;
+      min-width: 0;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      overflow: hidden;
+      align-self: stretch;
+    }
+    #battleTrackerView .battle-panel-card {
+      flex: 0 0 auto;
+      height: clamp(420px, 58vh, 620px);
+      min-height: 0;
+      overflow: hidden;
+    }
+    #battleTrackerView .battle-panel.is-active {
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+    #battleTrackerView .battle-panel-block {
+      flex: 1 1 auto;
+      min-height: 0;
+    }
+    #battleTrackerView .battle-panel-scroll {
+      flex: 1 1 auto;
+      min-height: 0;
+      max-height: none;
     }

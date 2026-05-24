@@ -464,9 +464,20 @@ function render() {
     setTextIfPresent('phasePill', 'Phase: -');
     setTextIfPresent('weaponPill', 'Weapon: -');
     setTextIfPresent('attackSummary', 'Attacks: -');
-    document.getElementById('profileBox').textContent = activeCombatList
+    const calcWeaponStatBlock = document.getElementById('calcWeaponStatBlock');
+    const calcWeaponAbilitiesNote = document.getElementById('calcWeaponAbilitiesNote');
+    const emptyStateMessage = activeCombatList
       ? 'No matching units or weapons are configured in the loaded army list.'
       : 'No unit or weapon selected.';
+    if (calcWeaponStatBlock) {
+      calcWeaponStatBlock.innerHTML = `
+        <div class="datasheet-label">Weapon</div>
+        <div class="datasheet-bar">
+          <div class="datasheet-name">${escapeHtml(emptyStateMessage)}</div>
+        </div>
+      `;
+    }
+    if (calcWeaponAbilitiesNote) calcWeaponAbilitiesNote.textContent = 'Select an attacking unit and weapon to populate the weapon card.';
     return;
   }
   const torrent = hasAbility(weapon, 'Torrent');
@@ -573,19 +584,35 @@ function render() {
     if (damageCard) damageCard.classList.add('modified-result');
   }
 
-  document.getElementById('profileBox').innerHTML = `
-    <strong>${weaponSelect.value}</strong><br>
-    Phase: ${weapon.phase}<br>
-    Type: ${weapon.type}<br>
-    Range: ${weapon.range}<br>
-    Attacks: ${attacksUsed}<br>
-    ${weapon.skillType}: ${weapon.skill}+<br>
-    Strength: ${weapon.strength}<br>
-    AP: ${effectiveAP}<br>
-    Damage: ${weapon.damage}<br>
-    Abilities: ${renderTooltipList(weapon.abilities, { kind: 'weapon', datasheetLink: unit?.source?.datasheet || '' })}<br><br>
-    Estimated total attacks from ${modelsInput.value} model(s): ${/^\d+$/.test(String(attacksUsed)) ? Number(attacksUsed) * Number(modelsInput.value || 1) : attacksUsed + ' each'}${blast ? `<br>Blast bonus auto-applied from target unit size: +${blastBonus} attack(s).` : ''}${torrent ? `<br>Torrent detected: skip the Hit roll and go straight to Wound rolls.` : ''}.
-  `;
+  const calcWeaponStatBlock = document.getElementById('calcWeaponStatBlock');
+  if (calcWeaponStatBlock) {
+    const skillLabel = weapon.skillType === 'WS' ? 'WS' : 'BS';
+    calcWeaponStatBlock.innerHTML = `
+      <div class="datasheet-label">Stat Line</div>
+      <div class="datasheet-bar">
+        <div class="datasheet-name">${escapeHtml(weaponSelect.value)}</div>
+        <div class="datasheet-grid">
+          ${statCell('Rng', weapon.range)}
+          ${statCell('A', attacksUsed)}
+          ${statCell(skillLabel, weapon.skill + '+')}
+          ${statCell('S', weapon.strength)}
+          ${statCell('AP', effectiveAP)}
+          ${statCell('D', weapon.damage)}
+        </div>
+      </div>
+    `;
+  }
+
+  const calcWeaponAbilitiesNote = document.getElementById('calcWeaponAbilitiesNote');
+  if (calcWeaponAbilitiesNote) {
+    const abilityItems = Array.isArray(weapon.abilities) ? weapon.abilities.filter(Boolean) : [];
+    if (abilityItems.length) {
+      const datasheetLink = unit?.source?.datasheet || '';
+      calcWeaponAbilitiesNote.innerHTML = `Abilities: ${renderTooltipList(abilityItems, { kind: 'weapon', datasheetLink })}`;
+    } else {
+      calcWeaponAbilitiesNote.textContent = 'Abilities: None';
+    }
+  }
   bindTooltipInteractions();
 }
 

@@ -58,15 +58,16 @@ function battleLiveEditingEnabled() {
 }
 
 function battlePanelChoice() {
-  return activeBattle?.ui?.panel || 'scoreboard';
+  return activeBattle?.ui?.panel || 'setup';
 }
 
 function ensureBattlePanelChoice() {
   if (!battlePanelSections?.length) return battlePanelChoice();
   const available = battlePanelSections.map(section => section.dataset.panel).filter(Boolean);
   let choice = battlePanelChoice();
+  if (choice === 'scoreboard') choice = 'setup';
   if (!available.includes(choice)) {
-    choice = available[0] || 'scoreboard';
+    choice = available.includes('setup') ? 'setup' : (available[0] || 'setup');
     activeBattle.ui = activeBattle.ui || {};
     activeBattle.ui.panel = choice;
   }

@@ -194,8 +194,63 @@ document.getElementById('resetModifiersBtn').addEventListener('click', () => {
   rapidFireBox.checked = false;
   coverBox.checked = false;
   armorContemptBox.checked = false;
+  syncCalculatorModifierUi();
   render();
 });
+
+function syncCalculatorModifierUi() {
+  const modIds = ['hitMod', 'woundMod', 'apMod', 'saveMod'];
+  const modClamp = 2;
+  modIds.forEach(id => {
+    const input = document.getElementById(id);
+    const display = document.getElementById(`${id}Display`);
+    const value = parseInt(input?.value, 10) || 0;
+    if (display) {
+      display.textContent = value > 0 ? `+${value}` : String(value);
+      display.classList.toggle('is-zero', value === 0);
+    }
+    document.querySelectorAll(`.calc-mod-step-btn[data-target="${id}"]`).forEach(button => {
+      const dir = parseInt(button.dataset.dir, 10);
+      button.disabled = (dir === -1 && value <= -modClamp) || (dir === 1 && value >= modClamp);
+    });
+  });
+
+  document.querySelectorAll('.calc-mod-chip').forEach(chip => {
+    const targetId = chip.dataset.target;
+    const hiddenCheckbox = document.getElementById(targetId);
+    chip.classList.toggle('is-active', !!hiddenCheckbox?.checked);
+  });
+}
+
+const MOD_CLAMP = 2;
+document.querySelectorAll('.calc-mod-step-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const targetId = btn.dataset.target;
+    const dir = parseInt(btn.dataset.dir, 10);
+    const hiddenInput = document.getElementById(targetId);
+    if (!hiddenInput || Number.isNaN(dir)) return;
+
+    const current = parseInt(hiddenInput.value, 10) || 0;
+    const next = Math.max(-MOD_CLAMP, Math.min(MOD_CLAMP, current + dir));
+    hiddenInput.value = next;
+    syncCalculatorModifierUi();
+    hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
+  });
+});
+
+document.querySelectorAll('.calc-mod-chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    const targetId = chip.dataset.target;
+    const hiddenCheckbox = document.getElementById(targetId);
+    if (!hiddenCheckbox) return;
+
+    hiddenCheckbox.checked = !hiddenCheckbox.checked;
+    syncCalculatorModifierUi();
+    hiddenCheckbox.dispatchEvent(new Event('change', { bubbles: true }));
+  });
+});
+
+syncCalculatorModifierUi();
 
 populateFactions();
 populateArmyListSelectors();
