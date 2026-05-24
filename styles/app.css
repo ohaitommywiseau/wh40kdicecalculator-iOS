@@ -2018,7 +2018,7 @@
     }
     #battleTrackerView .battle-panel-card {
       flex: 0 0 auto;
-      height: clamp(420px, 58vh, 620px);
+      height: clamp(360px, 48vh, 520px);
       min-height: 0;
       overflow: hidden;
     }
