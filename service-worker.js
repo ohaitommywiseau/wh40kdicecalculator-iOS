@@ -1,4 +1,4 @@
-const CACHE_NAME = 'wh40k-dice-calculator-v12';
+const CACHE_NAME = 'wh40k-dice-calculator-v13';
 const APP_SHELL = [
   './',
   './astra_militarum_dice_calculator_vFinal_themed_v2.html',
@@ -16,6 +16,20 @@ const APP_SHELL = [
   './data/wargear/astra-militarum-wargear.js',
   './data/wargear-rules/astra-militarum-infantry-rules.js',
   './data/wargear-rules/astra-militarum-vehicle-rules.js',
+  './data/detachments/index.js',
+  './data/stratagems/core-stratagems.js',
+  './data/secondary-objectives/chapter-approved-2025-26.js',
+  './data/rulebook/core-rules-10th.js',
+  './js/default-data.js',
+  './js/app-shell.js',
+  './js/app-shared.js',
+  './js/app-astra-builder-rules.js',
+  './js/app-battle.js',
+  './js/app-rulebook.js',
+  './js/app-factions-builder.js',
+  './js/app-calculator.js',
+  './js/app-init.js',
+  './js/sw-register.js',
   './data/factions/adepta-sororitas.js',
   './data/factions/adeptus-custodes.js',
   './data/factions/adeptus-mechanicus.js',
@@ -44,7 +58,7 @@ const APP_SHELL = [
 
 self.addEventListener('install', event => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => cache.addAll(APP_SHELL)),
+    caches.open(CACHE_NAME).then(cache => cache.addAll(APP_SHELL))
   );
   self.skipWaiting();
 });
@@ -55,9 +69,9 @@ self.addEventListener('activate', event => {
       Promise.all(
         keys
           .filter(key => key !== CACHE_NAME)
-          .map(key => caches.delete(key)),
-      ),
-    ),
+          .map(key => caches.delete(key))
+      )
+    )
   );
   self.clients.claim();
 });
@@ -71,7 +85,7 @@ self.addEventListener('fetch', event => {
 
   if (request.mode === 'navigate') {
     event.respondWith(
-      fetch(request).catch(() => caches.match('./astra_militarum_dice_calculator_vFinal_themed_v2.html')),
+      fetch(request).catch(() => caches.match('./astra_militarum_dice_calculator_vFinal_themed_v2.html'))
     );
     return;
   }
@@ -89,7 +103,7 @@ self.addEventListener('fetch', event => {
         caches.open(CACHE_NAME).then(cache => cache.put(request, responseClone));
         return networkResponse;
       });
-    }),
+    })
   );
 });
 

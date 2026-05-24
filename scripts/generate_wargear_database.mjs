@@ -4,7 +4,13 @@ import vm from 'node:vm';
 
 const ROOT = path.resolve(import.meta.dirname, '..');
 const CACHE_DIR = path.join(ROOT, 'scripts', '.cache', 'unit-composition-pages');
-const OUTPUT_PATH = path.join(ROOT, 'data', 'wargear', 'astra-militarum-wargear.js');
+const OUTPUT_PATH = path.join(ROOT, 'data', 'wargear', 'index.js');
+
+function argValue(name) {
+  const flag = `--${name}`;
+  const index = process.argv.indexOf(flag);
+  return index >= 0 ? process.argv[index + 1] : '';
+}
 
 function stripMarkup(value) {
   return String(value || '')
@@ -89,6 +95,14 @@ function loadUnitCompositionDatabase() {
   vm.createContext(context);
   vm.runInContext(fs.readFileSync(path.join(ROOT, 'data', 'unit-composition', 'unit-composition.js'), 'utf8'), context);
   return context.window.WH40K_UNIT_COMPOSITION_DATABASE || { byFaction: {} };
+}
+
+function loadExistingWargearDatabase() {
+  if (!fs.existsSync(OUTPUT_PATH)) return null;
+  const context = { window: {} };
+  vm.createContext(context);
+  vm.runInContext(fs.readFileSync(OUTPUT_PATH, 'utf8'), context);
+  return context.window.WH40K_WARGEAR_DATABASE || null;
 }
 
 function extractCompositionHtml(html) {
@@ -238,30 +252,35 @@ function parseWargearOptionGroups(optionsHtml) {
 }
 
 function main() {
-  const factionSlug = 'astra-militarum';
+  const factionSlug = argValue('faction');
+  if (!factionSlug) {
+    throw new Error('Pass exactly one faction slug, e.g. --faction astra-militarum');
+  }
+
   const { manifest, databases } = loadFactionDatabases();
   const compositionDatabase = loadUnitCompositionDatabase();
+  const existing = loadExistingWargearDatabase();
   const faction = manifest.find(entry => entry.slug === factionSlug);
   const db = databases[factionSlug];
   const compositionFaction = compositionDatabase.byFaction?.[factionSlug];
   if (!faction || !db?.units || !compositionFaction?.units) {
-    throw new Error('Astra Militarum faction and composition databases must exist before generating wargear.');
+    throw new Error(`Faction and unit composition data must exist before generating wargear for ${factionSlug}.`);
   }
-  const output = {
+  const output = existing || {
     source: {
       name: 'Wahapedia datasheet Unit Composition and Wargear Options sections',
-      faction: 'Astra Militarum',
       requestPolicy: 'Cache-only generator; does not request Wahapedia.',
     },
     generatedAt: new Date().toISOString(),
-    byFaction: {
-      [factionSlug]: {
-        faction: { id: faction.id, name: faction.name, slug: faction.slug },
-        units: {},
-        missing: [],
-      },
-    },
+    byFaction: {},
   };
+
+  output.byFaction[factionSlug] = {
+    faction: { id: faction.id, name: faction.name, slug: faction.slug },
+    units: {},
+    missing: [],
+  };
+
   for (const [unitName, unit] of Object.entries(db.units)) {
     const cachePath = path.join(CACHE_DIR, `${factionSlug}-${slugify(unitName)}.html`);
     if (!fs.existsSync(cachePath)) {
@@ -285,10 +304,11 @@ function main() {
       notes: [],
     };
   }
+  output.generatedAt = new Date().toISOString();
   fs.mkdirSync(path.dirname(OUTPUT_PATH), { recursive: true });
   fs.writeFileSync(OUTPUT_PATH, `window.WH40K_WARGEAR_DATABASE = ${JSON.stringify(output)};\n`);
   const count = Object.keys(output.byFaction[factionSlug].units).length;
-  console.log(`Astra Militarum: ${count}/${Object.keys(db.units).length} wargear entries`);
+  console.log(`${faction.name}: ${count}/${Object.keys(db.units).length} wargear entries`);
   console.log(`Missing cached pages: ${output.byFaction[factionSlug].missing.join(', ') || 'none'}`);
   console.log(`Wrote ${path.relative(ROOT, OUTPUT_PATH)}.`);
 }
