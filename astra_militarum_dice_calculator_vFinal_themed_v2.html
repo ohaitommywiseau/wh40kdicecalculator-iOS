@@ -460,29 +460,31 @@
           <div class="note" id="battlePersistenceNote" style="margin-top:14px;"></div>
         </div>
 
-        <div class="card">
+        <div class="card battle-state-card">
           <h2>Battle State</h2>
-          <div class="result-grid">
-            <div class="result">
-              <div class="kicker">Battle round</div>
-              <div class="big" id="battleRoundBig">1</div>
+          <div class="battle-state-scroll">
+            <div class="result-grid">
+              <div class="result">
+                <div class="kicker">Battle round</div>
+                <div class="big" id="battleRoundBig">1</div>
+              </div>
+              <div class="result">
+                <div class="kicker">Current player</div>
+                <div class="big" id="battleCurrentPlayerBig">You</div>
+              </div>
+              <div class="result">
+                <div class="kicker">Current phase</div>
+                <div class="big" id="battleCurrentPhaseBig">Command</div>
+              </div>
             </div>
-            <div class="result">
-              <div class="kicker">Current player</div>
-              <div class="big" id="battleCurrentPlayerBig">You</div>
+            <div class="checks" style="margin-top:14px;">
+              <button type="button" class="secondary" id="battleUndoBtn" disabled>Undo Last Action</button>
+              <button type="button" class="secondary" id="battlePrevPhaseBtn">Previous Phase</button>
+              <button type="button" class="secondary" id="battleNextPhaseBtn">Next Phase</button>
+              <button type="button" class="secondary" id="battleEndTurnBtn">End Turn</button>
+              <button type="button" class="secondary" id="battleNextRoundBtn">Next Round</button>
+              <button type="button" id="battleTrackerStratagemsBtn">Open Stratagems</button>
             </div>
-            <div class="result">
-              <div class="kicker">Current phase</div>
-              <div class="big" id="battleCurrentPhaseBig">Command</div>
-            </div>
-          </div>
-          <div class="checks" style="margin-top:14px;">
-            <button type="button" class="secondary" id="battleUndoBtn" disabled>Undo Last Action</button>
-            <button type="button" class="secondary" id="battlePrevPhaseBtn">Previous Phase</button>
-            <button type="button" class="secondary" id="battleNextPhaseBtn">Next Phase</button>
-            <button type="button" class="secondary" id="battleEndTurnBtn">End Turn</button>
-            <button type="button" class="secondary" id="battleNextRoundBtn">Next Round</button>
-            <button type="button" id="battleTrackerStratagemsBtn">Open Stratagems</button>
           </div>
         </div>
         </div><!-- /.bt-sidebar -->
@@ -856,7 +858,6 @@
   <script src="./js/sw-register.js"></script>
 </body>
 </html>
-
 
 
 
