@@ -208,7 +208,18 @@ function renderBuilderWeaponOptions({ resetModelCount = false } = {}) {
 
 function updateBuilderSelectedPoints() {
   const unitName = builderUnitSelect.value;
-  const unitPoints = calculateUnitPoints(currentBuilderFactionSlug, unitName, builderModelCount.value);
+  const prospectiveEntry = {
+    unitName,
+    models: Math.max(1, Number(builderModelCount.value || 1)),
+    weaponQuantities: selectedBuilderWeaponQuantities(),
+  };
+  const existingCopies = activeBuilderList.units.filter(entry =>
+    entry.unitName === unitName && entry.id !== editingBuilderUnitId
+  ).length;
+  const unitPoints = calculateUnitPoints(currentBuilderFactionSlug, unitName, builderModelCount.value, {
+    copyIndex: existingCopies + 1,
+    listEntry: prospectiveEntry,
+  });
   document.getElementById('builderSelectedPoints').textContent = `Points: ${unitPoints.label}`;
 }
 
@@ -367,15 +378,22 @@ function renderBuilderList() {
 
   if (!activeBuilderList.units.length) {
     builderUnitsList.innerHTML = '<div class="army-empty">No units added yet. Configure a unit and add it to this list.</div>';
+    updateBuilderSelectedPoints();
     return;
   }
 
+  const copiesByUnit = {};
   builderUnitsList.innerHTML = activeBuilderList.units.map((entry, index) => {
     const unit = builderData.units?.[entry.unitName];
+    copiesByUnit[entry.unitName] = (copiesByUnit[entry.unitName] || 0) + 1;
+    const unitPoints = calculateUnitPoints(activeBuilderList.factionSlug, entry.unitName, entry.models, {
+      copyIndex: copiesByUnit[entry.unitName],
+      listEntry: entry,
+    });
     return `
       <div class="army-unit-row">
         <strong>${escapeHtml(formatRosterUnitTitle(entry, index))}</strong>
-        <div class="small">${calculateUnitPoints(activeBuilderList.factionSlug, entry.unitName, entry.models).label} - ${escapeHtml(formatWeaponQuantities(entry, unit))}</div>
+        <div class="small">${unitPoints.label} - ${escapeHtml(formatWeaponQuantities(entry, unit))}</div>
         <div class="army-unit-actions">
           <button type="button" class="secondary edit-builder-unit" data-unit-id="${escapeHtml(entry.id)}">Edit</button>
           <button type="button" class="secondary remove-builder-unit" data-unit-id="${escapeHtml(entry.id)}">Remove</button>
@@ -396,6 +414,8 @@ function renderBuilderList() {
       renderBuilderList();
     });
   });
+
+  updateBuilderSelectedPoints();
 }
 function saveActiveBuilderList() {
   activeBuilderList = normalizeArmyListRecord(activeBuilderList);
@@ -524,5 +544,3 @@ function updateModelsFromSelectedWeapon() {
   const listModelCount = combatModelCountForWeapon(unitName, weaponSelect.value);
   if (listModelCount) modelsInput.value = listModelCount;
 }
-
-

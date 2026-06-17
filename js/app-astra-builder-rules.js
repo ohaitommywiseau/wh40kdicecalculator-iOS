@@ -717,8 +717,14 @@ function renderConfiguredInfantryWargearOptions(unitName, modelCount) {
   `;
 
   builderWeaponOptions.querySelectorAll('.dkok-option, .rules-select-option').forEach(input => {
-    input.addEventListener('input', () => selectedConfiguredInfantryWeaponQuantities());
-    input.addEventListener('change', () => selectedConfiguredInfantryWeaponQuantities());
+    input.addEventListener('input', () => {
+      selectedConfiguredInfantryWeaponQuantities();
+      updateBuilderSelectedPoints();
+    });
+    input.addEventListener('change', () => {
+      selectedConfiguredInfantryWeaponQuantities();
+      updateBuilderSelectedPoints();
+    });
   });
   selectedConfiguredInfantryWeaponQuantities();
   updateBuilderSelectedPoints();
@@ -830,5 +836,4 @@ Object.keys(window.ASTRA_MILITARUM_INFANTRY_RULE_CONFIGS || {}).forEach(unitName
     ASTRA_MILITARUM_WARGEAR_RULES[unitName] = CONFIGURED_BUILDER_WARGEAR_RULE;
   }
 });
-
 

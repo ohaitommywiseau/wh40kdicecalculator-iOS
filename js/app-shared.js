@@ -586,26 +586,57 @@ function normalizeBuilderModelCount() {
   allowed[0]));
 }
 
-function calculateUnitPoints(factionSlug, unitName, models) {
+function pointsVariantsForCopy(entry, copyIndex = 1) {
+  if (!entry?.copyTiers?.length) return entry?.variants || [];
+  const targetCopy = Math.max(1, Number(copyIndex || 1));
+  const tier = entry.copyTiers.find(candidate => {
+    const min = Math.max(1, Number(candidate.copyMin || 1));
+    const max = candidate.copyMax == null ? Infinity : Number(candidate.copyMax);
+    return targetCopy >= min && targetCopy <= max;
+  }) || entry.copyTiers[entry.copyTiers.length - 1];
+  return tier?.variants || [];
+}
+
+function calculateUnitWargearSurcharge(entry, listEntry) {
+  if (!entry?.wargearSurcharges || !listEntry?.weaponQuantities) return 0;
+  return Object.entries(entry.wargearSurcharges).reduce((sum, [weaponKey, surcharge]) => {
+    const normalizedKey = normalizeWeaponProfileKey(weaponKey);
+    const quantity = Number(listEntry.weaponQuantities?.[normalizedKey] || 0);
+    return sum + (quantity * Number(surcharge?.perItem || 0));
+  }, 0);
+}
+
+function calculateUnitPoints(factionSlug, unitName, models, context = {}) {
   const entry = getUnitPointsEntry(factionSlug, unitName);
   const modelCount = Math.max(1, Number(models || 1));
-  if (!entry?.variants?.length) {
+  const variants = pointsVariantsForCopy(entry, context.copyIndex);
+  if (!variants.length) {
     return { points: null, label: 'No points found', bracket: null };
   }
 
-  const sorted = [...entry.variants].sort((a, b) => a.models - b.models);
+  const sorted = [...variants].sort((a, b) => a.models - b.models);
   const bracket = sorted.find(variant => modelCount <= Number(variant.models)) || sorted[sorted.length - 1];
+  const basePoints = Number(bracket.points);
+  const wargearPoints = calculateUnitWargearSurcharge(entry, context.listEntry);
+  const totalPoints = basePoints + wargearPoints;
   return {
-    points: Number(bracket.points),
-    label: `${bracket.points} pts (${bracket.label})`,
+    points: totalPoints,
+    basePoints,
+    wargearPoints,
+    label: `${totalPoints} pts (${bracket.label})${wargearPoints ? ` + ${wargearPoints} pts wargear` : ''}`,
     bracket,
   };
 }
 
 function calculateArmyListPoints(list) {
   const result = { totalKnown: 0, hasUnknown: false };
+  const copiesByUnit = {};
   for (const entry of list?.units || []) {
-    const unitPoints = calculateUnitPoints(list.factionSlug, entry.unitName, entry.models);
+    copiesByUnit[entry.unitName] = (copiesByUnit[entry.unitName] || 0) + 1;
+    const unitPoints = calculateUnitPoints(list.factionSlug, entry.unitName, entry.models, {
+      copyIndex: copiesByUnit[entry.unitName],
+      listEntry: entry,
+    });
     if (unitPoints.points === null) {
       result.hasUnknown = true;
     } else {
@@ -771,7 +802,6 @@ function populateFactions() {
   battleYourFactionSelect.value = activeBattle?.yourFactionSlug || 'astra-militarum';
   battleOpponentFactionSelect.value = activeBattle?.opponentFactionSlug || 'astra-militarum';
 }
-
 
 
 
