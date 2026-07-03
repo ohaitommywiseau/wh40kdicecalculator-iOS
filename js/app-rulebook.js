@@ -1,12 +1,14 @@
 const rulebookDatabase = window.WH40K_RULEBOOK_DATABASE || { source: {}, editions: [] };
 const rulebookEditions = Array.isArray(rulebookDatabase.editions) ? rulebookDatabase.editions : [];
 const defaultRulebookEdition = rulebookEditions.find(function (edition) { return edition.id === '10th'; }) || rulebookEditions[0] || null;
+const RULEBOOK_EDITION_STORAGE_KEY = 'wh40kRulebookEdition.v1';
 const RULEBOOK_IMPORT_DB_NAME = 'wh40k-rulebook-imports';
 const RULEBOOK_IMPORT_STORE = 'imports';
 const RULEBOOK_IMPORT_KEY = '10th-core-rules';
 let importedRulebookIndex = null;
 let rulebookImportInProgress = false;
 let pdfJsLoaderPromise = null;
+let activeRulebookEditionId = readStoredRulebookEditionId() || (defaultRulebookEdition ? defaultRulebookEdition.id : null);
 const WAHAPEDIA_CORE_RULES_ALLOWED_HEADINGS = [
   'Introduction',
   'CORE CONCEPTS',
@@ -201,8 +203,44 @@ const WAHAPEDIA_RULE_MANIFEST = [
   { kind: 'rule', title: 'Aircraft in the Charge and Fight Phases', parent: 'OTHER RULES' }
 ];
 
+function readStoredRulebookEditionId() {
+  try {
+    return localStorage.getItem(RULEBOOK_EDITION_STORAGE_KEY) || '';
+  } catch (error) {
+    return '';
+  }
+}
+
+function storeRulebookEditionId(editionId) {
+  try {
+    if (!editionId) {
+      localStorage.removeItem(RULEBOOK_EDITION_STORAGE_KEY);
+      return;
+    }
+    localStorage.setItem(RULEBOOK_EDITION_STORAGE_KEY, editionId);
+  } catch (error) {
+    // Ignore storage issues and fall back to the in-memory edition selection.
+  }
+}
+
+function setActiveRulebookEdition(editionId, options) {
+  const settings = options || {};
+  const nextEdition = rulebookEditions.find(function (edition) {
+    return edition.id === editionId;
+  }) || defaultRulebookEdition || null;
+  activeRulebookEditionId = nextEdition ? nextEdition.id : null;
+  storeRulebookEditionId(activeRulebookEditionId);
+  syncRulebookEditionUi();
+  if (settings.render === false) return;
+  populateRulebookTopicOptions();
+  renderRulebookEntries();
+}
+
 function activeRulebookEditionRecord() {
-  return importedRulebookIndex || defaultRulebookEdition;
+  if (importedRulebookIndex) return importedRulebookIndex;
+  return rulebookEditions.find(function (edition) {
+    return edition.id === activeRulebookEditionId;
+  }) || defaultRulebookEdition;
 }
 
 function activeRulebookTopics() {
@@ -242,6 +280,18 @@ function populateRulebookTopicOptions() {
     .join('');
   if (previousValue && topics.some(function (topic) { return topic.id === previousValue; })) {
     rulebookTopicSelect.value = previousValue;
+  }
+}
+
+function syncRulebookEditionUi() {
+  const edition = activeRulebookEditionRecord();
+  const editionName = edition && edition.name ? edition.name : 'Rulebook unavailable';
+  if (rulebookEditionLabel) {
+    rulebookEditionLabel.value = editionName;
+  }
+  if (rulebookSubtitle) {
+    const modeLabel = importedRulebookIndex ? 'imported rules reference' : 'core rules reference';
+    rulebookSubtitle.textContent = `Search the current ${editionName} ${modeLabel} by phase, topic, or keyword.`;
   }
 }
 
@@ -1244,6 +1294,7 @@ function rulebookEntryMeta(entry) {
 function renderRulebookEntries() {
   if (!rulebookResults || !rulebookSummary) return;
   const edition = activeRulebookEditionRecord();
+  syncRulebookEditionUi();
   if (!edition) {
     rulebookSummary.textContent = 'No rulebook data is loaded yet.';
     rulebookResults.innerHTML = '<div class="army-empty">Rulebook data is unavailable.</div>';

@@ -80,7 +80,9 @@ const battleStratagemSummary = document.getElementById('battleStratagemSummary')
 const battleStratagemSearchInput = document.getElementById('battleStratagemSearchInput');
 const battleStratagemHistory = document.getElementById('battleStratagemHistory');
 const battleStratagemList = document.getElementById('battleStratagemList');
+const rulebookSubtitle = document.getElementById('rulebookSubtitle');
 const rulebookSummary = document.getElementById('rulebookSummary');
+const rulebookEditionLabel = document.getElementById('rulebookEditionLabel');
 const rulebookSearchInput = document.getElementById('rulebookSearchInput');
 const rulebookTopicSelect = document.getElementById('rulebookTopicSelect');
 const rulebookResults = document.getElementById('rulebookResults');
@@ -168,5 +170,4 @@ const ASTRA_MILITARUM_MIXED_WOUND_BUCKETS = {
     ]
   },
 };
-
 

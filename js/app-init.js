@@ -27,7 +27,14 @@ document.getElementById('openCalculatorBtn').addEventListener('click', () => {
 document.getElementById('openBattleTrackerBtn').addEventListener('click', () => showView('battle-tracker'));
 document.getElementById('openRulebookBtn').addEventListener('click', () => showView('rulebook-editions'));
 document.getElementById('rulebookEditionBackBtn').addEventListener('click', () => showView('landing'));
-document.getElementById('openRulebook10thBtn').addEventListener('click', () => showView('rulebook'));
+document.getElementById('openRulebook10thBtn').addEventListener('click', () => {
+  setActiveRulebookEdition('10th');
+  showView('rulebook');
+});
+document.getElementById('openRulebook11thBtn').addEventListener('click', () => {
+  setActiveRulebookEdition('11th');
+  showView('rulebook');
+});
 document.getElementById('rulebookEditionSelectBtn').addEventListener('click', () => showView('rulebook-editions'));
 document.getElementById('battleTrackerStratagemsBtn').addEventListener('click', () => showView('battle-stratagems'));
 document.getElementById('battleStratagemsBackBtn').addEventListener('click', () => showView('battle-tracker'));
@@ -362,5 +369,4 @@ function runBootSequence() {
     }
   }, 480);
 }
-
 
