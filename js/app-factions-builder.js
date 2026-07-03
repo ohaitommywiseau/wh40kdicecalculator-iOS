@@ -1,24 +1,45 @@
 ﻿// Faction loading, target selection, and army builder interaction flow.
-function loadFactionScript(faction) {
-  if (!faction?.script || window.WH40K_FACTION_DATABASES?.[faction.slug]) {
-    return Promise.resolve(window.WH40K_FACTION_DATABASES?.[faction.slug] || null);
-  }
-
+function loadScriptOnce(src, dataKey, value, errorLabel) {
   return new Promise((resolve, reject) => {
-    const existing = document.querySelector(`script[data-faction-script="${faction.slug}"]`);
+    const existing = document.querySelector(`script[data-${dataKey}="${value}"]`);
     if (existing) {
-      existing.addEventListener('load', () => resolve(window.WH40K_FACTION_DATABASES?.[faction.slug] || null), { once: true });
-      existing.addEventListener('error', () => reject(new Error(`Failed to load ${faction.name}`)), { once: true });
+      if (existing.dataset.loaded === 'true') {
+        resolve();
+        return;
+      }
+      existing.addEventListener('load', () => resolve(), { once: true });
+      existing.addEventListener('error', () => reject(new Error(`Failed to load ${errorLabel}`)), { once: true });
       return;
     }
 
     const script = document.createElement('script');
-    script.src = faction.script;
-    script.dataset.factionScript = faction.slug;
-    script.addEventListener('load', () => resolve(window.WH40K_FACTION_DATABASES?.[faction.slug] || null), { once: true });
-    script.addEventListener('error', () => reject(new Error(`Failed to load ${faction.name}`)), { once: true });
+    script.src = src;
+    script.setAttribute(`data-${dataKey}`, value);
+    script.addEventListener('load', () => {
+      script.dataset.loaded = 'true';
+      resolve();
+    }, { once: true });
+    script.addEventListener('error', () => reject(new Error(`Failed to load ${errorLabel}`)), { once: true });
     document.head.appendChild(script);
   });
+}
+
+async function loadFactionScript(faction) {
+  if (!faction?.script) {
+    return window.WH40K_FACTION_DATABASES?.[faction?.slug] || null;
+  }
+
+  const hasFactionData = Boolean(window.WH40K_FACTION_DATABASES?.[faction.slug]);
+  const hasOverrideData = !faction.overrideScript || document.querySelector(`script[data-faction-override="${faction.slug}"]`)?.dataset.loaded === 'true';
+  if (hasFactionData && hasOverrideData) {
+    return window.WH40K_FACTION_DATABASES?.[faction.slug] || null;
+  }
+
+  await loadScriptOnce(faction.script, 'faction-script', faction.slug, faction.name);
+  if (faction.overrideScript) {
+    await loadScriptOnce(faction.overrideScript, 'faction-override', faction.slug, `${faction.name} overrides`);
+  }
+  return window.WH40K_FACTION_DATABASES?.[faction.slug] || null;
 }
 
 async function setFaction(slug) {
